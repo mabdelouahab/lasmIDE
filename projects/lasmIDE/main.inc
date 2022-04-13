@@ -5,13 +5,6 @@
 	OPTION LITERALS:ON
 	OPTION DOTNAME 
 
-;	include	../../include/macros.inc
-;	include 	../../include/libc.inc
-;	include 	../../include/unistd_64.inc
-;	include 	../../include/glib.inc
-;	include 	../../include/gtk.inc
-;	include 	../../include/cairo.inc
-;	include uasm64.inc 
 
 	include	./muasm/mmacros.inc
 	include 	./muasm/libc.inc
@@ -26,7 +19,7 @@
 	include icons.inc
 	include STNG.inc  
 
-	firstworkingdirStr			EQU str$("/shareddoc/programmation/lasm" );"/usr/share/iasm" )
+;	firstworkingdirStr			EQU str$("/shareddoc/programmation/lasm" );"/usr/share/iasm" )
 	ProgramdirStr				EQU str$("lasm" )
 	
 	TemporaryProjectPathStr		EQU str$("Temporary" )
@@ -81,7 +74,9 @@
 		invoke gtk_init,0,0
 
 		.if firstworkingdir==0
-			invoke g_chdir,firstworkingdirStr
+			IFDEF firstworkingdirStr
+				invoke g_chdir,firstworkingdirStr
+			ENDIF
 			mov HOMEdir,rv(g_getenv,"HOME")
 			mov firstworkingdir,rv(g_get_current_dir)
  

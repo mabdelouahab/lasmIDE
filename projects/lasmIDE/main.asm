@@ -1,5 +1,6 @@
 include main.inc
 .code
+; -I /usr/include/uasm
 	main PROC SYSTEMV      _argc:DWORD, _argv:QWORD 
 		local largc:DWORD
 		local  largv:QWORD   

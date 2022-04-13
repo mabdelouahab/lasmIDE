@@ -47,13 +47,13 @@
 		mov WPaned1             			,rv(gtk_builder_get_object					,GGtkBuilder,str$("WPaned1"))
 		mov WPaned2             			,rv(gtk_builder_get_object					,GGtkBuilder,str$("WPaned2"))
         
- 		Helpers_signal_connect_data	"WMnTBUndo"			,"clicked"				,On_WMnTBUndo_activate
- 		Helpers_signal_connect_data	"WMnTBRedo"			,"clicked"				,On_WMnTBRedo_activate
- 		Helpers_signal_connect_data	"WMnTBRun"			,"clicked"				,run_toolbar;run_current_project
- 		Helpers_signal_connect_data	"WMnTBStopRun"		,"clicked"				,stoprun_current_project
- 		Helpers_signal_connect_data	"WMnTBBuild"		,"clicked"				,build_toolbar;build_current_project
- 		Helpers_signal_connect_data	"WMnTBAssemble"		,"clicked"			,assemble_current_project
- 		Helpers_signal_connect_data	"WMnTBPreAssemble"	,"clicked"			,preassemble_current_project
+ 		Helpers_signal_connect_data	"WMnTBUndo"			,"clicked"		,On_WMnTBUndo_activate
+ 		Helpers_signal_connect_data	"WMnTBRedo"			,"clicked"		,On_WMnTBRedo_activate
+ 		Helpers_signal_connect_data	"WMnTBRun"			,"clicked"		,run_toolbar;run_current_project
+ 		Helpers_signal_connect_data	"WMnTBStopRun"		,"clicked"		,stoprun_current_project
+ 		Helpers_signal_connect_data	"WMnTBBuild"		,"clicked"			,build_toolbar;build_current_project
+ 		Helpers_signal_connect_data	"WMnTBAssemble"		,"clicked"		,assemble_current_project
+ 		Helpers_signal_connect_data	"WMnTBPreAssemble"	,"clicked"		,preassemble_current_project
  		
  		Helpers_signal_connect_data	"WMnSave"			,"activate"			,save_current_tab
  		
@@ -67,6 +67,60 @@
  		Helpers_signal_connect_data	"WMnEmptyProject"	,"activate"			,MainWindow_CallBack_New_Empty_Project
  		Helpers_signal_connect_data	"WPaned1"			,"size-allocate"		,OnPaned1sizeallocate
  		Helpers_signal_connect_data	"WPaned2"			,"size-allocate"		,OnPaned2sizeallocate
+
+		Helpers_signal_connect_data	"WMnTBNewFile"	,"clicked"	,On_WMnTBNewFile_Clicked
+		Helpers_signal_connect_data	"WMnTBOpenFile"	,"clicked"	,On_WMnTBOpenFile_Clicked
+		Helpers_signal_connect_data	"WMnSaveFile"	,"clicked"	,On_WMnSaveFile_Clicked
+
+		Helpers_signal_connect_data	"WMnTBSaveAll"	,"clicked"	,On_WMnTBSaveAll_Clicked
+		Helpers_signal_connect_data	"WMnTBCut"		,"clicked"	,On_WMnTBCut_Clicked
+		Helpers_signal_connect_data	"WMnTBCopy"		,"clicked"	,On_WMnTBCopy_Clicked
+		Helpers_signal_connect_data	"WMnTBPaste"	,"clicked"	,On_WMnTBPaste_Clicked
+		Helpers_signal_connect_data	"WMnTBDelete"	,"clicked"	,On_WMnTBDelete_Clicked
+		Helpers_signal_connect_data	"WMnTBUnindent"	,"clicked"	,On_WMnTBUnindent_Clicked
+		Helpers_signal_connect_data	"WMnTBIndent"	,"clicked"	,On_WMnTBIndent_Clicked
+		Helpers_signal_connect_data	"WMnTBFind"		,"clicked"	,On_WMnTBFind_Clicked
+		Helpers_signal_connect_data	"WMnTBReplace"	,"clicked"	,On_WMnTBReplace_Clicked
+
+
+		Helpers_signal_connect_data	"WMn_NewFile_asm"	,"activate",On_WMn_NewFile_asm_Clicked
+		Helpers_signal_connect_data	"WMn_NewFile_inc"	,"activate",On_WMn_NewFile_inc_Clicked
+		Helpers_signal_connect_data	"WMn_NewFile_wedg"	,"activate",On_WMn_NewFile_wedg_Clicked
+		Helpers_signal_connect_data	"WMn_NewFile_rc"	,"activate",On_WMn_NewFile_rc_Clicked
+		Helpers_signal_connect_data	"WMn_NewFile_c"	,"activate",On_WMn_NewFile_c_Clicked
+		Helpers_signal_connect_data	"WMn_NewFile_h"	,"activate",On_WMn_NewFile_h_Clicked
+		Helpers_signal_connect_data	"WMn_NewFile_txt"	,"activate",On_WMn_NewFile_txt_Clicked
+		Helpers_signal_connect_data	"WMn_NewFile_xml"	,"activate",On_WMn_NewFile_xml_Clicked
+		Helpers_signal_connect_data	"WMn_NewFile"	,"activate",On_WMn_NewFile_Clicked
+		Helpers_signal_connect_data	"WMnOpenFile"	,"activate",On_WMnOpenFile_Clicked
+		Helpers_signal_connect_data	"WMnSaveAs"	,"activate",On_WMnSaveAs_Clicked
+		Helpers_signal_connect_data	"WMnSaveAll"	,"activate",On_WMnSaveAll_Clicked
+		Helpers_signal_connect_data	"WMnCut"	,"activate",On_WMnCut_Clicked
+		Helpers_signal_connect_data	"WMnCopy"	,"activate",On_WMnCopy_Clicked
+		Helpers_signal_connect_data	"WMnPaste"	,"activate",On_WMnPaste_Clicked
+		Helpers_signal_connect_data	"WMnDelete"	,"activate",On_WMnDelete_Clicked
+		Helpers_signal_connect_data	"WMnFind"	,"activate",On_WMnFind_Clicked
+		Helpers_signal_connect_data	"WMnFindAndReplace"	,"activate",On_WMnFindAndReplace_Clicked
+		Helpers_signal_connect_data	"WMnSellectAll"	,"activate",On_WMnSellectAll_Clicked
+ 
+		Helpers_signal_connect_data	"WMnBrowse"	,"activate",On_WMnBrowse_Clicked
+		Helpers_signal_connect_data	"WMn_AddFile_asm"	,"activate",On_WMn_AddFile_asm_Clicked
+		Helpers_signal_connect_data	"WMn_AddFile_inc"	,"activate",On_WMn_AddFile_inc_Clicked
+		Helpers_signal_connect_data	"WMn_AddFile_wedg"	,"activate",On_WMn_AddFile_wedg_Clicked
+		Helpers_signal_connect_data	"WMn_AddFile_rc"	,"activate",On_WMn_AddFile_rc_Clicked
+		Helpers_signal_connect_data	"WMn_AddFile_c"	,"activate",On_WMn_AddFile_c_Clicked
+		Helpers_signal_connect_data	"WMn_AddFile_h"	,"activate",On_WMn_AddFile_h_Clicked
+		Helpers_signal_connect_data	"WMn_AddFile_txt"	,"activate",On_WMn_AddFile_txt_Clicked
+		Helpers_signal_connect_data	"WMn_AddFile_xml"	,"activate",On_WMn_AddFile_xml_Clicked
+		Helpers_signal_connect_data	"WMn_AddFile"	,"activate",On_WMn_AddFile_Clicked
+		Helpers_signal_connect_data	"WMnAssemble"	,"activate",On_WMnAssemble_Clicked
+		Helpers_signal_connect_data	"WMnLink"	,"activate",On_WMnLink_Clicked
+		Helpers_signal_connect_data	"WMnBuild"	,"activate",On_WMnBuild_Clicked
+		Helpers_signal_connect_data	"WMnRun"	,"activate",On_WMnRun_Clicked
+		Helpers_signal_connect_data	"WMnDoAll"	,"activate",On_WMnDoAll_Clicked
+		Helpers_signal_connect_data	"WMnSetting"	,"activate",On_WMnSetting_Clicked
+		Helpers_signal_connect_data	"WMnAbout"	,"activate",On_WMnAbout_Clicked
+
 
 		invoke Helpers_GtkImage_From_File,GGtkBuilder	,"W_ICON_Assemble"		,"Assemble.png"
 		invoke Helpers_GtkImage_From_File,GGtkBuilder	,"W_ICON_Build"			,"Build2.png"

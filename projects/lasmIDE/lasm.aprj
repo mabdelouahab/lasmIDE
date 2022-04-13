@@ -2,7 +2,7 @@
 Name=lasm
 Description=lasm
 MainFile=main.asm
-Assemble=uasm  -I /usr/include/uasm  -elf64 $SRC   
+Assemble=uasm   -elf64 $SRC   
 Link=gcc  -o OASM $OBJ -fno-pie -no-pie 
 Path=/shareddocs/programmation/lasm/lasmIDE
 Link_opt=pkg-config --cflags --libs vte-2.91 gtk+-3.0 cairo gthread-2.0 gtksourceview-3.0 gobject-2.0 gmodule-no-export-2.0

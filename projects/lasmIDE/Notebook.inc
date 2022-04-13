@@ -29,20 +29,20 @@
 		local NotebookPage:gpointer
 		local nbkIndex:gpointer
 		mov NotebookPage,_NotebookPage
-        mov nbkIndex,rv( gtk_notebook_get_n_pages,WNotebook)
-        .if nbkIndex
-            @@:
-            dec nbkIndex
-            invoke gtk_notebook_get_nth_page,WNotebook,nbkIndex
-            .if rax==NotebookPage
-                MOV RAX,nbkIndex
-                RET
-            .endif
-            cmp nbkIndex,0           
-            jnz @B            
-        .endif
-        MOV RAX,-1
-        RET
+		mov nbkIndex,rv( gtk_notebook_get_n_pages,WNotebook)
+		.if nbkIndex
+		    @@:
+		    dec nbkIndex
+		    invoke gtk_notebook_get_nth_page,WNotebook,nbkIndex
+		    .if rax==NotebookPage
+		        MOV RAX,nbkIndex
+		        RET
+		    .endif
+		    cmp nbkIndex,0           
+		    jnz @B            
+		.endif
+		MOV RAX,-1
+		RET
 	Notebook_Get_N ENDP
 	
 	Notebook_Save_Current_Tab PROC
@@ -56,9 +56,9 @@
 	Notebook_Close_Tab PROC _pOFile:gpointer
 		local pOFile		:gpointer               
 		mov pOFile,_pOFile
-        mov rax,pOFile
-        invoke Notebook_Get_N,[rax].OFile.NotebookPage
-        invoke  gtk_notebook_remove_page,WNotebook,rax;
+		mov rax,pOFile
+		invoke Notebook_Get_N,[rax].OFile.NotebookPage
+		invoke  gtk_notebook_remove_page,WNotebook,rax;
 	
 		ret
 	Notebook_Close_Tab ENDP	
