@@ -1,0 +1,315 @@
+
+.DATA
+    
+	WTemplateProjectDialog				gpointer    0	
+	WTemplateProjectDialog_RetValue		gpointer    0
+;	WTVName         					gpointer    0		
+;	WTVLocation     					gpointer    0		
+	WBtnSelect   						gpointer    0   		
+	WBtnCancel      					gpointer    0	
+	WTVListTemplate 					gpointer    0	
+	WLDescription   					gpointer    0	
+	WTVListSelection					gpointer    0	
+;	WTVNameBuf							gpointer    0	
+;	WTVLocationBuf						gpointer    0	
+    WedgNewProject_iter0 GtkTreeIter    <>
+    WedgNewProject_iter GtkTreeIter    <>
+
+.CODE
+    init_WTVListTemplate   PROC    
+        local renderer:gpointer
+        local column:gpointer
+        local store:gpointer
+        
+        invoke gtk_tree_view_set_headers_visible,WTVListTemplate, 0
+        
+        mov renderer,rv(gtk_cell_renderer_text_new)
+        mov column,rv(gtk_tree_view_column_new_with_attributes,"List Items",renderer, "text", 0, 0)        
+        invoke gtk_tree_view_append_column,WTVListTemplate, column
+        mov store,rv(gtk_list_store_new,3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING)
+        invoke gtk_tree_view_set_model,WTVListTemplate,store
+
+        invoke g_object_unref,store
+        RET
+    init_WTVListTemplate   ENDP    
+    add_to_WTVListTemplate PROC ,_str:gpointer ,_Desc:gpointer, _FulFile:gpointer 
+        local column:gpointer
+        local store:gpointer
+        local l_str:gpointer
+        local l_Desc:gpointer
+        local l_FulFile:gpointer
+        mov l_str,_str  
+        mov l_FulFile,_FulFile
+        mov l_Desc,_Desc
+        mov store,rv(gtk_tree_view_get_model,WTVListTemplate)
+        invoke gtk_list_store_append,store, addr WedgNewProject_iter 
+        invoke gtk_list_store_set,store, addr WedgNewProject_iter, 0, l_str,1,l_Desc,2,l_FulFile, -1 
+        RET
+    add_to_WTVListTemplate ENDP
+    TemplateProjectDialog proc 
+        local lbuilder  	:gpointer
+		local dir      		:gpointer      
+		local _err			:gpointer
+		local filename 		:gpointer
+		local fullfilename	:gpointer
+		local kf			:gpointer
+        local kname:qword
+        local kdesc	:gpointer
+        mov lbuilder,rv(gtk_builder_new)
+       	invoke gtk_builder_add_from_string, lbuilder,addr TemplateProjectDialog_Interface ,-1,0
+
+        .if rax
+        	mov WTemplateProjectDialog_RetValue,0
+            	mov WTemplateProjectDialog  ,rv(gtk_builder_get_object, lbuilder,str$("WTemplateProjectDialog"))
+		    mov WBtnSelect      		,rv(gtk_builder_get_object, lbuilder,str$("WBtnSelect"))
+		    mov WBtnCancel      		,rv(gtk_builder_get_object, lbuilder,str$("WBtnCancel"))
+		    mov WTVListTemplate 		,rv(gtk_builder_get_object, lbuilder,str$("WTVListTemplate"))
+		    mov WLDescription   		,rv(gtk_builder_get_object, lbuilder,str$("WLDescription")) 
+
+        	mov WTVListSelection,rv( gtk_tree_view_get_selection,WTVListTemplate)
+
+		    invoke gtk_label_set_lines	,WLDescription,5
+		    invoke gtk_label_set_line_wrap_mode,WLDescription,0
+            
+			call init_WTVListTemplate
+			
+		    invoke g_signal_connect_data,WBtnSelect 		,str$("clicked")    ,addr On_WBtnSelectclicked    	,0,0,0     
+		    invoke g_signal_connect_data,WBtnCancel 		,str$("clicked")    ,addr On_WBtnCancelclicked    	,0,0,0    		     
+        	invoke g_signal_connect_data,WTVListSelection	,str$("changed")    ,addr on_WTVListTemplatechanged ,0,0,0   
+
+            invoke g_dir_open,TemplatesPath, 0, addr _err;
+		    mov dir,rax
+		 @@: 
+		    mov filename,rv(g_dir_read_name,dir)     
+		    cmp rax,0
+		    je  @F
+		        .if rv(g_str_has_suffix,filename,".atmpl")
+		            mov fullfilename,rv(g_build_filename,TemplatesPath,filename,0)
+		            mov kf,rv( g_key_file_new)
+		            invoke g_key_file_load_from_file,kf,fullfilename, 0,0    
+		            .if rax
+		                mov kname,0
+		                mov kdesc,0
+		                mov kname,rv(g_key_file_get_string,kf,"Project","Name",0 )
+		                mov kdesc,rv(g_key_file_get_string,kf,"Project","Description",0 )
+		                .if kname && kdesc
+		                    invoke add_to_WTVListTemplate, kname,kdesc,fullfilename
+		                .endif
+		            .endif            
+		            ;invoke g_key_file_free,kf
+		            invoke g_free,fullfilename
+		        .endif
+		      jmp @B
+		 @@:         	              
+            invoke gtk_window_set_modal	,WTemplateProjectDialog,GTK_DIALOG_MODAL
+        ;    invoke gtk_widget_show_all ,WTemplateProjectDialog
+            invoke g_object_unref,lbuilder
+            invoke gtk_dialog_run		,WTemplateProjectDialog
+            invoke gtk_widget_destroy	,WTemplateProjectDialog  
+            mov rax,WTemplateProjectDialog_RetValue
+        .else
+        invoke printf,str$(<13,10,"ELSE  ">)
+            xor rax,rax
+        .endif
+        RET
+    TemplateProjectDialog endp	    
+	On_WBtnSelectclicked    proc	    
+        	invoke gtk_dialog_response,WTemplateProjectDialog,-5
+		ret
+	On_WBtnSelectclicked    endp	    
+	On_WBtnCancelclicked    proc	
+		.if WTemplateProjectDialog_RetValue
+			 invoke  g_free,WTemplateProjectDialog_RetValue
+		.endif  
+		mov WTemplateProjectDialog_RetValue,0    
+        invoke gtk_dialog_response,WTemplateProjectDialog,-5
+		ret
+	On_WBtnCancelclicked    endp	    
+	on_WTVListTemplatechanged proc
+		local lTreeModel	:gpointer
+		local lTreeIter:GtkTreeIter 
+		local lValue	:gpointer
+		local lDesc	:gpointer
+		local lFile	:gpointer
+
+		local WedgNewProjectsel_model:gpointer    
+        local WedgNewProjectval_model:gpointer    
+
+
+        invoke gtk_tree_selection_get_selected,WTVListSelection,addr lTreeModel,addr lTreeIter
+        .if rax
+            invoke gtk_tree_model_get,lTreeModel, addr lTreeIter, \
+            						  0	,addr lValue,\
+            						  1	,addr lDesc,   
+            						  2	,addr lFile,-1            			
+            invoke gtk_label_set_text,WLDescription, lDesc 
+            .if WTemplateProjectDialog_RetValue
+            	 invoke  g_free,WTemplateProjectDialog_RetValue
+            .endif  
+            m2m WTemplateProjectDialog_RetValue,lFile     						  			  
+		.endif
+		ret
+	on_WTVListTemplatechanged endp  
+
+    
+    
+    
+    
+.DATA
+    TemplateProjectDialog_Interface	\
+			DB	'<?xml version="1.0" encoding="UTF-8"?>',10
+			DB	'<interface>',10
+			DB	'  <object class="GtkDialog" id="WTemplateProjectDialog">',10
+			DB	'    <property name="width_request">308</property>',10
+			DB	'    <property name="can_focus">False</property>',10
+			DB	'    <property name="title" translatable="yes">Templates</property>',10
+            		DB	'    <property name="visible">True</property>'
+			DB	'    <property name="resizable">False</property>',10
+			DB	'    <property name="modal">True</property>',10
+			DB	'    <property name="type_hint">dialog</property>',10
+			DB	'    <child type="titlebar">',10
+			DB	'      <placeholder/>',10
+			DB	'    </child>',10
+			DB	'    <child internal-child="vbox">',10
+			DB	'      <object class="GtkBox">',10
+			DB	'        <property name="can_focus">False</property>',10
+			DB	'        <property name="orientation">vertical</property>',10
+			DB	'        <property name="spacing">2</property>',10
+			DB	'        <child internal-child="action_area">',10
+			DB	'          <object class="GtkButtonBox">',10
+			DB	'            <property name="can_focus">False</property>',10
+			DB	'            <property name="layout_style">end</property>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkButton" id="WBtnSelect">',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="label">gtk-ok</property>',10
+			DB	'                <property name="can_focus">True</property>',10
+			DB	'                <property name="receives_default">True</property>',10
+			DB	'                <property name="relief">none</property>',10
+			DB	'                <property name="use_stock">True</property>',10
+			DB	'                <property name="always_show_image">True</property>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">True</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">0</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkButton" id="WBtnCancel">',10
+			DB	'                <property name="label">gtk-cancel</property>',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">True</property>',10
+			DB	'                <property name="receives_default">True</property>',10
+			DB	'                <property name="relief">none</property>',10
+			DB	'                <property name="use_stock">True</property>',10
+			DB	'                <property name="always_show_image">True</property>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">True</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">1</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'          </object>',10
+			DB	'          <packing>',10
+			DB	'            <property name="expand">False</property>',10
+			DB	'            <property name="fill">False</property>',10
+			DB	'            <property name="position">0</property>',10
+			DB	'          </packing>',10
+			DB	'        </child>',10
+			DB	'        <child>',10
+			DB	'          <object class="GtkBox">',10
+			DB	'            <property name="visible">True</property>',10
+			DB	'            <property name="can_focus">False</property>',10
+			DB	'            <property name="orientation">vertical</property>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkComboBox" id="WCBSelect">',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">False</property>',10
+			DB	'                <property name="margin_left">6</property>',10
+			DB	'                <property name="margin_right">6</property>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">False</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">0</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkAlignment">',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">False</property>',10
+			DB	'                <property name="margin_top">7</property>',10
+			DB	'                <property name="margin_bottom">7</property>',10
+			DB	'                <property name="bottom_padding">1</property>',10
+			DB	'                <property name="left_padding">6</property>',10
+			DB	'                <property name="right_padding">6</property>',10
+			DB	'                <child>',10
+			DB	'                  <object class="GtkTreeView" id="WTVListTemplate">',10
+			DB	'                    <property name="height_request">480</property>',10
+			DB	'                    <property name="visible">True</property>',10
+			DB	'                    <property name="can_focus">True</property>',10
+			DB	'                    <child internal-child="selection">',10
+			DB	'                      <object class="GtkTreeSelection">',10
+			DB	'                        <property name="mode">browse</property>',10
+			DB	'                      </object>',10
+			DB	'                    </child>',10
+			DB	'                  </object>',10
+			DB	'                </child>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">False</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">1</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkBox">',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">False</property>',10
+			DB	'                <property name="orientation">vertical</property>',10
+			DB	'                <child>',10
+			DB	'                  <object class="GtkLabel" id="WLDescription">',10
+			DB	'                    <property name="width_request">311</property>',10
+			DB	'                    <property name="height_request">90</property>',10
+			DB	'                    <property name="visible">True</property>',10
+			DB	'                    <property name="can_focus">False</property>',10
+			DB	'                    <property name="halign">center</property>',10
+			DB	'                    <property name="valign">center</property>',10
+			DB	'                    <property name="justify">center</property>',10
+			DB	'                    <property name="wrap">True</property>',10
+			DB	'                    <property name="ellipsize">start</property>',10
+			DB	'                    <property name="width_chars">40</property>',10
+			DB	'                    <property name="max_width_chars">40</property>',10
+			DB	'                    <property name="lines">5</property>',10
+			DB	'                    <attributes>',10
+			DB	'                      <attribute name="font-desc" value="Courier New Italic 10"/>',10
+			DB	'                    </attributes>',10
+			DB	'                  </object>',10
+			DB	'                  <packing>',10
+			DB	'                    <property name="expand">False</property>',10
+			DB	'                    <property name="fill">True</property>',10
+			DB	'                    <property name="position">0</property>',10
+			DB	'                  </packing>',10
+			DB	'                </child>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">False</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="pack_type">end</property>',10
+			DB	'                <property name="position">2</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'          </object>',10
+			DB	'          <packing>',10
+			DB	'            <property name="expand">False</property>',10
+			DB	'            <property name="fill">True</property>',10
+			DB	'            <property name="position">1</property>',10
+			DB	'          </packing>',10
+			DB	'        </child>',10
+			DB	'      </object>',10
+			DB	'    </child>',10
+			DB	'  </object>',10
+			DB	'</interface>',0
+			

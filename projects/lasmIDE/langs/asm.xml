@@ -1,0 +1,134 @@
+<!--
+-->
+<style-scheme id="assembly" _name="Slate" version="1.0">
+<author>Abdelouahab</author>
+<_description>
+ 
+</_description>
+
+	<!-- Palette  -->
+	<color name="white"      value="#FFFFFF"/>
+	<color name="blue"       value="#0000FF"/>
+	<color name="magenta"    value="#FF00FF"/>
+	<color name="violet"     value="#6A5ACD"/>
+	<color name="cyan"       value="#008A8C"/>
+	<color name="gray"       value="#BEBEBE"/>
+	<color name="green"      value="#2E8B57"/>
+	<color name="bordeaux"   value="#A52A2A"/>
+	<color name="red"        value="#FF0000"/>
+	<color name="yellow"     value="#FFFF00"/>
+	<color name="purple"     value="#A020F0"/>
+
+	<style name="def:preprocessor" foreground="#eb939a"/>
+	<style name="bracket-match" background="#132733" bold="true"/>
+	<style name="bracket-mismatch" background="#132733" underline="true"/>
+	<style name="current-line" background="#132733"/> <!--#132733-->
+	<style name="cursor" foreground="#8ba7a7"/>
+
+	<style name="def:builtin" foreground="#9df39f"/>
+	<style name="def:character" foreground="#55e439"/>
+
+	<style name="def:base-n-integer" foreground="#ff3a83"/>
+	<style name="def:boolean" foreground="#ff3a83"/>
+	<style name="def:floating-point" foreground="#ff3a83"/>
+	<style name="def:number" foreground="#ff3a83"/>
+	<style name="def:complex" foreground="#ff3a83"/>
+	<style name="def:constant" foreground="#ff3a83"/>
+	<style name="def:decimal" foreground="#ff3a83"/>
+
+	<style name="def:comment" italic="true" foreground="#D1D427"/>
+	<style name="def:doc-comment" italic="true" foreground="#D1D427"/>	<!-- ff949b  italic="true1e9ae0 italic="true" -->
+	<style name="def:doc-comment-element" foreground="#D1D427" italic="true"/>
+
+	<style name="def:identifier" foreground="#fb9a4b"/>
+	<style name="def:keyword" foreground="#72b0ac"/>	<!--ffaa00-->
+
+
+	<style name="def:operator" foreground="#ffaa00"/>
+	<style name="def:function" foreground="#ffaa00"/>
+	<style name="def:statement" foreground="#ffaa00"/>
+	<style name="def:type" foreground="#ffaa00"/><!-- "#9df39f"-->
+
+	<style name="def:string" foreground="#55e439"/>
+
+	<style name="draw-spaces" foreground="#546976"/> <!--ffaa00-->
+
+	<style name="def:error" foreground="#f8f8f8" background="#a82c1c"/>
+	<style name="line-numbers" foreground="#f8f8f8" background="#333333"/>
+	<style name="search-match" background="#132733" bold="true" underline="true"/>
+	<style name="selection" foreground="#f8f8f8" background="#1748a3"/>
+	<style name="text" foreground="#f8f8f8" background="#000000"/><!--black 1b3849    #333333-->
+
+
+
+	<style name="current-line-number"         background="#eeeeec"/>
+	<style name="background-pattern"          background="#f3f3f3"/>
+
+	<style name="right-margin"                foreground="#000000" background="#000000"/>
+
+	<style name="def:shebang"                 foreground="blue" bold="true"/>
+	<style name="def:special-char"            foreground="violet"/>
+	<style name="def:warning"                 background="yellow"/>
+	<style name="def:note"                    foreground="blue" background="yellow" bold="true"/>
+	<style name="def:underlined"              italic="true" underline="single"/>
+
+	<style name="diff:added-line"             foreground="#008B8B"/>
+	<style name="diff:removed-line"           foreground="#6A5ACD"/>
+	<style name="diff:changed-line"           use-style="def:preprocessor"/>
+	<style name="diff:special-case"           use-style="def:constant"/>
+	<style name="diff:location"               use-style="def:statement"/>
+	<style name="diff:diff-file"              use-style="def:type"/>
+
+	<style name="xml:tags"                    foreground="cyan"/>
+	<style name="xml:attribute-name"          foreground="violet"/>
+	<style name="xml:namespace"               foreground="green" bold="true"/>
+
+	<style name="js:object"                   foreground="#2E8B57" bold="true"/>
+	<style name="js:constructors"             foreground="#008B8B"/>
+
+	<style name="latex:display-math"          foreground="#6A5ACD"/>
+	<style name="latex:command"               foreground="#2E8B57" bold="true"/>
+	<style name="latex:include"               use-style="def:preprocessor"/>
+
+	<style name="sh:variable"                 foreground="#6A5ACD"/>
+
+	<style name="Others"                      foreground="#2E8B57" bold="true"/>
+	<style name="Others 2"                    foreground="#008B8B"/>
+	<style name="Others 3"                    foreground="#6A5ACD"/>
+
+
+
+	<style name="asm:Registers" 			foreground="#80ff80"   /><!--bold="true"scale="1.1" -->
+	<style name="asm:Symbols" 				foreground="#ff0080"  /><!--bold="true"-->
+	<style name="asm:Operators" 			foreground="#f40000"  /><!--bold="true"-->
+	<style name="asm:Index" 				foreground="#AAAAAA"  /><!--bold="true"-->
+	<style name="asm:Preprocessor" 			foreground="#ff00ff"  /><!--bold="true"-->
+	<style name="asm:Preprocessor2" 		foreground="#ff00ff"  /><!--bold="true"-->
+	<style name="asm:Procedures" 			foreground="#ff00ff"  /><!--bold="true"-->
+	<style name="asm:Proto" 				foreground="#ff00ff"  /><!--bold="true"-->
+	<style name="asm:ConditionalControlFlow" foreground="#0000ff" /><!--bold="true"--> 
+	<style name="asm:x64" 					foreground="#80ff80"  /><!--bold="true"-->
+	<style name="asm:ConditionalError" 		foreground="#80ff80"  /><!--bold="true"-->
+	<style name="asm:ListingControlDOT" 	foreground="#80ff80"  /><!--bold="true"-->
+	<style name="asm:ListingControl" 		foreground="#80ff80"  /><!--bold="true"-->
+	<style name="asm:Macros" 				foreground="#ff00ff"  /><!--bold="true"-->
+	<style name="asm:Miscellaneous" 		foreground="#80ff80"  /><!--bold="true"-->
+	<style name="asm:MiscellaneousDOT" 		foreground="#80ff80"  /><!--bold="true"-->
+	<style name="asm:Processor" 			foreground="#80ff80"  /><!--bold="true"-->
+	<style name="asm:RepeatBlocks" 			foreground="#80ff80"  /><!--bold="true"-->
+	<style name="asm:Scope" 				foreground="#80ff80"  /><!--bold="true"-->
+	<style name="asm:Segment" 				foreground="#80ff80"  /><!--bold="true"-->
+	<style name="asm:SegmentDOT" 			foreground="#80ff80"  /><!--bold="true"-->
+	<style name="asm:SimplifiedSegment" 	foreground="#80ff80"  /><!--bold="true"-->
+	<style name="asm:iString" 				foreground="#80ff80"  /><!--bold="true"-->
+	<style name="asm:StructureAndRecord" 	foreground="#80ff80"  /><!--bold="true"-->
+	<style name="asm:DataAllocation" 		foreground="#ff8000"  /><!--bold="true"-->	<!--eeef8d-->
+
+	<style name="asm:Instructions1" 		foreground="#6ee3db"  /><!--bold="true"-->
+	<style name="asm:Instructions2" 		foreground="#ff8000"  /><!--bold="true"-->
+	<style name="asm:Instructions3" 		foreground="#eeef8d"  /><!--bold="true"-->
+	<style name="asm:Instructions4" 		foreground="#eeef8d"  /><!--bold="true"-->
+	<style name="asm:Instructions5" 		foreground="#eeef8d"  /><!--bold="true"-->
+	<style name="asm:Instructions6" 		foreground="#eeef8d"  /><!--bold="true"-->
+	<style name="asm:Instructions7" 		foreground="#eeef8d"  /><!--bold="true"-->
+</style-scheme>

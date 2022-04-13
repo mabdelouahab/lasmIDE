@@ -1,0 +1,1583 @@
+IFNDEF dialog_project_option
+.DATA
+	Wedg_Dialog_Project_Option	 		gpointer	0
+
+	Wedg_DPO_Entry_Project_Name	 		gpointer	0
+	Wedg_DPO_Entry_Project_Desc	 		gpointer	0
+	Wedg_DPO_Entry_Pre_Assemble_cmd	 	gpointer	0
+	Wedg_DPO_Entry_Pre_Assemble_AdOpt	gpointer	0
+	Wedg_DPO_Entry_Assemble_cmd	 		gpointer	0
+	Wedg_DPO_Entry_Assemble_AdOpt	 	gpointer	0
+	Wedg_DPO_Entry_Link_cmd		 		gpointer	0
+	Wedg_DPO_Entry_Link_AdOpt	 		gpointer	0
+	Wedg_DPO_Entry_Run_cmd		 		gpointer	0
+	Wedg_DPO_Combo_Files		 		gpointer	0
+	Wedg_DPO_Button_Save 		 		gpointer	0
+	Wedg_DPO_Button_Cancel		 		gpointer	0	    
+
+.CODE
+    load_project_option proc
+        local file_listidx:gpointer
+        local pfile:gpointer
+
+        
+        .if Current_Project.Files 
+            m2m file_listidx,Current_Project.Files 
+            @@:
+            mov rax,file_listidx
+            mov rax,gpointer ptr [rax]
+            .if rax
+                mov pfile,rax
+                .if  Current_Project.MainFile
+                    .if rv(g_strcmp0,Current_Project.MainFile, pfile)                            
+                        invoke gtk_combo_box_text_append_text,Wedg_DPO_Combo_Files,pfile    
+                    .endif    
+                .else
+                	invoke gtk_combo_box_text_append_text,Wedg_DPO_Combo_Files,pfile
+                .endif 
+                add file_listidx,sizeof gpointer
+                jmp @B             
+            .endif        
+        .endif 
+        ;select main file in the list
+        .if Current_Project.MainFile
+            invoke gtk_combo_box_text_insert,Wedg_DPO_Combo_Files,0,0, Current_Project.MainFile    
+            invoke gtk_combo_box_set_active,Wedg_DPO_Combo_Files, 0           
+        .endif
+ 
+        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Project_Name		,Current_Project._Name
+        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Project_Desc		,Current_Project.Description
+        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Pre_Assemble_cmd	,Current_Project.PreAssemble
+        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Pre_Assemble_AdOpt,Current_Project.PreAssemble_opt 
+        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Assemble_cmd		,Current_Project.Assemble
+        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Assemble_AdOpt	,Current_Project.Assemble_opt
+        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Link_cmd			,Current_Project.Link
+        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Link_AdOpt		,Current_Project.Link_opt
+        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Run_cmd			,Current_Project.Run_cmd
+        
+        invoke gtk_widget_set_sensitive,Wedg_DPO_Entry_Project_Name, 0 
+       ret
+    load_project_option endp    
+
+    save_project_option proc
+        local _name:gpointer
+        .if rv(gtk_combo_box_text_get_active_text,Wedg_DPO_Combo_Files)
+        	mov Current_Project.MainFile,rax 
+        .endif 
+
+        Helpers_gtk_entry_get_text Current_Project.Description		,Wedg_DPO_Entry_Project_Desc
+        Helpers_gtk_entry_get_text Current_Project.PreAssemble		,Wedg_DPO_Entry_Pre_Assemble_cmd
+        Helpers_gtk_entry_get_text Current_Project.PreAssemble_opt	,Wedg_DPO_Entry_Pre_Assemble_AdOpt
+        Helpers_gtk_entry_get_text Current_Project.Assemble			,Wedg_DPO_Entry_Assemble_cmd
+        Helpers_gtk_entry_get_text Current_Project.Assemble_opt		,Wedg_DPO_Entry_Assemble_AdOpt
+        Helpers_gtk_entry_get_text Current_Project.Link				,Wedg_DPO_Entry_Link_cmd
+        Helpers_gtk_entry_get_text Current_Project.Link_opt			,Wedg_DPO_Entry_Link_AdOpt
+        Helpers_gtk_entry_get_text Current_Project.Run_cmd			,Wedg_DPO_Entry_Run_cmd
+        
+        call Projects_Save_Current_Project
+        ret
+    save_project_option endp    
+
+        
+    dialog_project_option proc
+        local error:gpointer
+        local lbuilder:gpointer
+         .if Current_Project.FileName==0 
+            ret
+        .endif
+        mov error,0
+        mov lbuilder,rv(gtk_builder_new)
+        
+       invoke gtk_builder_add_from_string, lbuilder,addr Wedg_Dialog_Project_Option_Interface ,-1,addr error
+       
+        .if rax==0
+            mov rax,error
+            invoke printf,str$(<13,10,"Project_Option builder error[%d]:{%s}">),QWORD PTR [rax],QWORD PTR [rax+8]
+            xor rax,rax
+            ret   
+        .else
+            mov Wedg_Dialog_Project_Option     		,rv(gtk_builder_get_object, lbuilder,str$("Wedg_Dialog_Project_Option"))
+            mov Wedg_DPO_Entry_Project_Name    		,rv(gtk_builder_get_object, lbuilder,str$("Wedg_Entry_Project_Name"))
+            mov Wedg_DPO_Entry_Project_Desc    		,rv(gtk_builder_get_object, lbuilder,str$("Wedg_Entry_Project_Desc"))
+            mov Wedg_DPO_Combo_Files           		,rv(gtk_builder_get_object, lbuilder,str$("Wedg_Combo_Files"))
+            mov Wedg_DPO_Entry_Pre_Assemble_cmd		,rv(gtk_builder_get_object, lbuilder,str$("Wedg_Entry_Pre_Assemble_cmd"))
+            mov Wedg_DPO_Entry_Pre_Assemble_AdOpt 	,rv(gtk_builder_get_object, lbuilder,str$("Wedg_Entry_Pre_Assemble_AdOpt"))
+            mov Wedg_DPO_Entry_Assemble_cmd   		,rv(gtk_builder_get_object, lbuilder,str$("Wedg_Entry_Assemble_cmd"))
+            mov Wedg_DPO_Entry_Assemble_AdOpt 		,rv(gtk_builder_get_object, lbuilder,str$("Wedg_Entry_Assemble_AdOpt"))
+            mov Wedg_DPO_Entry_Link_cmd	    		,rv(gtk_builder_get_object, lbuilder,str$("Wedg_Entry_Link_cmd"))
+            mov Wedg_DPO_Entry_Link_AdOpt     		,rv(gtk_builder_get_object, lbuilder,str$("Wedg_Entry_Link_AdOpt"))
+            mov Wedg_DPO_Entry_Run_cmd	    		,rv(gtk_builder_get_object, lbuilder,str$("Wedg_Entry_Run_args"))
+            mov Wedg_DPO_Button_Save    	    	,rv(gtk_builder_get_object, lbuilder,str$("Wedg_Button_Save"))
+            mov Wedg_DPO_Button_Cancel	    		,rv(gtk_builder_get_object, lbuilder,str$("Wedg_Button_Cancel"))
+
+            invoke g_signal_connect_data,Wedg_DPO_Button_Cancel  ,str$("clicked"),addr On_Wedg_DPO_Button_Cancel_clicked    ,0,0,0     
+            invoke g_signal_connect_data,Wedg_DPO_Button_Save    ,str$("clicked"),addr On_Wedg_DPO_Button_Save_clicked    ,0,0,0     
+        
+            invoke gtk_window_set_modal,Wedg_Dialog_Project_Option,GTK_DIALOG_MODAL
+            invoke load_project_option
+            invoke gtk_dialog_run,Wedg_Dialog_Project_Option
+            invoke g_object_unref,lbuilder
+
+            invoke gtk_widget_destroy,Wedg_Dialog_Project_Option  
+           
+        .endif
+        ret
+    dialog_project_option endp
+    On_Wedg_DPO_Button_Cancel_clicked PROC
+        invoke gtk_dialog_response,Wedg_Dialog_Project_Option,-5
+        RET
+    On_Wedg_DPO_Button_Cancel_clicked ENDP
+    On_Wedg_DPO_Button_Save_clicked PROC
+        invoke save_project_option
+        invoke gtk_dialog_response,Wedg_Dialog_Project_Option,-5
+        RET
+    On_Wedg_DPO_Button_Save_clicked ENDP     
+.DATA
+    Wedg_Dialog_Project_Option_Interface \ 
+			DB	'<?xml version="1.0" encoding="UTF-8"?>',10
+			DB	'<interface>',10
+			DB	'  <object class="GtkDialog" id="Wedg_Dialog_Project_Option">',10
+			DB	'    <property name="visible">True</property>',10
+			DB	'    <property name="can_focus">False</property>',10
+			DB	'    <property name="title" translatable="yes">Project option</property>',10
+			DB	'    <property name="window_position">center</property>',10
+			DB	'    <property name="default_width">640</property>',10
+			DB	'    <property name="default_height">480</property>',10
+			DB	'    <property name="type_hint">dialog</property>',10
+			DB	'    <child type="titlebar">',10
+			DB	'      <placeholder/>',10
+			DB	'    </child>',10
+			DB	'    <child internal-child="vbox">',10
+			DB	'      <object class="GtkBox">',10
+			DB	'        <property name="visible">True</property>',10
+			DB	'        <property name="can_focus">False</property>',10
+			DB	'        <property name="margin_left">4</property>',10
+			DB	'        <property name="margin_right">4</property>',10
+			DB	'        <property name="margin_top">4</property>',10
+			DB	'        <property name="margin_bottom">4</property>',10
+			DB	'        <property name="orientation">vertical</property>',10
+			DB	'        <child internal-child="action_area">',10
+			DB	'          <object class="GtkButtonBox">',10
+			DB	'            <property name="can_focus">False</property>',10
+			DB	'          </object>',10
+			DB	'          <packing>',10
+			DB	'            <property name="expand">False</property>',10
+			DB	'            <property name="fill">False</property>',10
+			DB	'            <property name="position">0</property>',10
+			DB	'          </packing>',10
+			DB	'        </child>',10
+			DB	'        <child>',10
+			DB	'          <object class="GtkBox">',10
+			DB	'            <property name="visible">True</property>',10
+			DB	'            <property name="can_focus">False</property>',10
+			DB	'            <property name="margin_right">4</property>',10
+			DB	'            <property name="margin_top">2</property>',10
+			DB	'            <property name="margin_bottom">1</property>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkLabel">',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">False</property>',10
+			DB	'                <property name="margin_left">4</property>',10
+			DB	'                <property name="label" translatable="yes">Project name: </property>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">False</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">0</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkEntry" id="Wedg_Entry_Project_Name">',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">True</property>',10
+			DB	'                <property name="margin_left">1</property>',10
+			DB	'                <property name="margin_right">1</property>',10
+			DB	'                <property name="margin_top">1</property>',10
+			DB	'                <property name="margin_bottom">1</property>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">False</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">1</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'          </object>',10
+			DB	'          <packing>',10
+			DB	'            <property name="expand">False</property>',10
+			DB	'            <property name="fill">True</property>',10
+			DB	'            <property name="position">0</property>',10
+			DB	'          </packing>',10
+			DB	'        </child>',10
+			DB	'        <child>',10
+			DB	'          <object class="GtkBox">',10
+			DB	'            <property name="visible">True</property>',10
+			DB	'            <property name="can_focus">False</property>',10
+			DB	'            <property name="margin_right">4</property>',10
+			DB	'            <property name="margin_top">1</property>',10
+			DB	'            <property name="margin_bottom">1</property>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkLabel">',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">False</property>',10
+			DB	'                <property name="margin_left">4</property>',10
+			DB	'                <property name="label" translatable="yes">Project description: </property>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">False</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">0</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkEntry" id="Wedg_Entry_Project_Desc">',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">True</property>',10
+			DB	'                <property name="margin_left">1</property>',10
+			DB	'                <property name="margin_right">1</property>',10
+			DB	'                <property name="margin_top">1</property>',10
+			DB	'                <property name="margin_bottom">1</property>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">True</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">1</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'          </object>',10
+			DB	'          <packing>',10
+			DB	'            <property name="expand">False</property>',10
+			DB	'            <property name="fill">True</property>',10
+			DB	'            <property name="position">1</property>',10
+			DB	'          </packing>',10
+			DB	'        </child>',10
+			DB	'        <child>',10
+			DB	'          <object class="GtkBox">',10
+			DB	'            <property name="visible">True</property>',10
+			DB	'            <property name="can_focus">False</property>',10
+			DB	'            <property name="margin_right">4</property>',10
+			DB	'            <property name="margin_top">1</property>',10
+			DB	'            <property name="margin_bottom">1</property>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkLabel">',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">False</property>',10
+			DB	'                <property name="margin_left">4</property>',10
+			DB	'                <property name="label" translatable="yes">Main file (Source):</property>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">False</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">0</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkComboBoxText" id="Wedg_Combo_Files">',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">False</property>',10
+			DB	'                <property name="margin_left">1</property>',10
+			DB	'                <property name="margin_right">1</property>',10
+			DB	'                <property name="margin_top">1</property>',10
+			DB	'                <property name="margin_bottom">1</property>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">True</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">1</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'          </object>',10
+			DB	'          <packing>',10
+			DB	'            <property name="expand">False</property>',10
+			DB	'            <property name="fill">True</property>',10
+			DB	'            <property name="position">2</property>',10
+			DB	'          </packing>',10
+			DB	'        </child>',10
+			DB	'        <child>',10
+			DB	'          <object class="GtkSeparator">',10
+			DB	'            <property name="visible">True</property>',10
+			DB	'            <property name="can_focus">False</property>',10
+			DB	'            <property name="orientation">vertical</property>',10
+			DB	'          </object>',10
+			DB	'          <packing>',10
+			DB	'            <property name="expand">False</property>',10
+			DB	'            <property name="fill">True</property>',10
+			DB	'            <property name="position">3</property>',10
+			DB	'          </packing>',10
+			DB	'        </child>',10
+			DB	'        <child>',10
+			DB	'          <object class="GtkBox">',10
+			DB	'            <property name="visible">True</property>',10
+			DB	'            <property name="can_focus">False</property>',10
+			DB	'            <property name="margin_right">4</property>',10
+			DB	'            <property name="margin_top">1</property>',10
+			DB	'            <property name="margin_bottom">1</property>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkLabel">',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">False</property>',10
+			DB	'                <property name="margin_left">4</property>',10
+			DB	'                <property name="label" translatable="yes">Pre-Assemble:      </property>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">False</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">0</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkBox">',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">False</property>',10
+			DB	'                <property name="orientation">vertical</property>',10
+			DB	'                <child>',10
+			DB	'                  <object class="GtkBox">',10
+			DB	'                    <property name="visible">True</property>',10
+			DB	'                    <property name="can_focus">False</property>',10
+			DB	'                    <child>',10
+			DB	'                      <object class="GtkLabel">',10
+			DB	'                        <property name="visible">True</property>',10
+			DB	'                        <property name="can_focus">False</property>',10
+			DB	'                        <property name="margin_left">4</property>',10
+			DB	'                        <property name="label" translatable="yes">command-line :  </property>',10
+			DB	'                      </object>',10
+			DB	'                      <packing>',10
+			DB	'                        <property name="expand">False</property>',10
+			DB	'                        <property name="fill">True</property>',10
+			DB	'                        <property name="position">0</property>',10
+			DB	'                      </packing>',10
+			DB	'                    </child>',10
+			DB	'                    <child>',10
+			DB	'                      <object class="GtkEntry" id="Wedg_Entry_Pre_Assemble_cmd">',10
+			DB	'                        <property name="visible">True</property>',10
+			DB	'                        <property name="can_focus">True</property>',10
+			DB	'                        <property name="tooltip_text" translatable="yes">$SRC : Source, input file,source code,project main file',10
+			DB	'$EXE : Output executable, Output library',10
+			DB	'$OBJ : Object file',10
+			DB	'$DIR : Project path</property>',10
+			DB	'                        <property name="margin_left">1</property>',10
+			DB	'                        <property name="margin_right">1</property>',10
+			DB	'                        <property name="margin_top">1</property>',10
+			DB	'                        <property name="margin_bottom">1</property>',10
+			DB	'                      </object>',10
+			DB	'                      <packing>',10
+			DB	'                        <property name="expand">True</property>',10
+			DB	'                        <property name="fill">True</property>',10
+			DB	'                        <property name="position">1</property>',10
+			DB	'                      </packing>',10
+			DB	'                    </child>',10
+			DB	'                  </object>',10
+			DB	'                  <packing>',10
+			DB	'                    <property name="expand">False</property>',10
+			DB	'                    <property name="fill">True</property>',10
+			DB	'                    <property name="position">0</property>',10
+			DB	'                  </packing>',10
+			DB	'                </child>',10
+			DB	'                <child>',10
+			DB	'                  <object class="GtkBox">',10
+			DB	'                    <property name="visible">True</property>',10
+			DB	'                    <property name="can_focus">False</property>',10
+			DB	'                    <child>',10
+			DB	'                      <object class="GtkLabel">',10
+			DB	'                        <property name="visible">True</property>',10
+			DB	'                        <property name="can_focus">False</property>',10
+			DB	'                        <property name="margin_left">4</property>',10
+			DB	'                        <property name="label" translatable="yes">Additional options:  </property>',10
+			DB	'                      </object>',10
+			DB	'                      <packing>',10
+			DB	'                        <property name="expand">False</property>',10
+			DB	'                        <property name="fill">True</property>',10
+			DB	'                        <property name="position">0</property>',10
+			DB	'                      </packing>',10
+			DB	'                    </child>',10
+			DB	'                    <child>',10
+			DB	'                      <object class="GtkEntry" id="Wedg_Entry_Pre_Assemble_AdOpt">',10
+			DB	'                        <property name="visible">True</property>',10
+			DB	'                        <property name="can_focus">True</property>',10
+			DB	'                        <property name="tooltip_text" translatable="yes">Use ";" to separate them</property>',10
+			DB	'                        <property name="margin_left">1</property>',10
+			DB	'                        <property name="margin_right">1</property>',10
+			DB	'                        <property name="margin_top">1</property>',10
+			DB	'                        <property name="margin_bottom">1</property>',10
+			DB	'                      </object>',10
+			DB	'                      <packing>',10
+			DB	'                        <property name="expand">True</property>',10
+			DB	'                        <property name="fill">True</property>',10
+			DB	'                        <property name="position">1</property>',10
+			DB	'                      </packing>',10
+			DB	'                    </child>',10
+			DB	'                  </object>',10
+			DB	'                  <packing>',10
+			DB	'                    <property name="expand">False</property>',10
+			DB	'                    <property name="fill">True</property>',10
+			DB	'                    <property name="position">1</property>',10
+			DB	'                  </packing>',10
+			DB	'                </child>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">True</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">1</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'          </object>',10
+			DB	'          <packing>',10
+			DB	'            <property name="expand">False</property>',10
+			DB	'            <property name="fill">True</property>',10
+			DB	'            <property name="position">4</property>',10
+			DB	'          </packing>',10
+			DB	'        </child>',10
+			DB	'        <child>',10
+			DB	'          <object class="GtkSeparator">',10
+			DB	'            <property name="visible">True</property>',10
+			DB	'            <property name="can_focus">False</property>',10
+			DB	'            <property name="orientation">vertical</property>',10
+			DB	'          </object>',10
+			DB	'          <packing>',10
+			DB	'            <property name="expand">False</property>',10
+			DB	'            <property name="fill">True</property>',10
+			DB	'            <property name="position">5</property>',10
+			DB	'          </packing>',10
+			DB	'        </child>',10
+			DB	'        <child>',10
+			DB	'          <object class="GtkBox">',10
+			DB	'            <property name="visible">True</property>',10
+			DB	'            <property name="can_focus">False</property>',10
+			DB	'            <property name="margin_right">4</property>',10
+			DB	'            <property name="margin_top">1</property>',10
+			DB	'            <property name="margin_bottom">1</property>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkLabel">',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">False</property>',10
+			DB	'                <property name="margin_left">4</property>',10
+			DB	'                <property name="label" translatable="yes">Assemble:                 </property>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">False</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">0</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkBox">',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">False</property>',10
+			DB	'                <property name="orientation">vertical</property>',10
+			DB	'                <child>',10
+			DB	'                  <object class="GtkBox">',10
+			DB	'                    <property name="visible">True</property>',10
+			DB	'                    <property name="can_focus">False</property>',10
+			DB	'                    <child>',10
+			DB	'                      <object class="GtkLabel">',10
+			DB	'                        <property name="visible">True</property>',10
+			DB	'                        <property name="can_focus">False</property>',10
+			DB	'                        <property name="label" translatable="yes">command-line :  </property>',10
+			DB	'                      </object>',10
+			DB	'                      <packing>',10
+			DB	'                        <property name="expand">False</property>',10
+			DB	'                        <property name="fill">True</property>',10
+			DB	'                        <property name="position">0</property>',10
+			DB	'                      </packing>',10
+			DB	'                    </child>',10
+			DB	'                    <child>',10
+			DB	'                      <object class="GtkEntry" id="Wedg_Entry_Assemble_cmd">',10
+			DB	'                        <property name="visible">True</property>',10
+			DB	'                        <property name="can_focus">True</property>',10
+			DB	'                        <property name="tooltip_text" translatable="yes">$SRC : Source, input file,source code,project main file',10
+			DB	'$EXE : Output executable, Output library',10
+			DB	'$OBJ : Object file',10
+			DB	'$DIR : Project path</property>',10
+			DB	'                        <property name="margin_top">1</property>',10
+			DB	'                        <property name="margin_bottom">1</property>',10
+			DB	'                      </object>',10
+			DB	'                      <packing>',10
+			DB	'                        <property name="expand">True</property>',10
+			DB	'                        <property name="fill">True</property>',10
+			DB	'                        <property name="position">1</property>',10
+			DB	'                      </packing>',10
+			DB	'                    </child>',10
+			DB	'                  </object>',10
+			DB	'                  <packing>',10
+			DB	'                    <property name="expand">False</property>',10
+			DB	'                    <property name="fill">True</property>',10
+			DB	'                    <property name="position">0</property>',10
+			DB	'                  </packing>',10
+			DB	'                </child>',10
+			DB	'                <child>',10
+			DB	'                  <object class="GtkBox">',10
+			DB	'                    <property name="visible">True</property>',10
+			DB	'                    <property name="can_focus">False</property>',10
+			DB	'                    <child>',10
+			DB	'                      <object class="GtkLabel">',10
+			DB	'                        <property name="visible">True</property>',10
+			DB	'                        <property name="can_focus">False</property>',10
+			DB	'                        <property name="label" translatable="yes">Additional options:  </property>',10
+			DB	'                      </object>',10
+			DB	'                      <packing>',10
+			DB	'                        <property name="expand">False</property>',10
+			DB	'                        <property name="fill">True</property>',10
+			DB	'                        <property name="position">0</property>',10
+			DB	'                      </packing>',10
+			DB	'                    </child>',10
+			DB	'                    <child>',10
+			DB	'                      <object class="GtkEntry" id="Wedg_Entry_Assemble_AdOpt">',10
+			DB	'                        <property name="visible">True</property>',10
+			DB	'                        <property name="can_focus">True</property>',10
+			DB	'                        <property name="tooltip_text" translatable="yes">Use ";" to separate them</property>',10
+			DB	'                        <property name="margin_top">1</property>',10
+			DB	'                        <property name="margin_bottom">1</property>',10
+			DB	'                      </object>',10
+			DB	'                      <packing>',10
+			DB	'                        <property name="expand">True</property>',10
+			DB	'                        <property name="fill">True</property>',10
+			DB	'                        <property name="position">1</property>',10
+			DB	'                      </packing>',10
+			DB	'                    </child>',10
+			DB	'                  </object>',10
+			DB	'                  <packing>',10
+			DB	'                    <property name="expand">False</property>',10
+			DB	'                    <property name="fill">True</property>',10
+			DB	'                    <property name="position">1</property>',10
+			DB	'                  </packing>',10
+			DB	'                </child>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">True</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">1</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'          </object>',10
+			DB	'          <packing>',10
+			DB	'            <property name="expand">False</property>',10
+			DB	'            <property name="fill">True</property>',10
+			DB	'            <property name="position">6</property>',10
+			DB	'          </packing>',10
+			DB	'        </child>',10
+			DB	'        <child>',10
+			DB	'          <object class="GtkSeparator">',10
+			DB	'            <property name="visible">True</property>',10
+			DB	'            <property name="can_focus">False</property>',10
+			DB	'            <property name="orientation">vertical</property>',10
+			DB	'          </object>',10
+			DB	'          <packing>',10
+			DB	'            <property name="expand">False</property>',10
+			DB	'            <property name="fill">True</property>',10
+			DB	'            <property name="position">7</property>',10
+			DB	'          </packing>',10
+			DB	'        </child>',10
+			DB	'        <child>',10
+			DB	'          <object class="GtkBox">',10
+			DB	'            <property name="visible">True</property>',10
+			DB	'            <property name="can_focus">False</property>',10
+			DB	'            <property name="margin_right">4</property>',10
+			DB	'            <property name="margin_top">1</property>',10
+			DB	'            <property name="margin_bottom">1</property>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkLabel">',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">False</property>',10
+			DB	'                <property name="margin_left">4</property>',10
+			DB	'                <property name="label" translatable="yes">Linke:                            </property>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">False</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">0</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkBox">',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">False</property>',10
+			DB	'                <property name="orientation">vertical</property>',10
+			DB	'                <child>',10
+			DB	'                  <object class="GtkBox">',10
+			DB	'                    <property name="visible">True</property>',10
+			DB	'                    <property name="can_focus">False</property>',10
+			DB	'                    <child>',10
+			DB	'                      <object class="GtkLabel">',10
+			DB	'                        <property name="visible">True</property>',10
+			DB	'                        <property name="can_focus">False</property>',10
+			DB	'                        <property name="label" translatable="yes">command-line :  </property>',10
+			DB	'                      </object>',10
+			DB	'                      <packing>',10
+			DB	'                        <property name="expand">False</property>',10
+			DB	'                        <property name="fill">True</property>',10
+			DB	'                        <property name="position">0</property>',10
+			DB	'                      </packing>',10
+			DB	'                    </child>',10
+			DB	'                    <child>',10
+			DB	'                      <object class="GtkEntry" id="Wedg_Entry_Link_cmd">',10
+			DB	'                        <property name="visible">True</property>',10
+			DB	'                        <property name="can_focus">True</property>',10
+			DB	'                        <property name="tooltip_text" translatable="yes">$SRC : Source, input file,source code,project main file',10
+			DB	'$EXE : Output executable, Output library',10
+			DB	'$OBJ : Object file',10
+			DB	'$DIR : Project path</property>',10
+			DB	'                        <property name="margin_top">1</property>',10
+			DB	'                        <property name="margin_bottom">1</property>',10
+			DB	'                      </object>',10
+			DB	'                      <packing>',10
+			DB	'                        <property name="expand">True</property>',10
+			DB	'                        <property name="fill">True</property>',10
+			DB	'                        <property name="position">1</property>',10
+			DB	'                      </packing>',10
+			DB	'                    </child>',10
+			DB	'                  </object>',10
+			DB	'                  <packing>',10
+			DB	'                    <property name="expand">False</property>',10
+			DB	'                    <property name="fill">True</property>',10
+			DB	'                    <property name="position">0</property>',10
+			DB	'                  </packing>',10
+			DB	'                </child>',10
+			DB	'                <child>',10
+			DB	'                  <object class="GtkBox">',10
+			DB	'                    <property name="visible">True</property>',10
+			DB	'                    <property name="can_focus">False</property>',10
+			DB	'                    <child>',10
+			DB	'                      <object class="GtkLabel">',10
+			DB	'                        <property name="visible">True</property>',10
+			DB	'                        <property name="can_focus">False</property>',10
+			DB	'                        <property name="label" translatable="yes">Additional options:  </property>',10
+			DB	'                      </object>',10
+			DB	'                      <packing>',10
+			DB	'                        <property name="expand">False</property>',10
+			DB	'                        <property name="fill">True</property>',10
+			DB	'                        <property name="position">0</property>',10
+			DB	'                      </packing>',10
+			DB	'                    </child>',10
+			DB	'                    <child>',10
+			DB	'                      <object class="GtkEntry" id="Wedg_Entry_Link_AdOpt">',10
+			DB	'                        <property name="visible">True</property>',10
+			DB	'                        <property name="can_focus">True</property>',10
+			DB	'                        <property name="tooltip_text" translatable="yes">Use ";" to separate them</property>',10
+			DB	'                        <property name="margin_top">1</property>',10
+			DB	'                        <property name="margin_bottom">1</property>',10
+			DB	'                      </object>',10
+			DB	'                      <packing>',10
+			DB	'                        <property name="expand">True</property>',10
+			DB	'                        <property name="fill">True</property>',10
+			DB	'                        <property name="position">1</property>',10
+			DB	'                      </packing>',10
+			DB	'                    </child>',10
+			DB	'                  </object>',10
+			DB	'                  <packing>',10
+			DB	'                    <property name="expand">False</property>',10
+			DB	'                    <property name="fill">True</property>',10
+			DB	'                    <property name="position">1</property>',10
+			DB	'                  </packing>',10
+			DB	'                </child>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">True</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">1</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'          </object>',10
+			DB	'          <packing>',10
+			DB	'            <property name="expand">False</property>',10
+			DB	'            <property name="fill">True</property>',10
+			DB	'            <property name="position">8</property>',10
+			DB	'          </packing>',10
+			DB	'        </child>',10
+			DB	'        <child>',10
+			DB	'          <object class="GtkSeparator">',10
+			DB	'            <property name="visible">True</property>',10
+			DB	'            <property name="can_focus">False</property>',10
+			DB	'          </object>',10
+			DB	'          <packing>',10
+			DB	'            <property name="expand">False</property>',10
+			DB	'            <property name="fill">True</property>',10
+			DB	'            <property name="position">9</property>',10
+			DB	'          </packing>',10
+			DB	'        </child>',10
+			DB	'        <child>',10
+			DB	'          <object class="GtkBox">',10
+			DB	'            <property name="visible">True</property>',10
+			DB	'            <property name="can_focus">False</property>',10
+			DB	'            <property name="margin_right">4</property>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkLabel">',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">False</property>',10
+			DB	'                <property name="label" translatable="yes">Run Option:                 </property>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">False</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">0</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkBox">',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">False</property>',10
+			DB	'                <property name="orientation">vertical</property>',10
+			DB	'                <child>',10
+			DB	'                  <object class="GtkBox">',10
+			DB	'                    <property name="visible">True</property>',10
+			DB	'                    <property name="can_focus">False</property>',10
+			DB	'                    <child>',10
+			DB	'                      <object class="GtkLabel">',10
+			DB	'                        <property name="visible">True</property>',10
+			DB	'                        <property name="can_focus">False</property>',10
+			DB	'                        <property name="label" translatable="yes">command-line :  </property>',10
+			DB	'                      </object>',10
+			DB	'                      <packing>',10
+			DB	'                        <property name="expand">False</property>',10
+			DB	'                        <property name="fill">True</property>',10
+			DB	'                        <property name="position">0</property>',10
+			DB	'                      </packing>',10
+			DB	'                    </child>',10
+			DB	'                    <child>',10
+			DB	'                      <object class="GtkEntry" id="Wedg_Entry_Run_args">',10
+			DB	'                        <property name="visible">True</property>',10
+			DB	'                        <property name="can_focus">True</property>',10
+			DB	'                        <property name="tooltip_text" translatable="yes">Use ";" between argumments</property>',10
+			DB	'                        <property name="margin_top">1</property>',10
+			DB	'                        <property name="margin_bottom">1</property>',10
+			DB	'                      </object>',10
+			DB	'                      <packing>',10
+			DB	'                        <property name="expand">True</property>',10
+			DB	'                        <property name="fill">True</property>',10
+			DB	'                        <property name="position">1</property>',10
+			DB	'                      </packing>',10
+			DB	'                    </child>',10
+			DB	'                  </object>',10
+			DB	'                  <packing>',10
+			DB	'                    <property name="expand">False</property>',10
+			DB	'                    <property name="fill">True</property>',10
+			DB	'                    <property name="position">0</property>',10
+			DB	'                  </packing>',10
+			DB	'                </child>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">True</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">1</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'          </object>',10
+			DB	'          <packing>',10
+			DB	'            <property name="expand">False</property>',10
+			DB	'            <property name="fill">True</property>',10
+			DB	'            <property name="position">10</property>',10
+			DB	'          </packing>',10
+			DB	'        </child>',10
+			DB	'        <child>',10
+			DB	'          <object class="GtkSeparator">',10
+			DB	'            <property name="visible">True</property>',10
+			DB	'            <property name="can_focus">False</property>',10
+			DB	'          </object>',10
+			DB	'          <packing>',10
+			DB	'            <property name="expand">False</property>',10
+			DB	'            <property name="fill">True</property>',10
+			DB	'            <property name="position">11</property>',10
+			DB	'          </packing>',10
+			DB	'        </child>',10
+			DB	'        <child>',10
+			DB	'          <object class="GtkButtonBox">',10
+			DB	'            <property name="visible">True</property>',10
+			DB	'            <property name="can_focus">False</property>',10
+			DB	'            <property name="margin_left">4</property>',10
+			DB	'            <property name="margin_right">4</property>',10
+			DB	'            <property name="margin_top">4</property>',10
+			DB	'            <property name="margin_bottom">4</property>',10
+			DB	'            <property name="layout_style">end</property>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkButton" id="Wedg_Button_Save">',10
+			DB	'                <property name="label">gtk-save</property>',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">True</property>',10
+			DB	'                <property name="receives_default">True</property>',10
+			DB	'                <property name="use_stock">True</property>',10
+			DB	'                <property name="always_show_image">True</property>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">True</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">0</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'            <child>',10
+			DB	'              <object class="GtkButton" id="Wedg_Button_Cancel">',10
+			DB	'                <property name="label">gtk-cancel</property>',10
+			DB	'                <property name="visible">True</property>',10
+			DB	'                <property name="can_focus">True</property>',10
+			DB	'                <property name="receives_default">True</property>',10
+			DB	'                <property name="use_stock">True</property>',10
+			DB	'                <property name="always_show_image">True</property>',10
+			DB	'              </object>',10
+			DB	'              <packing>',10
+			DB	'                <property name="expand">True</property>',10
+			DB	'                <property name="fill">True</property>',10
+			DB	'                <property name="position">1</property>',10
+			DB	'              </packing>',10
+			DB	'            </child>',10
+			DB	'          </object>',10
+			DB	'          <packing>',10
+			DB	'            <property name="expand">False</property>',10
+			DB	'            <property name="fill">True</property>',10
+			DB	'            <property name="position">12</property>',10
+			DB	'          </packing>',10
+			DB	'        </child>',10
+			DB	'      </object>',10
+			DB	'    </child>',10
+			DB	'  </object>',10
+			DB	'</interface>',0	
+				DB	'<?xml version="1.0" encoding="UTF-8"?>',13,10
+				DB	'<interface>',13,10
+				DB	'  <object class="GtkDialog" id="Wedg_Dialog_Project_Option">',13,10
+				DB	'    <property name="visible">True</property>',13,10
+				DB	'    <property name="can_focus">False</property>',13,10
+				DB	'    <property name="title" translatable="yes">Project option</property>',13,10
+				DB	'    <property name="window_position">center</property>',13,10
+				DB	'    <property name="default_width">640</property>',13,10
+				DB	'    <property name="default_height">480</property>',13,10
+				DB	'    <property name="type_hint">dialog</property>',13,10
+				DB	'    <child>',13,10
+				DB	'      <placeholder/>',13,10
+				DB	'    </child>',13,10
+				DB	'    <child  internal-child="vbox">',13,10
+				DB	'      <object class="GtkBox">',13,10
+				DB	'        <property name="visible">True</property>',13,10
+				DB	'        <property name="can_focus">False</property>',13,10
+				DB	'        <property name="margin_left">4</property>',13,10
+				DB	'        <property name="margin_right">4</property>',13,10
+				DB	'        <property name="margin_top">4</property>',13,10
+				DB	'        <property name="margin_bottom">4</property>',13,10
+				DB	'        <property name="orientation">vertical</property>',13,10
+				DB	'        <child>',13,10
+				DB	'          <object class="GtkBox">',13,10
+				DB	'            <property name="visible">True</property>',13,10
+				DB	'            <property name="can_focus">False</property>',13,10
+				DB	'            <property name="margin_right">4</property>',13,10
+				DB	'            <property name="margin_top">2</property>',13,10
+				DB	'            <property name="margin_bottom">1</property>',13,10
+				DB	'            <child>',13,10
+				DB	'              <object class="GtkLabel">',13,10
+				DB	'                <property name="visible">True</property>',13,10
+				DB	'                <property name="can_focus">False</property>',13,10
+				DB	'                <property name="margin_left">4</property>',13,10
+				DB	'                <property name="label" translatable="yes">Project name: </property>',13,10
+				DB	'              </object>',13,10
+				DB	'              <packing>',13,10
+				DB	'                <property name="expand">False</property>',13,10
+				DB	'                <property name="fill">True</property>',13,10
+				DB	'                <property name="position">0</property>',13,10
+				DB	'              </packing>',13,10
+				DB	'            </child>',13,10
+				DB	'            <child>',13,10
+				DB	'              <object class="GtkEntry" id="Wedg_Entry_Project_Name">',13,10
+				DB	'                <property name="visible">True</property>',13,10
+				DB	'                <property name="can_focus">True</property>',13,10
+				DB	'                <property name="margin_left">1</property>',13,10
+				DB	'                <property name="margin_right">1</property>',13,10
+				DB	'                <property name="margin_top">1</property>',13,10
+				DB	'                <property name="margin_bottom">1</property>',13,10
+				DB	'              </object>',13,10
+				DB	'              <packing>',13,10
+				DB	'                <property name="expand">False</property>',13,10
+				DB	'                <property name="fill">True</property>',13,10
+				DB	'                <property name="position">1</property>',13,10
+				DB	'              </packing>',13,10
+				DB	'            </child>',13,10
+				DB	'          </object>',13,10
+				DB	'          <packing>',13,10
+				DB	'            <property name="expand">False</property>',13,10
+				DB	'            <property name="fill">True</property>',13,10
+				DB	'            <property name="position">0</property>',13,10
+				DB	'          </packing>',13,10
+				DB	'        </child>',13,10
+				DB	'        <child>',13,10
+				DB	'          <object class="GtkBox">',13,10
+				DB	'            <property name="visible">True</property>',13,10
+				DB	'            <property name="can_focus">False</property>',13,10
+				DB	'            <property name="margin_right">4</property>',13,10
+				DB	'            <property name="margin_top">1</property>',13,10
+				DB	'            <property name="margin_bottom">1</property>',13,10
+				DB	'            <child>',13,10
+				DB	'              <object class="GtkLabel">',13,10
+				DB	'                <property name="visible">True</property>',13,10
+				DB	'                <property name="can_focus">False</property>',13,10
+				DB	'                <property name="margin_left">4</property>',13,10
+				DB	'                <property name="label" translatable="yes">Project description: </property>',13,10
+				DB	'              </object>',13,10
+				DB	'              <packing>',13,10
+				DB	'                <property name="expand">False</property>',13,10
+				DB	'                <property name="fill">True</property>',13,10
+				DB	'                <property name="position">0</property>',13,10
+				DB	'              </packing>',13,10
+				DB	'            </child>',13,10
+				DB	'            <child>',13,10
+				DB	'              <object class="GtkEntry" id="Wedg_Entry_Project_Desc">',13,10
+				DB	'                <property name="visible">True</property>',13,10
+				DB	'                <property name="can_focus">True</property>',13,10
+				DB	'                <property name="margin_left">1</property>',13,10
+				DB	'                <property name="margin_right">1</property>',13,10
+				DB	'                <property name="margin_top">1</property>',13,10
+				DB	'                <property name="margin_bottom">1</property>',13,10
+				DB	'              </object>',13,10
+				DB	'              <packing>',13,10
+				DB	'                <property name="expand">True</property>',13,10
+				DB	'                <property name="fill">True</property>',13,10
+				DB	'                <property name="position">1</property>',13,10
+				DB	'              </packing>',13,10
+				DB	'            </child>',13,10
+				DB	'          </object>',13,10
+				DB	'          <packing>',13,10
+				DB	'            <property name="expand">False</property>',13,10
+				DB	'            <property name="fill">True</property>',13,10
+				DB	'            <property name="position">1</property>',13,10
+				DB	'          </packing>',13,10
+				DB	'        </child>',13,10
+				DB	'        <child>',13,10
+				DB	'          <object class="GtkBox">',13,10
+				DB	'            <property name="visible">True</property>',13,10
+				DB	'            <property name="can_focus">False</property>',13,10
+				DB	'            <property name="margin_right">4</property>',13,10
+				DB	'            <property name="margin_top">1</property>',13,10
+				DB	'            <property name="margin_bottom">1</property>',13,10
+				DB	'            <child>',13,10
+				DB	'              <object class="GtkLabel">',13,10
+				DB	'                <property name="visible">True</property>',13,10
+				DB	'                <property name="can_focus">False</property>',13,10
+				DB	'                <property name="margin_left">4</property>',13,10
+				DB	'                <property name="label" translatable="yes">Main file (Source):</property>',13,10
+				DB	'              </object>',13,10
+				DB	'              <packing>',13,10
+				DB	'                <property name="expand">False</property>',13,10
+				DB	'                <property name="fill">True</property>',13,10
+				DB	'                <property name="position">0</property>',13,10
+				DB	'              </packing>',13,10
+				DB	'            </child>',13,10
+				DB	'            <child>',13,10
+				DB	'              <object class="GtkComboBoxText" id="Wedg_Combo_Files">',13,10
+				DB	'                <property name="visible">True</property>',13,10
+				DB	'                <property name="can_focus">False</property>',13,10
+				DB	'                <property name="margin_left">1</property>',13,10
+				DB	'                <property name="margin_right">1</property>',13,10
+				DB	'                <property name="margin_top">1</property>',13,10
+				DB	'                <property name="margin_bottom">1</property>',13,10
+				DB	'              </object>',13,10
+				DB	'              <packing>',13,10
+				DB	'                <property name="expand">True</property>',13,10
+				DB	'                <property name="fill">True</property>',13,10
+				DB	'                <property name="position">1</property>',13,10
+				DB	'              </packing>',13,10
+				DB	'            </child>',13,10
+				DB	'          </object>',13,10
+				DB	'          <packing>',13,10
+				DB	'            <property name="expand">False</property>',13,10
+				DB	'            <property name="fill">True</property>',13,10
+				DB	'            <property name="position">2</property>',13,10
+				DB	'          </packing>',13,10
+				DB	'        </child>',13,10
+				DB	'        <child>',13,10
+				DB	'          <object class="GtkSeparator">',13,10
+				DB	'            <property name="visible">True</property>',13,10
+				DB	'            <property name="can_focus">False</property>',13,10
+				DB	'            <property name="orientation">vertical</property>',13,10
+				DB	'          </object>',13,10
+				DB	'          <packing>',13,10
+				DB	'            <property name="expand">False</property>',13,10
+				DB	'            <property name="fill">True</property>',13,10
+				DB	'            <property name="position">3</property>',13,10
+				DB	'          </packing>',13,10
+				DB	'        </child>',13,10
+				DB	'        <child>',13,10
+				DB	'          <object class="GtkBox">',13,10
+				DB	'            <property name="visible">True</property>',13,10
+				DB	'            <property name="can_focus">False</property>',13,10
+				DB	'            <property name="margin_right">4</property>',13,10
+				DB	'            <property name="margin_top">1</property>',13,10
+				DB	'            <property name="margin_bottom">1</property>',13,10
+				DB	'            <child>',13,10
+				DB	'              <object class="GtkLabel">',13,10
+				DB	'                <property name="visible">True</property>',13,10
+				DB	'                <property name="can_focus">False</property>',13,10
+				DB	'                <property name="margin_left">4</property>',13,10
+				DB	'                <property name="label" translatable="yes">Pre-Assemble:      </property>',13,10
+				DB	'              </object>',13,10
+				DB	'              <packing>',13,10
+				DB	'                <property name="expand">False</property>',13,10
+				DB	'                <property name="fill">True</property>',13,10
+				DB	'                <property name="position">0</property>',13,10
+				DB	'              </packing>',13,10
+				DB	'            </child>',13,10
+				DB	'            <child>',13,10
+				DB	'              <object class="GtkBox">',13,10
+				DB	'                <property name="visible">True</property>',13,10
+				DB	'                <property name="can_focus">False</property>',13,10
+				DB	'                <property name="orientation">vertical</property>',13,10
+				DB	'                <child>',13,10
+				DB	'                  <object class="GtkBox">',13,10
+				DB	'                    <property name="visible">True</property>',13,10
+				DB	'                    <property name="can_focus">False</property>',13,10
+				DB	'                    <child>',13,10
+				DB	'                      <object class="GtkLabel">',13,10
+				DB	'                        <property name="visible">True</property>',13,10
+				DB	'                        <property name="can_focus">False</property>',13,10
+				DB	'                        <property name="margin_left">4</property>',13,10
+				DB	'                        <property name="label" translatable="yes">command-line :  </property>',13,10
+				DB	'                      </object>',13,10
+				DB	'                      <packing>',13,10
+				DB	'                        <property name="expand">False</property>',13,10
+				DB	'                        <property name="fill">True</property>',13,10
+				DB	'                        <property name="position">0</property>',13,10
+				DB	'                      </packing>',13,10
+				DB	'                    </child>',13,10
+				DB	'                    <child>',13,10
+				DB	'                      <object class="GtkEntry" id="Wedg_Entry_Pre_Assemble_cmd">',13,10
+				DB	'                        <property name="visible">True</property>',13,10
+				DB	'                        <property name="can_focus">True</property>',13,10
+				DB	'                        <property name="tooltip_text" translatable="yes">$SRC : Source, input file,source code,project main file',13,10
+				DB	'$EXE : Output executable, Output library',13,10
+				DB	'$OBJ : Object file',13,10
+				DB	'$DIR : Project path</property>',13,10
+				DB	'                        <property name="margin_left">1</property>',13,10
+				DB	'                        <property name="margin_right">1</property>',13,10
+				DB	'                        <property name="margin_top">1</property>',13,10
+				DB	'                        <property name="margin_bottom">1</property>',13,10
+				DB	'                      </object>',13,10
+				DB	'                      <packing>',13,10
+				DB	'                        <property name="expand">True</property>',13,10
+				DB	'                        <property name="fill">True</property>',13,10
+				DB	'                        <property name="position">1</property>',13,10
+				DB	'                      </packing>',13,10
+				DB	'                    </child>',13,10
+				DB	'                  </object>',13,10
+				DB	'                  <packing>',13,10
+				DB	'                    <property name="expand">False</property>',13,10
+				DB	'                    <property name="fill">True</property>',13,10
+				DB	'                    <property name="position">0</property>',13,10
+				DB	'                  </packing>',13,10
+				DB	'                </child>',13,10
+				DB	'                <child>',13,10
+				DB	'                  <object class="GtkBox">',13,10
+				DB	'                    <property name="visible">True</property>',13,10
+				DB	'                    <property name="can_focus">False</property>',13,10
+				DB	'                    <child>',13,10
+				DB	'                      <object class="GtkLabel">',13,10
+				DB	'                        <property name="visible">True</property>',13,10
+				DB	'                        <property name="can_focus">False</property>',13,10
+				DB	'                        <property name="margin_left">4</property>',13,10
+				DB	'                        <property name="label" translatable="yes">Additional options:  </property>',13,10
+				DB	'                      </object>',13,10
+				DB	'                      <packing>',13,10
+				DB	'                        <property name="expand">False</property>',13,10
+				DB	'                        <property name="fill">True</property>',13,10
+				DB	'                        <property name="position">0</property>',13,10
+				DB	'                      </packing>',13,10
+				DB	'                    </child>',13,10
+				DB	'                    <child>',13,10
+				DB	'                      <object class="GtkEntry" id="Wedg_Entry_Pre_Assemble_AdOpt">',13,10
+				DB	'                        <property name="visible">True</property>',13,10
+				DB	'                        <property name="can_focus">True</property>',13,10
+				DB	'                        <property name="tooltip_text" translatable="yes">Use ";" to separate them</property>',13,10
+				DB	'                        <property name="margin_left">1</property>',13,10
+				DB	'                        <property name="margin_right">1</property>',13,10
+				DB	'                        <property name="margin_top">1</property>',13,10
+				DB	'                        <property name="margin_bottom">1</property>',13,10
+				DB	'                      </object>',13,10
+				DB	'                      <packing>',13,10
+				DB	'                        <property name="expand">True</property>',13,10
+				DB	'                        <property name="fill">True</property>',13,10
+				DB	'                        <property name="position">1</property>',13,10
+				DB	'                      </packing>',13,10
+				DB	'                    </child>',13,10
+				DB	'                  </object>',13,10
+				DB	'                  <packing>',13,10
+				DB	'                    <property name="expand">False</property>',13,10
+				DB	'                    <property name="fill">True</property>',13,10
+				DB	'                    <property name="position">1</property>',13,10
+				DB	'                  </packing>',13,10
+				DB	'                </child>',13,10
+				DB	'              </object>',13,10
+				DB	'              <packing>',13,10
+				DB	'                <property name="expand">True</property>',13,10
+				DB	'                <property name="fill">True</property>',13,10
+				DB	'                <property name="position">1</property>',13,10
+				DB	'              </packing>',13,10
+				DB	'            </child>',13,10
+				DB	'          </object>',13,10
+				DB	'          <packing>',13,10
+				DB	'            <property name="expand">False</property>',13,10
+				DB	'            <property name="fill">True</property>',13,10
+				DB	'            <property name="position">4</property>',13,10
+				DB	'          </packing>',13,10
+				DB	'        </child>',13,10
+				DB	'        <child>',13,10
+				DB	'          <object class="GtkSeparator">',13,10
+				DB	'            <property name="visible">True</property>',13,10
+				DB	'            <property name="can_focus">False</property>',13,10
+				DB	'            <property name="orientation">vertical</property>',13,10
+				DB	'          </object>',13,10
+				DB	'          <packing>',13,10
+				DB	'            <property name="expand">False</property>',13,10
+				DB	'            <property name="fill">True</property>',13,10
+				DB	'            <property name="position">5</property>',13,10
+				DB	'          </packing>',13,10
+				DB	'        </child>',13,10
+				DB	'        <child>',13,10
+				DB	'          <object class="GtkBox">',13,10
+				DB	'            <property name="visible">True</property>',13,10
+				DB	'            <property name="can_focus">False</property>',13,10
+				DB	'            <property name="margin_right">4</property>',13,10
+				DB	'            <property name="margin_top">1</property>',13,10
+				DB	'            <property name="margin_bottom">1</property>',13,10
+				DB	'            <child>',13,10
+				DB	'              <object class="GtkLabel">',13,10
+				DB	'                <property name="visible">True</property>',13,10
+				DB	'                <property name="can_focus">False</property>',13,10
+				DB	'                <property name="margin_left">4</property>',13,10
+				DB	'                <property name="label" translatable="yes">Assemble:                 </property>',13,10
+				DB	'              </object>',13,10
+				DB	'              <packing>',13,10
+				DB	'                <property name="expand">False</property>',13,10
+				DB	'                <property name="fill">True</property>',13,10
+				DB	'                <property name="position">0</property>',13,10
+				DB	'              </packing>',13,10
+				DB	'            </child>',13,10
+				DB	'            <child>',13,10
+				DB	'              <object class="GtkBox">',13,10
+				DB	'                <property name="visible">True</property>',13,10
+				DB	'                <property name="can_focus">False</property>',13,10
+				DB	'                <property name="orientation">vertical</property>',13,10
+				DB	'                <child>',13,10
+				DB	'                  <object class="GtkBox">',13,10
+				DB	'                    <property name="visible">True</property>',13,10
+				DB	'                    <property name="can_focus">False</property>',13,10
+				DB	'                    <child>',13,10
+				DB	'                      <object class="GtkLabel">',13,10
+				DB	'                        <property name="visible">True</property>',13,10
+				DB	'                        <property name="can_focus">False</property>',13,10
+				DB	'                        <property name="label" translatable="yes">command-line :  </property>',13,10
+				DB	'                      </object>',13,10
+				DB	'                      <packing>',13,10
+				DB	'                        <property name="expand">False</property>',13,10
+				DB	'                        <property name="fill">True</property>',13,10
+				DB	'                        <property name="position">0</property>',13,10
+				DB	'                      </packing>',13,10
+				DB	'                    </child>',13,10
+				DB	'                    <child>',13,10
+				DB	'                      <object class="GtkEntry" id="Wedg_Entry_Assemble_cmd">',13,10
+				DB	'                        <property name="visible">True</property>',13,10
+				DB	'                        <property name="can_focus">True</property>',13,10
+				DB	'                        <property name="tooltip_text" translatable="yes">$SRC : Source, input file,source code,project main file',13,10
+				DB	'$EXE : Output executable, Output library',13,10
+				DB	'$OBJ : Object file',13,10
+				DB	'$DIR : Project path</property>',13,10
+				DB	'                        <property name="margin_top">1</property>',13,10
+				DB	'                        <property name="margin_bottom">1</property>',13,10
+				DB	'                      </object>',13,10
+				DB	'                      <packing>',13,10
+				DB	'                        <property name="expand">True</property>',13,10
+				DB	'                        <property name="fill">True</property>',13,10
+				DB	'                        <property name="position">1</property>',13,10
+				DB	'                      </packing>',13,10
+				DB	'                    </child>',13,10
+				DB	'                  </object>',13,10
+				DB	'                  <packing>',13,10
+				DB	'                    <property name="expand">False</property>',13,10
+				DB	'                    <property name="fill">True</property>',13,10
+				DB	'                    <property name="position">0</property>',13,10
+				DB	'                  </packing>',13,10
+				DB	'                </child>',13,10
+				DB	'                <child>',13,10
+				DB	'                  <object class="GtkBox">',13,10
+				DB	'                    <property name="visible">True</property>',13,10
+				DB	'                    <property name="can_focus">False</property>',13,10
+				DB	'                    <child>',13,10
+				DB	'                      <object class="GtkLabel">',13,10
+				DB	'                        <property name="visible">True</property>',13,10
+				DB	'                        <property name="can_focus">False</property>',13,10
+				DB	'                        <property name="label" translatable="yes">Additional options:  </property>',13,10
+				DB	'                      </object>',13,10
+				DB	'                      <packing>',13,10
+				DB	'                        <property name="expand">False</property>',13,10
+				DB	'                        <property name="fill">True</property>',13,10
+				DB	'                        <property name="position">0</property>',13,10
+				DB	'                      </packing>',13,10
+				DB	'                    </child>',13,10
+				DB	'                    <child>',13,10
+				DB	'                      <object class="GtkEntry" id="Wedg_Entry_Assemble_AdOpt">',13,10
+				DB	'                        <property name="visible">True</property>',13,10
+				DB	'                        <property name="can_focus">True</property>',13,10
+				DB	'                        <property name="tooltip_text" translatable="yes">Use ";" to separate them</property>',13,10
+				DB	'                        <property name="margin_top">1</property>',13,10
+				DB	'                        <property name="margin_bottom">1</property>',13,10
+				DB	'                      </object>',13,10
+				DB	'                      <packing>',13,10
+				DB	'                        <property name="expand">True</property>',13,10
+				DB	'                        <property name="fill">True</property>',13,10
+				DB	'                        <property name="position">1</property>',13,10
+				DB	'                      </packing>',13,10
+				DB	'                    </child>',13,10
+				DB	'                  </object>',13,10
+				DB	'                  <packing>',13,10
+				DB	'                    <property name="expand">False</property>',13,10
+				DB	'                    <property name="fill">True</property>',13,10
+				DB	'                    <property name="position">1</property>',13,10
+				DB	'                  </packing>',13,10
+				DB	'                </child>',13,10
+				DB	'              </object>',13,10
+				DB	'              <packing>',13,10
+				DB	'                <property name="expand">True</property>',13,10
+				DB	'                <property name="fill">True</property>',13,10
+				DB	'                <property name="position">1</property>',13,10
+				DB	'              </packing>',13,10
+				DB	'            </child>',13,10
+				DB	'          </object>',13,10
+				DB	'          <packing>',13,10
+				DB	'            <property name="expand">False</property>',13,10
+				DB	'            <property name="fill">True</property>',13,10
+				DB	'            <property name="position">6</property>',13,10
+				DB	'          </packing>',13,10
+				DB	'        </child>',13,10
+				DB	'        <child>',13,10
+				DB	'          <object class="GtkSeparator">',13,10
+				DB	'            <property name="visible">True</property>',13,10
+				DB	'            <property name="can_focus">False</property>',13,10
+				DB	'            <property name="orientation">vertical</property>',13,10
+				DB	'          </object>',13,10
+				DB	'          <packing>',13,10
+				DB	'            <property name="expand">False</property>',13,10
+				DB	'            <property name="fill">True</property>',13,10
+				DB	'            <property name="position">7</property>',13,10
+				DB	'          </packing>',13,10
+				DB	'        </child>',13,10
+				DB	'        <child>',13,10
+				DB	'          <object class="GtkBox">',13,10
+				DB	'            <property name="visible">True</property>',13,10
+				DB	'            <property name="can_focus">False</property>',13,10
+				DB	'            <property name="margin_right">4</property>',13,10
+				DB	'            <property name="margin_top">1</property>',13,10
+				DB	'            <property name="margin_bottom">1</property>',13,10
+				DB	'            <child>',13,10
+				DB	'              <object class="GtkLabel">',13,10
+				DB	'                <property name="visible">True</property>',13,10
+				DB	'                <property name="can_focus">False</property>',13,10
+				DB	'                <property name="margin_left">4</property>',13,10
+				DB	'                <property name="label" translatable="yes">Linke:                            </property>',13,10
+				DB	'              </object>',13,10
+				DB	'              <packing>',13,10
+				DB	'                <property name="expand">False</property>',13,10
+				DB	'                <property name="fill">True</property>',13,10
+				DB	'                <property name="position">0</property>',13,10
+				DB	'              </packing>',13,10
+				DB	'            </child>',13,10
+				DB	'            <child>',13,10
+				DB	'              <object class="GtkBox">',13,10
+				DB	'                <property name="visible">True</property>',13,10
+				DB	'                <property name="can_focus">False</property>',13,10
+				DB	'                <property name="orientation">vertical</property>',13,10
+				DB	'                <child>',13,10
+				DB	'                  <object class="GtkBox">',13,10
+				DB	'                    <property name="visible">True</property>',13,10
+				DB	'                    <property name="can_focus">False</property>',13,10
+				DB	'                    <child>',13,10
+				DB	'                      <object class="GtkLabel">',13,10
+				DB	'                        <property name="visible">True</property>',13,10
+				DB	'                        <property name="can_focus">False</property>',13,10
+				DB	'                        <property name="label" translatable="yes">command-line :  </property>',13,10
+				DB	'                      </object>',13,10
+				DB	'                      <packing>',13,10
+				DB	'                        <property name="expand">False</property>',13,10
+				DB	'                        <property name="fill">True</property>',13,10
+				DB	'                        <property name="position">0</property>',13,10
+				DB	'                      </packing>',13,10
+				DB	'                    </child>',13,10
+				DB	'                    <child>',13,10
+				DB	'                      <object class="GtkEntry" id="Wedg_Entry_Link_cmd">',13,10
+				DB	'                        <property name="visible">True</property>',13,10
+				DB	'                        <property name="can_focus">True</property>',13,10
+				DB	'                        <property name="tooltip_text" translatable="yes">$SRC : Source, input file,source code,project main file',13,10
+				DB	'$EXE : Output executable, Output library',13,10
+				DB	'$OBJ : Object file',13,10
+				DB	'$DIR : Project path</property>',13,10
+				DB	'                        <property name="margin_top">1</property>',13,10
+				DB	'                        <property name="margin_bottom">1</property>',13,10
+				DB	'                      </object>',13,10
+				DB	'                      <packing>',13,10
+				DB	'                        <property name="expand">True</property>',13,10
+				DB	'                        <property name="fill">True</property>',13,10
+				DB	'                        <property name="position">1</property>',13,10
+				DB	'                      </packing>',13,10
+				DB	'                    </child>',13,10
+				DB	'                  </object>',13,10
+				DB	'                  <packing>',13,10
+				DB	'                    <property name="expand">False</property>',13,10
+				DB	'                    <property name="fill">True</property>',13,10
+				DB	'                    <property name="position">0</property>',13,10
+				DB	'                  </packing>',13,10
+				DB	'                </child>',13,10
+				DB	'                <child>',13,10
+				DB	'                  <object class="GtkBox">',13,10
+				DB	'                    <property name="visible">True</property>',13,10
+				DB	'                    <property name="can_focus">False</property>',13,10
+				DB	'                    <child>',13,10
+				DB	'                      <object class="GtkLabel">',13,10
+				DB	'                        <property name="visible">True</property>',13,10
+				DB	'                        <property name="can_focus">False</property>',13,10
+				DB	'                        <property name="label" translatable="yes">Additional options:  </property>',13,10
+				DB	'                      </object>',13,10
+				DB	'                      <packing>',13,10
+				DB	'                        <property name="expand">False</property>',13,10
+				DB	'                        <property name="fill">True</property>',13,10
+				DB	'                        <property name="position">0</property>',13,10
+				DB	'                      </packing>',13,10
+				DB	'                    </child>',13,10
+				DB	'                    <child>',13,10
+				DB	'                      <object class="GtkEntry" id="Wedg_Entry_Link_AdOpt">',13,10
+				DB	'                        <property name="visible">True</property>',13,10
+				DB	'                        <property name="can_focus">True</property>',13,10
+				DB	'                        <property name="tooltip_text" translatable="yes">Use ";" to separate them</property>',13,10
+				DB	'                        <property name="margin_top">1</property>',13,10
+				DB	'                        <property name="margin_bottom">1</property>',13,10
+				DB	'                      </object>',13,10
+				DB	'                      <packing>',13,10
+				DB	'                        <property name="expand">True</property>',13,10
+				DB	'                        <property name="fill">True</property>',13,10
+				DB	'                        <property name="position">1</property>',13,10
+				DB	'                      </packing>',13,10
+				DB	'                    </child>',13,10
+				DB	'                  </object>',13,10
+				DB	'                  <packing>',13,10
+				DB	'                    <property name="expand">False</property>',13,10
+				DB	'                    <property name="fill">True</property>',13,10
+				DB	'                    <property name="position">1</property>',13,10
+				DB	'                  </packing>',13,10
+				DB	'                </child>',13,10
+				DB	'              </object>',13,10
+				DB	'              <packing>',13,10
+				DB	'                <property name="expand">True</property>',13,10
+				DB	'                <property name="fill">True</property>',13,10
+				DB	'                <property name="position">1</property>',13,10
+				DB	'              </packing>',13,10
+				DB	'            </child>',13,10
+				DB	'          </object>',13,10
+				DB	'          <packing>',13,10
+				DB	'            <property name="expand">False</property>',13,10
+				DB	'            <property name="fill">True</property>',13,10
+				DB	'            <property name="position">8</property>',13,10
+				DB	'          </packing>',13,10
+				DB	'        </child>',13,10
+				DB	'        <child>',13,10
+				DB	'          <object class="GtkSeparator">',13,10
+				DB	'            <property name="visible">True</property>',13,10
+				DB	'            <property name="can_focus">False</property>',13,10
+				DB	'          </object>',13,10
+				DB	'          <packing>',13,10
+				DB	'            <property name="expand">False</property>',13,10
+				DB	'            <property name="fill">True</property>',13,10
+				DB	'            <property name="position">9</property>',13,10
+				DB	'          </packing>',13,10
+				DB	'        </child>',13,10
+				DB	'        <child>',13,10
+				DB	'          <object class="GtkBox">',13,10
+				DB	'            <property name="visible">True</property>',13,10
+				DB	'            <property name="can_focus">False</property>',13,10
+				DB	'            <property name="margin_right">4</property>',13,10
+				DB	'            <child>',13,10
+				DB	'              <object class="GtkLabel">',13,10
+				DB	'                <property name="visible">True</property>',13,10
+				DB	'                <property name="can_focus">False</property>',13,10
+				DB	'                <property name="label" translatable="yes">Run Option:                 </property>',13,10
+				DB	'              </object>',13,10
+				DB	'              <packing>',13,10
+				DB	'                <property name="expand">False</property>',13,10
+				DB	'                <property name="fill">True</property>',13,10
+				DB	'                <property name="position">0</property>',13,10
+				DB	'              </packing>',13,10
+				DB	'            </child>',13,10
+				DB	'            <child>',13,10
+				DB	'              <object class="GtkBox">',13,10
+				DB	'                <property name="visible">True</property>',13,10
+				DB	'                <property name="can_focus">False</property>',13,10
+				DB	'                <property name="orientation">vertical</property>',13,10
+				DB	'                <child>',13,10
+				DB	'                  <object class="GtkBox">',13,10
+				DB	'                    <property name="visible">True</property>',13,10
+				DB	'                    <property name="can_focus">False</property>',13,10
+				DB	'                    <child>',13,10
+				DB	'                      <object class="GtkBox">',13,10
+				DB	'                        <property name="visible">True</property>',13,10
+				DB	'                        <property name="can_focus">False</property>',13,10
+				DB	'                        <child>',13,10
+				DB	'                          <object class="GtkLabel">',13,10
+				DB	'                            <property name="visible">True</property>',13,10
+				DB	'                            <property name="can_focus">False</property>',13,10
+				DB	'                            <property name="label" translatable="yes">The watcher:  </property>',13,10
+				DB	'                          </object>',13,10
+				DB	'                          <packing>',13,10
+				DB	'                            <property name="expand">False</property>',13,10
+				DB	'                            <property name="fill">True</property>',13,10
+				DB	'                            <property name="position">0</property>',13,10
+				DB	'                          </packing>',13,10
+				DB	'                        </child>',13,10
+				DB	'                        <child>',13,10
+				DB	'                          <object class="GtkComboBoxText" id="Wedg_Combo_Show_Watcher">',13,10
+				DB	'                            <property name="visible">True</property>',13,10
+				DB	'                            <property name="can_focus">False</property>',13,10
+				DB	'                            <property name="margin_top">1</property>',13,10
+				DB	'                            <property name="margin_bottom">1</property>',13,10
+				DB	'                            <property name="active">0</property>',13,10
+				DB	'                            <items>',13,10
+				DB	'                              <item translatable="yes">Auto</item>',13,10
+				DB	'                              <item translatable="yes">Always</item>',13,10
+				DB	'                              <item translatable="yes">Never</item>',13,10
+				DB	'                            </items>',13,10
+				DB	'                          </object>',13,10
+				DB	'                          <packing>',13,10
+				DB	'                            <property name="expand">True</property>',13,10
+				DB	'                            <property name="fill">True</property>',13,10
+				DB	'                            <property name="position">1</property>',13,10
+				DB	'                          </packing>',13,10
+				DB	'                        </child>',13,10
+				DB	'                      </object>',13,10
+				DB	'                      <packing>',13,10
+				DB	'                        <property name="expand">True</property>',13,10
+				DB	'                        <property name="fill">True</property>',13,10
+				DB	'                        <property name="position">0</property>',13,10
+				DB	'                      </packing>',13,10
+				DB	'                    </child>',13,10
+				DB	'                    <child>',13,10
+				DB	'                      <object class="GtkCheckButton" id="Wedg_Check_Add_Pause">',13,10
+				DB	'                        <property name="label" translatable="yes">Add Pause at exit</property>',13,10
+				DB	'                        <property name="visible">True</property>',13,10
+				DB	'                        <property name="can_focus">True</property>',13,10
+				DB	'                        <property name="receives_default">False</property>',13,10
+				DB	'                        <property name="margin_top">1</property>',13,10
+				DB	'                        <property name="margin_bottom">1</property>',13,10
+				DB	'                        <property name="draw_indicator">True</property>',13,10
+				DB	'                      </object>',13,10
+				DB	'                      <packing>',13,10
+				DB	'                        <property name="expand">False</property>',13,10
+				DB	'                        <property name="fill">True</property>',13,10
+				DB	'                        <property name="position">1</property>',13,10
+				DB	'                      </packing>',13,10
+				DB	'                    </child>',13,10
+				DB	'                  </object>',13,10
+				DB	'                  <packing>',13,10
+				DB	'                    <property name="expand">False</property>',13,10
+				DB	'                    <property name="fill">True</property>',13,10
+				DB	'                    <property name="position">0</property>',13,10
+				DB	'                  </packing>',13,10
+				DB	'                </child>',13,10
+				DB	'                <child>',13,10
+				DB	'                  <object class="GtkBox">',13,10
+				DB	'                    <property name="visible">True</property>',13,10
+				DB	'                    <property name="can_focus">False</property>',13,10
+				DB	'                    <child>',13,10
+				DB	'                      <object class="GtkLabel">',13,10
+				DB	'                        <property name="visible">True</property>',13,10
+				DB	'                        <property name="can_focus">False</property>',13,10
+				DB	'                        <property name="label" translatable="yes">Arguments  :  </property>',13,10
+				DB	'                      </object>',13,10
+				DB	'                      <packing>',13,10
+				DB	'                        <property name="expand">False</property>',13,10
+				DB	'                        <property name="fill">True</property>',13,10
+				DB	'                        <property name="position">0</property>',13,10
+				DB	'                      </packing>',13,10
+				DB	'                    </child>',13,10
+				DB	'                    <child>',13,10
+				DB	'                      <object class="GtkEntry" id="Wedg_Entry_Run_cmd">',13,10
+				DB	'                        <property name="visible">True</property>',13,10
+				DB	'                        <property name="can_focus">True</property>',13,10
+				DB	'                        <property name="tooltip_text" translatable="yes">Use ";" between argumments</property>',13,10
+				DB	'                        <property name="margin_top">1</property>',13,10
+				DB	'                        <property name="margin_bottom">1</property>',13,10
+				DB	'                      </object>',13,10
+				DB	'                      <packing>',13,10
+				DB	'                        <property name="expand">True</property>',13,10
+				DB	'                        <property name="fill">True</property>',13,10
+				DB	'                        <property name="position">1</property>',13,10
+				DB	'                      </packing>',13,10
+				DB	'                    </child>',13,10
+				DB	'                  </object>',13,10
+				DB	'                  <packing>',13,10
+				DB	'                    <property name="expand">False</property>',13,10
+				DB	'                    <property name="fill">True</property>',13,10
+				DB	'                    <property name="position">1</property>',13,10
+				DB	'                  </packing>',13,10
+				DB	'                </child>',13,10
+				DB	'              </object>',13,10
+				DB	'              <packing>',13,10
+				DB	'                <property name="expand">True</property>',13,10
+				DB	'                <property name="fill">True</property>',13,10
+				DB	'                <property name="position">1</property>',13,10
+				DB	'              </packing>',13,10
+				DB	'            </child>',13,10
+				DB	'          </object>',13,10
+				DB	'          <packing>',13,10
+				DB	'            <property name="expand">False</property>',13,10
+				DB	'            <property name="fill">True</property>',13,10
+				DB	'            <property name="position">10</property>',13,10
+				DB	'          </packing>',13,10
+				DB	'        </child>',13,10
+				DB	'        <child>',13,10
+				DB	'          <object class="GtkSeparator">',13,10
+				DB	'            <property name="visible">True</property>',13,10
+				DB	'            <property name="can_focus">False</property>',13,10
+				DB	'          </object>',13,10
+				DB	'          <packing>',13,10
+				DB	'            <property name="expand">False</property>',13,10
+				DB	'            <property name="fill">True</property>',13,10
+				DB	'            <property name="position">11</property>',13,10
+				DB	'          </packing>',13,10
+				DB	'        </child>',13,10
+				DB	'        <child>',13,10
+				DB	'          <object class="GtkButtonBox">',13,10
+				DB	'            <property name="visible">True</property>',13,10
+				DB	'            <property name="can_focus">False</property>',13,10
+				DB	'            <property name="margin_left">4</property>',13,10
+				DB	'            <property name="margin_right">4</property>',13,10
+				DB	'            <property name="margin_top">4</property>',13,10
+				DB	'            <property name="margin_bottom">4</property>',13,10
+				DB	'            <property name="layout_style">end</property>',13,10
+				DB	'            <child>',13,10
+				DB	'              <object class="GtkButton" id="Wedg_Button_Save">',13,10
+				DB	'                <property name="label">gtk-save</property>',13,10
+				DB	'                <property name="visible">True</property>',13,10
+				DB	'                <property name="can_focus">True</property>',13,10
+				DB	'                <property name="receives_default">True</property>',13,10
+				DB	'                <property name="use_stock">True</property>',13,10
+				DB	'                <property name="always_show_image">True</property>',13,10
+				DB	'              </object>',13,10
+				DB	'              <packing>',13,10
+				DB	'                <property name="expand">True</property>',13,10
+				DB	'                <property name="fill">True</property>',13,10
+				DB	'                <property name="position">0</property>',13,10
+				DB	'              </packing>',13,10
+				DB	'            </child>',13,10
+				DB	'            <child>',13,10
+				DB	'              <object class="GtkButton" id="Wedg_Button_Cancel">',13,10
+				DB	'                <property name="label">gtk-cancel</property>',13,10
+				DB	'                <property name="visible">True</property>',13,10
+				DB	'                <property name="can_focus">True</property>',13,10
+				DB	'                <property name="receives_default">True</property>',13,10
+				DB	'                <property name="use_stock">True</property>',13,10
+				DB	'                <property name="always_show_image">True</property>',13,10
+				DB	'              </object>',13,10
+				DB	'              <packing>',13,10
+				DB	'                <property name="expand">True</property>',13,10
+				DB	'                <property name="fill">True</property>',13,10
+				DB	'                <property name="position">1</property>',13,10
+				DB	'              </packing>',13,10
+				DB	'            </child>',13,10
+				DB	'          </object>',13,10
+				DB	'          <packing>',13,10
+				DB	'            <property name="expand">False</property>',13,10
+				DB	'            <property name="fill">True</property>',13,10
+				DB	'            <property name="position">12</property>',13,10
+				DB	'          </packing>',13,10
+				DB	'        </child>',13,10
+				DB	'      </object>',13,10
+				DB	'    </child>',13,10
+				DB	'  </object>',13,10
+				DB	'</interface>',13,10
+				DB	0    
+ENDIF
