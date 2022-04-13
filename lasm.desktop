@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Name=lasm
+Comment=Linux Assembly
+Exec=/shareddocs/programmation/lasm/lasm
+Path=/shareddocs/programmation/lasm
+Icon=/shareddocs/programmation/lasm/Icons/lasm.png
+Categories=Development;
+Terminal=false

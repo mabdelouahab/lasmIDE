@@ -1,0 +1,12 @@
+[Project]
+Name=temporaryProject
+Description=temporaryProject
+MainFile=main.asm
+Assemble=uasm -elf64 $SRC
+Link=gcc -o $EXE $OBJ -fno-pie -no-pie
+Files=main.asm;main.inc;
+Dirs=
+Path=/shareddoc/ASM/UASM/UASMIde/Temporary
+Run_cmd=./$EXE
+Add_Pause=false
+Show_Watcher=0
