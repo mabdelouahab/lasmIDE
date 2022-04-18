@@ -1,92 +1,82 @@
 	.CODE
 	Helpers_Load_Pixbuf_From_File PROC  __vfile:gpointer
-        local _lfile:gpointer
-        local lpixbuf:gpointer
-        local lFullPName:gpointer
-        
-        mov _lfile,__vfile
-        mov lFullPName,rv(g_build_filename,IconsPath,_lfile,0)
-        mov lpixbuf,rv(gdk_pixbuf_new_from_file,lFullPName, 0)
-			         ;      invoke printf,str$(<13,10,"lpixbuf=%d ">),lpixbuf
-        mov lpixbuf,rv ( gdk_pixbuf_add_alpha,lpixbuf,255,255,255,255)
-        mov lpixbuf,rv ( gdk_pixbuf_scale_simple,lpixbuf,Settings_Icon_Width,Settings_Icon_Height,GDK_INTERP_BILINEAR)
-			        ;       invoke printf,str$(<13,10,"_lfile=%s ">),_lfile
-			        ;       invoke printf,str$(<13,10,"lFullPName=%s ">),lFullPName
-			        ;       invoke printf,str$(<13,10>)
-        invoke g_free,lFullPName
-        mov rax,lpixbuf
-        ret
-        
-    Helpers_Load_Pixbuf_From_File ENDP
+		local _lfile:gpointer
+		local lpixbuf:gpointer
+		local lFullPName:gpointer
+		
+		mov _lfile,__vfile
+		mov lFullPName,rv(g_build_filename,IconsPath,_lfile,0)
+		mov lpixbuf,rv(gdk_pixbuf_new_from_file,lFullPName, 0)
+		mov lpixbuf,rv ( gdk_pixbuf_add_alpha,lpixbuf,255,255,255,255)
+		mov lpixbuf,rv ( gdk_pixbuf_scale_simple,lpixbuf,Settings_Icon_Width,Settings_Icon_Height,GDK_INTERP_BILINEAR)
+		invoke g_free,lFullPName
+		mov rax,lpixbuf
+		ret
+    	Helpers_Load_Pixbuf_From_File ENDP
 	Helpers_Load_Pixbuf_From_Data proc _dataaddr:gpointer,_datasz:glong
-        local lloader:gpointer
-        local dataaddr:gpointer
-        local datasz:gpointer
-        local lpixbuf:gpointer
-        
-        mov datasz,_datasz
-        mov dataaddr,_dataaddr
-		.if datasz==1
-			XOR RAX,RAX
-			RET
-		.endif
-        mov lloader,rv(gdk_pixbuf_loader_new )
-        invoke gdk_pixbuf_loader_write,lloader,dataaddr,datasz,0
-        invoke gdk_pixbuf_loader_close,lloader,0
-        mov lpixbuf,rv ( gdk_pixbuf_loader_get_pixbuf,lloader)
-        mov lpixbuf,rv ( gdk_pixbuf_add_alpha,lpixbuf,255,255,255,255)
-        mov lpixbuf,rv ( gdk_pixbuf_scale_simple,lpixbuf,Settings_Icon_Width,Settings_Icon_Height,GDK_INTERP_BILINEAR)
-		.if lpixbuf
-			invoke g_object_ref,lloader
-		.endif
-        invoke g_object_unref,lloader
-        mov rax,lpixbuf
-        ret
-    Helpers_Load_Pixbuf_From_Data endp
- 	Helpers_GtkImage_From_File proc  __Builder:gpointer,__Image:gpointer, __file:gpointer
-        local _Image		:gpointer
-        local _file			:gpointer
-        local _Builder		:gpointer;        
-        local lFullPName	:gpointer
-        local lpixbuf		:gpointer
-        local lgtkImg		:gpointer      
-        mov _Image,__Image
-        mov _file,__file
-        mov _Builder,__Builder      
-      ;  mov lFullPName,rv(g_build_filename,IconsPath,_file,0)
-       	mov lgtkImg             ,rv(gtk_builder_get_object, _Builder,_Image)
-       	invoke Helpers_Load_Pixbuf_From_File,_file;lFullPName
-        invoke gtk_image_set_from_pixbuf,lgtkImg,rax
-      ;  invoke g_free,lFullPName
-        ret
-    Helpers_GtkImage_From_File endp
-	__pf_ macro n___ :vararg
-	;	invoke printf,cfm$("\nSTG {%d:%s}"),n___
-	endm
+		local lloader:gpointer
+		local dataaddr:gpointer
+		local datasz:gpointer
+		local lpixbuf:gpointer
 
-    Helpers_Setting_var macro __var,__mtypr,__Dvalue,__keytype,__key
-    local m
-   	local n
-   	    IFNDEF Helpers_Setting_NVAR
-	    	Helpers_Setting_NVAR = 0
-	    ENDIF
-	    Helpers_Setting_NVAR=Helpers_Setting_NVAR+1
-	    m=Helpers_Setting_NVAR
-	%	@CatStr(<shhg>,%m) TEXTEQU	<invoke g_key_file_get_&__keytype,settingKEY, &__key,!"&__var!",0>
-	%	@CatStr(<shhs>,%m) TEXTEQU	<invoke g_key_file_set_&__keytype,settingKEY, &__key,!"&__var!",&__var>
-		n equ type(__mtypr)
-		IF 		n eq 1
-		%	@CatStr(<shhm>,%m) TEXTEQU	<MOV &__var,AL>
-		ELSEIF 	n eq 2
-		%	@CatStr(<shhm>,%m) TEXTEQU	<MOV &__var,AX>
-		ELSEIF 	n eq 4
-		%	@CatStr(<shhm>,%m) TEXTEQU	<MOV &__var,EAX>
-		ELSE
-		%	@CatStr(<shhm>,%m) TEXTEQU	<MOV &__var,RAX>
-		ENDIF
-			__var	__mtypr	__Dvalue
-    endm
-    Helpers_Setting_var_Get macro 
+		mov datasz,_datasz
+		mov dataaddr,_dataaddr
+			.if datasz==1
+				XOR RAX,RAX
+				RET
+			.endif
+		mov lloader,rv(gdk_pixbuf_loader_new )
+		invoke gdk_pixbuf_loader_write,lloader,dataaddr,datasz,0
+		invoke gdk_pixbuf_loader_close,lloader,0
+		mov lpixbuf,rv ( gdk_pixbuf_loader_get_pixbuf,lloader)
+		mov lpixbuf,rv ( gdk_pixbuf_add_alpha,lpixbuf,255,255,255,255)
+		mov lpixbuf,rv ( gdk_pixbuf_scale_simple,lpixbuf,Settings_Icon_Width,Settings_Icon_Height,GDK_INTERP_BILINEAR)
+			.if lpixbuf
+				invoke g_object_ref,lloader
+			.endif
+		invoke g_object_unref,lloader
+		mov rax,lpixbuf
+		ret
+    	Helpers_Load_Pixbuf_From_Data endp
+ 	Helpers_GtkImage_From_File proc  __Builder:gpointer,__Image:gpointer, __file:gpointer
+		local _Image		:gpointer
+		local _file			:gpointer
+		local _Builder		:gpointer;        
+		local lFullPName	:gpointer
+		local lpixbuf		:gpointer
+		local lgtkImg		:gpointer      
+		mov _Image,__Image
+		mov _file,__file
+		mov _Builder,__Builder      
+	       	mov lgtkImg             ,rv(gtk_builder_get_object, _Builder,_Image)
+	       	invoke Helpers_Load_Pixbuf_From_File,_file;lFullPName
+		invoke gtk_image_set_from_pixbuf,lgtkImg,rax
+		ret
+    	Helpers_GtkImage_From_File endp
+
+    	Helpers_Setting_var macro __var,__mtypr,__Dvalue,__keytype,__key
+	    	local m
+	   	local n
+	   	    IFNDEF Helpers_Setting_NVAR
+		    	Helpers_Setting_NVAR = 0
+		    ENDIF
+		    Helpers_Setting_NVAR=Helpers_Setting_NVAR+1
+		    m=Helpers_Setting_NVAR
+		%	@CatStr(<shhg>,%m) TEXTEQU	<invoke g_key_file_get_&__keytype,settingKEY, &__key,!"&__var!",0>
+		%	@CatStr(<shhs>,%m) TEXTEQU	<invoke g_key_file_set_&__keytype,settingKEY, &__key,!"&__var!",&__var>
+			n equ type(__mtypr)
+			IF 		n eq 1
+			%	@CatStr(<shhm>,%m) TEXTEQU	<MOV &__var,AL>
+			ELSEIF 	n eq 2
+			%	@CatStr(<shhm>,%m) TEXTEQU	<MOV &__var,AX>
+			ELSEIF 	n eq 4
+			%	@CatStr(<shhm>,%m) TEXTEQU	<MOV &__var,EAX>
+			ELSE
+			%	@CatStr(<shhm>,%m) TEXTEQU	<MOV &__var,RAX>
+			ENDIF
+				__var	__mtypr	__Dvalue
+    	endm
+    	Helpers_Setting_var_Get macro 
 	    IFNDEF Helpers_Setting_NVAR
 	    	Helpers_Setting_NVAR = 0
 	    ENDIF
@@ -96,8 +86,8 @@
 			%  @CatStr(<shhg>,%m) 
 			%  @CatStr(<shhm>,%m)
 	    endm	
-    endm
-    Helpers_Setting_var_Set macro 
+    	endm
+    	Helpers_Setting_var_Set macro 
 	    IFNDEF Helpers_Setting_NVAR
 	    	Helpers_Setting_NVAR = 0
 	    ENDIF
@@ -106,9 +96,7 @@
 		    m=m+1
 			%  @CatStr(<shhs>,%m) 
 	    endm
-	;	invoke printf,str$(<13,10>)   	
-
-    endm
+    	endm
     Helpers_rv_rcx macro fn_,arg_:vararg
     	IFNDEF RCX_PushV
     		.DATA
@@ -195,7 +183,7 @@
  		.if rax
  			mov lnewfile,rax
  			mov lfullnewfile,rax
-	  		m2m	lfiles,Current_Project.Files
+	  		m2m	lfiles,Current_Prj_Files
 	  		.if lfiles
 	 			.if _ext
 	 				mov lfullnewfile,rv(g_strconcat,lfullnewfile,_ext,0)
@@ -228,16 +216,16 @@
         invoke user_input_box,"Input the new folder name :  ","New folder"
  		.if rax
  			mov lnewdir,rax
- 		    m2m	ldirs,Current_Project.Dirs
+ 		    m2m	ldirs,Current_Prj_Dirs
 		    @@:
 			mov rax,ldirs
 			mov rax,gpointer ptr [rax]
 			.if rax
-                .if rv(g_strcmp0,rax, lnewdir) == 0                            
-                    msgbox  "directory already exists {%s}" ,  lnewdir                        
-                    xor rax,rax
-                    ret
-                .endif
+				.if rv(g_strcmp0,rax, lnewdir) == 0                            
+				    msgbox  "directory already exists {%s}" ,  lnewdir                        
+				    xor rax,rax
+				    ret
+				.endif
 				add ldirs,sizeof gpointer    			
 				jmp @B
 			.endif       			

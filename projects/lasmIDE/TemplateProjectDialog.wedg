@@ -102,19 +102,21 @@
 		      jmp @B
 		 @@:         	              
             invoke gtk_window_set_modal	,WTemplateProjectDialog,GTK_DIALOG_MODAL
-        ;    invoke gtk_widget_show_all ,WTemplateProjectDialog
+
+           invoke gtk_widget_show_all ,WTemplateProjectDialog
             invoke g_object_unref,lbuilder
             invoke gtk_dialog_run		,WTemplateProjectDialog
             invoke gtk_widget_destroy	,WTemplateProjectDialog  
             mov rax,WTemplateProjectDialog_RetValue
         .else
-        invoke printf,str$(<13,10,"ELSE  ">)
-            xor rax,rax
+        	invoke printf,str$(<13,10,"Fail to built template Window  ">)
+            	xor rax,rax
         .endif
         RET
     TemplateProjectDialog endp	    
 	On_WBtnSelectclicked    proc	    
         	invoke gtk_dialog_response,WTemplateProjectDialog,-5
+        	;Projects_Create_New_temporary_Project()
 		ret
 	On_WBtnSelectclicked    endp	    
 	On_WBtnCancelclicked    proc	
@@ -122,7 +124,7 @@
 			 invoke  g_free,WTemplateProjectDialog_RetValue
 		.endif  
 		mov WTemplateProjectDialog_RetValue,0    
-        invoke gtk_dialog_response,WTemplateProjectDialog,-5
+        	invoke gtk_dialog_response,WTemplateProjectDialog,-5
 		ret
 	On_WBtnCancelclicked    endp	    
 	on_WTVListTemplatechanged proc

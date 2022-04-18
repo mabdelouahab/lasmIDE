@@ -459,8 +459,7 @@
             .elseif BYTE PTR [RAX] == "D"
         		invoke printf,str$(<13,10,"row-activatedTV Directory{%s}">),ltext            
             .elseif BYTE PTR [RAX] == "F"
-				mov rax,lDataU
-				mov rax,lDataU
+		mov rax,lDataU
             	.if [rax].OFile.buffer==0
             		invoke Files_Load_contents,lDataU
             	.endif
@@ -540,11 +539,11 @@
         .endif  
         invoke gtk_tree_store_set,WProjectTreeStore		, addr TreeView_Project_Iter ,\
         						  TreeView_BMP_COLUMN	, Icons_PRJ_PixBuf,\
-        						  TreeView_TEXT_COLUMN	, Current_Project._Name,\
+        						  TreeView_TEXT_COLUMN	, Current_Prj_Name,\
         						  TreeView_TYPE_COLUMN	, "P", -1
 
     						  
-        m2m lDirs,Current_Project.Dirs
+        m2m lDirs,Current_Prj_Dirs
 		.if lDirs
 		    @TreeView_Show_Current_Project_Dirs@:
 			mov rax,lDirs
@@ -552,7 +551,7 @@
 			mov lDir,rax
 			.if rax
 				invoke TreeView_Show_Directory,rax
-				m2m lfiles,Current_Project.OFiles
+				m2m lfiles,Current_Prj_OFiles
 				.if lfiles
 					@TreeView_Show_Current_Project_Dirs_File@:
 					mov rax,lfiles
@@ -570,7 +569,7 @@
 				jmp @TreeView_Show_Current_Project_Dirs@
 			.endif
 		.endif
-		m2m lfiles,Current_Project.OFiles
+		m2m lfiles,Current_Prj_OFiles
 		.if lfiles
 			@TreeView_Show_Current_Project_File@:
 			mov rax,lfiles

@@ -2,11 +2,11 @@
 Name=lasm
 Description=lasm
 MainFile=main.asm
-Assemble=uasm   -elf64 $SRC   
-Link=gcc  -o OASM $OBJ -fno-pie -no-pie 
+Assemble=uasm255  -elf64 $SRC   
+Link=gcc  -o $EXE $OBJ -fno-pie -no-pie 
 Path=/shareddocs/programmation/lasm/lasmIDE
 Link_opt=pkg-config --cflags --libs vte-2.91 gtk+-3.0 cairo gthread-2.0 gtksourceview-3.0 gobject-2.0 gmodule-no-export-2.0
-Run_cmd=./OASM
+Run_cmd=./$EXE 
 Files=main.asm;main.inc;inputbox.asm;Helpers.inc;Settings.inc;icons.inc;STNG.inc;spawn.inc;build.inc;Wedg_Dialog_Project_Option.wedg;files.inc;Notebook.inc;TreeView.inc;Projects.inc;TemplateProjectDialog.wedg;mainwindow.wedg;MainWindow.inc;signal_connect.asm;findandreplace.wedg;
 Dirs=
 

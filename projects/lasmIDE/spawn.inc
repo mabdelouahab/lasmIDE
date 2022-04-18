@@ -1,32 +1,13 @@
-    vte_terminal_new                proto :vararg
-    vte_terminal_spawn_async        proto :vararg
-    vte_terminal_spawn_sync         proto :vararg
+	vte_terminal_new                proto :vararg
+	vte_terminal_spawn_async        proto :vararg
+	vte_terminal_spawn_sync         proto :vararg
 	vte_terminal_set_mouse_autohide proto :vararg
-    vte_terminal_feed				proto :vararg
+	vte_terminal_feed				proto :vararg
 
   
     
 .code
-	showvect proc _v__:gpointer
-		local v__:gpointer
-		local v__ind:gpointer
-		local v__i:gpointer
-		mov v__,_v__
-		mov v__ind,_v__
-		mov v__i,0
-		.if v__ind
-		    @@:
-		    mov rax,v__ind
-		    .if gpointer ptr [rax]
-		       invoke printf,str$(<13,10,"arg[%d]={%s}">),v__i ,gpointer ptr [rax]
-		       add v__ind,sizeof gpointer
-		       inc v__i
-		       jmp @B 
-		    .endif
-		    invoke printf,str$(<13,10,"arg final ...">)
-		.endif
-		ret
-	showvect endp     
+   
 	appstrv proc _v__:gpointer,_s__:gpointer
 		local v__:gpointer
 		local v__ind:gpointer

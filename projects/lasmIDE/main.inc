@@ -18,9 +18,10 @@
 	include Settings.inc
 	include icons.inc
 	include STNG.inc  
+	
 
 ;	firstworkingdirStr			EQU str$("/shareddoc/programmation/lasm" );"/usr/share/iasm" )
-	ProgramdirStr				EQU str$("lasm" )
+;	ProgramdirStr				EQU str$("lasm" )
 	
 	TemporaryProjectPathStr		EQU str$("Temporary" )
 	ProjectsPathStr				EQU str$("projects" )
@@ -37,7 +38,8 @@
 	HOMEdir     					gpointer 0	
 
 	WNotebook                       		gpointer  0
-	GcssProvider                    		gpointer  0
+	GcssProvider_Asm            		gpointer  0
+	GcssProvider_C            		gpointer  0
 	GGtkSourceLanguageManager    gpointer  0
 	GGtkSourceStyleSchemeManager    gpointer  0
 	GGtkBuilder                    	 	gpointer  0
@@ -49,22 +51,24 @@
 
 	work_key                			gpointer    0
 	project_key             			gpointer    0
-   	; non_project_key         		gpointer    0
+
 
 	NotebookPageArray   		gpointer    256 dup(0)   
 	Arg_Project		                	gpointer  0
        
 	include spawn.inc
 	include build.inc   
-	include Wedg_Dialog_Project_Option.wedg    
 	include findandreplace.wedg
 	include files.inc
+	include Wedg_Dialog_Project_Option.wedg    
+	
 	include Notebook.inc
 	include TreeView.inc
 	include Projects.inc
 	include TemplateProjectDialog.wedg
 	include mainwindow.wedg
-    	;include folding.inc
+	
+   ; 	include folding.inc
 
 
 .CODE
@@ -94,26 +98,25 @@
 			mov WNotebook ,rv( gtk_notebook_new)
 			invoke gtk_notebook_set_scrollable,WNotebook,-1
 		.endif
-		.if GcssProvider==0
-			mov GcssProvider,rv(gtk_css_provider_new)
-			invoke gtk_css_provider_load_from_path,GcssProvider, str$("./langs/font.css"),addr _err
+		.if GcssProvider_Asm==0
+			mov GcssProvider_Asm,rv(gtk_css_provider_new)
+			invoke gtk_css_provider_load_from_path,GcssProvider_Asm, str$("./langs/font_ASM.css"),addr _err
+		.endif
+		.if GcssProvider_C==0
+			mov GcssProvider_Asm,rv(gtk_css_provider_new)
+			invoke gtk_css_provider_load_from_path,GcssProvider_Asm, str$("./langs/font_C.css"),addr _err
 		.endif
 		.if GGtkSourceLanguageManager==0
 			mov GGtkSourceLanguageManager,rv(gtk_source_language_manager_new);            
 			invoke gtk_source_language_manager_get_search_path,GGtkSourceLanguageManager 
-			invoke appstrv,rax,LangPath;LanguageSearchPaths
-			;invoke showvect,rax
-			invoke gtk_source_language_manager_set_search_path,GGtkSourceLanguageManager ,rax;addr LanguageSearchPaths
+			invoke appstrv,rax,LangPath
+			invoke gtk_source_language_manager_set_search_path,GGtkSourceLanguageManager ,rax
 		.endif
 
 		.if GGtkSourceStyleSchemeManager==0
 			mov GGtkSourceStyleSchemeManager,rv(gtk_source_style_scheme_manager_new)
-			;invoke gtk_source_style_scheme_manager_set_search_path,GGtkSourceStyleSchemeManager,addr LanguageSearchPaths
-			invoke  gtk_source_style_scheme_manager_append_search_path,GGtkSourceStyleSchemeManager, LangPath;; LanguageSearchPaths
+			invoke  gtk_source_style_scheme_manager_append_search_path,GGtkSourceStyleSchemeManager, LangPath
 		.endif
-		;   .if work_key==0
-		;      mov work_key     ,rv( g_key_file_new)
-		;   .endif
 		ret
 	gInit   ENDP
 .DATA
@@ -123,6 +126,7 @@
 	c_clear_items_iter  gpointer  0
         
  .CODE
+ 
 	get_group_from_n_tab proc data_:gpointer
 		local ldata:gpointer
 		local llength:gpointer
@@ -144,8 +148,6 @@
 				invoke g_key_file_get_ptr ,work_key,lgroup,"NotebookPage",0
 				.if rax==ldata
 					mov lgroup,rv(g_strdup,lgroup)
-				;	invoke printf,str$(<13,10,"get_group_from_n_tab _len={%s}">),lgroup   
-
 					invoke g_strfreev,plgroups
 					mov rax,lgroup
 					RET
@@ -167,35 +169,16 @@
 		RET
 	new_tab_from_project_key_file0 ENDP
 	new_tab_from_non_project_key_file0 PROC _kfileg:gpointer
-	local kfileg:gpointer
-	local strkv :gpointer
+		local kfileg:gpointer
+		local strkv :gpointer
 
-	mov kfileg,_kfileg
-	;mov strkv,rv(g_key_file_get_string,non_project_key,kfileg,"Name",0 )
+		mov kfileg,_kfileg
 
-
-	RET
+		RET
 	new_tab_from_non_project_key_file0 ENDP
-s_data macro lcl__,ty__,df__
-    local vari
-    .DATA
-        IFNB  <df__>
-            vari   ty__  df__
-        ELSE
-            vari   ty__  ?
-        ENDIF
-    .CODE
-    push rax
-    lea rax,vari
-    mov lcl__,rax
-    pop rax
-endm
-ret_if_null macro v__,msg__
-    .if v__ ==0
-        invoke g_print,msg__
-        ret
-    .endif
-endm
+	
+
+ 
 
     load_file_to_buf proc _bufaddr:gpointer,_fn:gpointer
         local bufaddr       :gpointer
@@ -208,7 +191,10 @@ endm
         
         mov bufaddr,_bufaddr
         mov fn,_fn
-        ret_if_null fn,"load_file_to_buf ERR: Null filename"
+        .if fn ==0
+        	invoke g_print,"load_file_to_buf ERR: Null filename"
+        	ret
+    	.endif
         mov lfcontents,0
     
         .if rv(g_file_get_contents,fn,addr lfcontents, 0, 0)
@@ -297,6 +283,7 @@ endm
         .endif
         ret
     close_all_tab endp
+    
     open_and_show_file PROC    _k_file:gpointer ,_fname:gpointer
         local k_file               :gpointer
         local fname                :gpointer
@@ -319,7 +306,6 @@ endm
         mov fname,_fname
         invoke g_key_file_get_ptr,work_key,fname,"buffer",0;
         .if RAX
-        ;    invoke printf,":g_key_file_get_ptr{%s}",fname
             mov NotebookPage,rv( g_key_file_get_ptr ,work_key,fname,"NotebookPage",0)
             invoke gtk_notebook_get_n_pages,WNotebook
             .if rax
@@ -362,38 +348,30 @@ endm
        
        
        
-      ; mov strkey2  ,rv(g_key_file_get_string,k_file,"Project","Path",0)
+
        mov strkey   ,rv(g_key_file_get_string,k_file,fname,"Dir",0)
        .if rax==0
-          ; mov strkey,rv(g_build_filename,strkey2,fname,0);Name
-        ;  mov strkey,rv(g_build_filename,"./",fname,0);Name
-         ; invoke load_file_to_buf,buffer,strkey         
-        ;  invoke g_free,strkey        
-        ;                          invoke printf,":fname{%s}",fname
-
            invoke load_file_to_buf,buffer,fname
        .else
            mov strkey,rv(g_build_filename,strkey,fname,0);Name
-           ;                                  invoke printf,":strkey{%s}",strkey
-
            invoke load_file_to_buf,buffer,strkey         
            invoke g_free,strkey        
        .endif       
-    
-       ;invoke gtk_text_buffer_set_text,buffer,addr ___d,-1
-;       invoke create_marks,view
-;       invoke place_mark,buffer,0,fold_plus
-;       invoke place_mark,buffer,1,fold_vert
-;       invoke place_mark,buffer,2,fold_vert
-;       invoke place_mark,buffer,3,fold_vert
-;       invoke place_mark,buffer,4,fold_end
-;       invoke place_mark,buffer,5,fold_minus
-; ;       invoke gtk_text_buffer_get_bounds ,buffer,addr startiter,addr enditer
-;invoke gtk_text_buffer_apply_tag_by_name,buffer,"invisible",addr startiter,addr enditer
+    		;	Folding Example:
+	       ;invoke gtk_text_buffer_set_text,buffer,addr ___d,-1
+		;       invoke create_marks,view
+		;       invoke place_mark,buffer,0,fold_plus
+		;       invoke place_mark,buffer,1,fold_vert
+		;       invoke place_mark,buffer,2,fold_vert
+		;       invoke place_mark,buffer,3,fold_vert
+		;       invoke place_mark,buffer,4,fold_end
+		;       invoke place_mark,buffer,5,fold_minus
+		; ;       invoke gtk_text_buffer_get_bounds ,buffer,addr startiter,addr enditer
+		;invoke gtk_text_buffer_apply_tag_by_name,buffer,"invisible",addr startiter,addr enditer
 
-        .if GcssProvider
+        .if GcssProvider_Asm
             mov context,rv(gtk_widget_get_style_context,view)
-    	   invoke gtk_style_context_add_provider,context, GcssProvider, 1
+    	   invoke gtk_style_context_add_provider,context, GcssProvider_Asm, 1
        .endif
         invoke gtk_source_buffer_set_highlight_syntax,buffer,-1        
         mov scrolledwindow,rv(gtk_scrolled_window_new,0,0)
@@ -421,23 +399,10 @@ endm
         .if dword ptr eax < 0
             invoke g_print,str$(<13,10," gtk_notebook_append_page fail">)
         .else
-            	invoke g_signal_connect_data,button,str$("clicked"),addr Notebook_On_Close_Button_Clicked ,scrolledwindow,0,0     
-
+            invoke g_signal_connect_data,button,str$("clicked"),addr Notebook_On_Close_Button_Clicked ,scrolledwindow,0,0     
             invoke g_print,str$(<13,10," gtk_notebook_append_page page n= %d ">),NotebookPage
             invoke g_print,str$(<13,10," gtk_notebook_append_page page n= %s ">),fname
             invoke g_key_file_set_ptr ,work_key,fname,"NotebookPage",scrolledwindow;NotebookPage
-
-;            mov rax,NotebookPage
-;            mov rcx,sizeof gpointer
-;            add rcx,rcx ;*2
-;            mul rcx
-;            lea rcx,NotebookPageArray
-;            add rax,rcx;
-;            mov rcx,k_file
-;            mov gpointer ptr [rax],rcx
-;            add rax,sizeof gpointer
-;            mov rcx,fname
-;            mov gpointer ptr [rax],rcx
         .endif
         invoke gtk_widget_show_all ,   WNotebook  
         invoke gtk_notebook_set_current_page ,WNotebook,NotebookPage
@@ -445,8 +410,8 @@ endm
         ret
     open_and_show_file ENDP
     
-    
 
     include signal_connect.asm
     include inputbox.asm
-    .code
+ 
+

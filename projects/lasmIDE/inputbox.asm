@@ -31,14 +31,11 @@ IFNDEF WedgInputBox_user_value
             
             invoke gtk_widget_set_sensitive,WedgInputBox_WBtnOk, 0   
 
-        ;    invoke g_signal_connect_data,WedgInputBox_WInputBox    ,str$("destroy")    ,addr gtk_main_quit       ,0,0,0     
-
             invoke g_signal_connect_data,WedgInputBox_WValue       ,str$("changed")    ,addr On_WedgInputBox_WValue_changed    ,0,0,0     
             invoke g_signal_connect_data,WedgInputBox_WBtnOk       ,str$("clicked")    ,addr On_WedgInputBox_WBtnOk_clicked    ,0,0,0     
             invoke g_signal_connect_data,WedgInputBox_WBtnCance    ,str$("clicked")    ,addr On_WedgInputBox_WBtnCance_clicked    ,0,0,0     
             
             invoke gtk_window_set_modal,WedgInputBox_WInputBox,GTK_DIALOG_MODAL
-            ;invoke gtk_widget_show_all ,WedgInputBox_WInputBox
             invoke g_object_unref,lbuilder
             invoke gtk_dialog_run,WedgInputBox_WInputBox
             invoke gtk_widget_destroy,WedgInputBox_WInputBox  
@@ -48,8 +45,8 @@ IFNDEF WedgInputBox_user_value
                 xor rax,rax
             .endif
         .else
-        invoke printf,str$(<13,10,"ELSE  ">)
-            xor rax,rax
+        	invoke printf,str$(<13,10,"fail to built interface  ">)
+            	xor rax,rax
         .endif
         RET
     user_input_box endp
@@ -58,13 +55,11 @@ IFNDEF WedgInputBox_user_value
         invoke gtk_entry_get_text,WedgInputBox_WValue
         invoke g_strdup,rax
         mov WedgInputBox_user_value,rax
-        invoke printf,str$(<13,10,"WedgInputBox_user_value OKbutton=%s ">),WedgInputBox_user_value
         invoke gtk_dialog_response,WedgInputBox_WInputBox,-5
         RET
     On_WedgInputBox_WBtnOk_clicked ENDP
     On_WedgInputBox_WBtnCance_clicked PROC
-        invoke printf,str$(<13,10,"On_WedgInputBox_WBtnCance_clicked ">)
-        mov WedgInputBox_user_value,0 
+         mov WedgInputBox_user_value,0 
         invoke gtk_dialog_response,WedgInputBox_WInputBox,-5
         RET
     On_WedgInputBox_WBtnCance_clicked ENDP

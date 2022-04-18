@@ -4,7 +4,7 @@
 		local current_page:gpointer
 		local OFilesIndex:gpointer
         mov current_page,rv( gtk_notebook_get_nth_page,WNotebook,rv(gtk_notebook_get_current_page,WNotebook))
-		m2m OFilesIndex,Current_Project.OFiles
+		m2m OFilesIndex,Current_Prj_OFiles
 		.if OFilesIndex==0
 			xor rax,rax
 			ret

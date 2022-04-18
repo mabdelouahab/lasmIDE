@@ -53,7 +53,6 @@
 		 .data
 		% 	@CatStr(<Menu_Last_Project>,%m)	gpointer	0
 		 .code
-		 ;	%	invoke printf,str$(<13,10,"LastProjectMenuList ={%d}">),@CatStr(<Settings_Last_Project>,%m)     
 		 	.if @CatStr(<Settings_Last_Project>,%m)  
 			       mov  @CatStr(<Menu_Last_Project>,%m) ,rv( gtk_menu_item_new_with_label ,@CatStr(<Settings_Last_Project>,%m)  );
 				invoke gtk_container_add,rv(gtk_builder_get_object,GGtkBuilder,"WMnOpenProjectsubmenu"), @CatStr(<Menu_Last_Project>,%m);	 
@@ -61,7 +60,6 @@
 		 	.endif		 
 		 	m=m+1
 		 endm
- 			
 	endm
 
 	Insert_LastProject_In_MenuList macro
@@ -72,7 +70,6 @@
 		       mov  m ,rv( gtk_menu_item_new_with_label ,Settings_Last_Project)
 			invoke gtk_container_add,rv(gtk_builder_get_object,GGtkBuilder,"WMnOpenProjectsubmenu"),m
 	 		invoke g_signal_connect_data,  m,"activate",addr MainWindow_callback_Open_Project_From_List,Settings_Last_Project,0,0         
-		;	invoke printf,str$(<13,10,"Insert_LastProject_In_MenuList ={%d}",13,10>),Settings_Last_Project  
 	endm
 	
 	.CODE
@@ -89,7 +86,14 @@
 	Settings_Load	ENDP
 	Settings_InsertInProjectList	PROC  __ProjectStr:gpointer
 	local ProjectStr:gpointer
+	
 		mov ProjectStr,__ProjectStr
+		.if ProjectStr==0
+			ret
+		.endif
+		.if byte ptr [ProjectStr]==0
+			ret
+		.endif
 		.if 		rv(g_strcmp0,ProjectStr,Settings_Last_Project) == 0 
 			ret
 		.else

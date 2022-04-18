@@ -197,10 +197,10 @@
 			invoke Projects_Load_Project,Arg_Project
 		.else
 			.if Settings_Load_Last_Project
-	    				call Projects_Load_Last_Project
+	    			call Projects_Load_Last_Project
 			.endif
 		.endif
-		.if Current_Project.FileName
+		.if Current_Prj_FileName
 			call TreeView_Show_Current_Project			
 		.endif
 		ret

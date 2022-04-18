@@ -21,15 +21,15 @@ IFNDEF dialog_project_option
         local pfile:gpointer
 
         
-        .if Current_Project.Files 
-            m2m file_listidx,Current_Project.Files 
+        .if Current_Prj_Files
+            m2m file_listidx,Current_Prj_Files
             @@:
             mov rax,file_listidx
             mov rax,gpointer ptr [rax]
             .if rax
                 mov pfile,rax
-                .if  Current_Project.MainFile
-                    .if rv(g_strcmp0,Current_Project.MainFile, pfile)                            
+                .if  Current_Prj_MainFile
+                    .if rv(g_strcmp0,Current_Prj_MainFile, pfile)
                         invoke gtk_combo_box_text_append_text,Wedg_DPO_Combo_Files,pfile    
                     .endif    
                 .else
@@ -40,20 +40,20 @@ IFNDEF dialog_project_option
             .endif        
         .endif 
         ;select main file in the list
-        .if Current_Project.MainFile
-            invoke gtk_combo_box_text_insert,Wedg_DPO_Combo_Files,0,0, Current_Project.MainFile    
+        .if Current_Prj_MainFile
+            invoke gtk_combo_box_text_insert,Wedg_DPO_Combo_Files,0,0, Current_Prj_MainFile
             invoke gtk_combo_box_set_active,Wedg_DPO_Combo_Files, 0           
         .endif
  
-        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Project_Name		,Current_Project._Name
-        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Project_Desc		,Current_Project.Description
-        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Pre_Assemble_cmd	,Current_Project.PreAssemble
-        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Pre_Assemble_AdOpt,Current_Project.PreAssemble_opt 
-        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Assemble_cmd		,Current_Project.Assemble
-        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Assemble_AdOpt	,Current_Project.Assemble_opt
-        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Link_cmd			,Current_Project.Link
-        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Link_AdOpt		,Current_Project.Link_opt
-        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Run_cmd			,Current_Project.Run_cmd
+        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Project_Name		,Current_Prj_Name
+        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Project_Desc		,Current_Prj_Description
+        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Pre_Assemble_cmd	,Current_Prj_PreAssemble
+        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Pre_Assemble_AdOpt,Current_Prj_PreAssemble_opt
+        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Assemble_cmd		,Current_Prj_Assemble
+        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Assemble_AdOpt	,Current_Prj_Assemble_opt
+        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Link_cmd			,Current_Prj_Link
+        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Link_AdOpt		,Current_Prj_Link_opt
+        Helpers_gtk_entry_set_text Wedg_DPO_Entry_Run_cmd			,Current_Prj_Run_cmd
         
         invoke gtk_widget_set_sensitive,Wedg_DPO_Entry_Project_Name, 0 
        ret
@@ -62,17 +62,17 @@ IFNDEF dialog_project_option
     save_project_option proc
         local _name:gpointer
         .if rv(gtk_combo_box_text_get_active_text,Wedg_DPO_Combo_Files)
-        	mov Current_Project.MainFile,rax 
+        	mov Current_Prj_MainFile,rax
         .endif 
 
-        Helpers_gtk_entry_get_text Current_Project.Description		,Wedg_DPO_Entry_Project_Desc
-        Helpers_gtk_entry_get_text Current_Project.PreAssemble		,Wedg_DPO_Entry_Pre_Assemble_cmd
-        Helpers_gtk_entry_get_text Current_Project.PreAssemble_opt	,Wedg_DPO_Entry_Pre_Assemble_AdOpt
-        Helpers_gtk_entry_get_text Current_Project.Assemble			,Wedg_DPO_Entry_Assemble_cmd
-        Helpers_gtk_entry_get_text Current_Project.Assemble_opt		,Wedg_DPO_Entry_Assemble_AdOpt
-        Helpers_gtk_entry_get_text Current_Project.Link				,Wedg_DPO_Entry_Link_cmd
-        Helpers_gtk_entry_get_text Current_Project.Link_opt			,Wedg_DPO_Entry_Link_AdOpt
-        Helpers_gtk_entry_get_text Current_Project.Run_cmd			,Wedg_DPO_Entry_Run_cmd
+        Helpers_gtk_entry_get_text Current_Prj_Description		,Wedg_DPO_Entry_Project_Desc
+        Helpers_gtk_entry_get_text Current_Prj_PreAssemble		,Wedg_DPO_Entry_Pre_Assemble_cmd
+        Helpers_gtk_entry_get_text Current_Prj_PreAssemble_opt	,Wedg_DPO_Entry_Pre_Assemble_AdOpt
+        Helpers_gtk_entry_get_text Current_Prj_Assemble			,Wedg_DPO_Entry_Assemble_cmd
+        Helpers_gtk_entry_get_text Current_Prj_Assemble_opt		,Wedg_DPO_Entry_Assemble_AdOpt
+        Helpers_gtk_entry_get_text Current_Prj_Link				,Wedg_DPO_Entry_Link_cmd
+        Helpers_gtk_entry_get_text Current_Prj_Link_opt			,Wedg_DPO_Entry_Link_AdOpt
+        Helpers_gtk_entry_get_text Current_Prj_Run_cmd			,Wedg_DPO_Entry_Run_cmd
         
         call Projects_Save_Current_Project
         ret
@@ -82,7 +82,7 @@ IFNDEF dialog_project_option
     dialog_project_option proc
         local error:gpointer
         local lbuilder:gpointer
-         .if Current_Project.FileName==0 
+         .if Current_Prj_FileName==0
             ret
         .endif
         mov error,0

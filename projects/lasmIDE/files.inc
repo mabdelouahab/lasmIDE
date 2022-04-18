@@ -233,10 +233,10 @@
 		local 	pOFile		:gpointer
 		local   buf			:gpointer
 		local   content		:gpointer
-        local __start_iter	:GtkTextIter
-        local __end_iter  	:GtkTextIter 
-        local 	FullPName	:gpointer      
-                 
+		local __start_iter	:GtkTextIter
+		local __end_iter  	:GtkTextIter 
+		local 	FullPName	:gpointer      
+		         
 		mov pOFile,_pOFile
 		mov rax,pOFile
 		mov rcx,[rax].OFile.buffer
@@ -247,9 +247,9 @@
     		mov FullPName,rv(g_build_filename,[rax].OFile.Path,[rax].OFile.FileName,0)		
 		.else
 			.if	[rax].OFile.Dir
-				mov FullPName,rv(g_build_filename,Current_Project.Path,[rax].OFile.Dir,[rax].OFile.FileName,0)		
+				mov FullPName,rv(g_build_filename,Current_Prj_Path,[rax].OFile.Dir,[rax].OFile.FileName,0)
 			.else
-				mov FullPName,rv(g_build_filename,Current_Project.Path,[rax].OFile.FileName,0)
+				mov FullPName,rv(g_build_filename,Current_Prj_Path,[rax].OFile.FileName,0)
 			.endif
 		.endif
 		.if	buf
@@ -351,8 +351,6 @@
 		mov pOFile,_pOFile	
 		mov rax,pOFile
 		mov [rax].OFile.Modified,-1
-invoke printf,str$(<13,10,"Files_Text_Buffer_Changed pOFile: %s">),[rax].OFile.FileName   
-invoke printf,"."
  		ret
  	Files_Text_Buffer_Changed ENDP
 	Files_Load_contents PROC 	_pOFile:gpointer
@@ -368,46 +366,51 @@ invoke printf,"."
 		local hbox			:gpointer
 		local lbutton		:gpointer
 		local llabel		:gpointer
+		local FileName :gpointer	
+
         local GGtkSourceStyleScheme :gpointer
         
 		mov pOFile,_pOFile
+		mov rax,pOFile		
+		m2m FileName,[rax].OFile.FileName  
+		mov rax,pOFile		
+		mov rax,pOFile		
 		mov rax,pOFile
 		.if	[rax].OFile.Path
-    		mov FullPName,rv(g_build_filename,[rax].OFile.Path,[rax].OFile.FileName,0)		
+    			mov FullPName,rv(g_build_filename,[rax].OFile.Path,[rax].OFile.FileName,0)		
 		.else
 			.if	[rax].OFile.Dir
-				mov FullPName,rv(g_build_filename,Current_Project.Path,[rax].OFile.Dir,[rax].OFile.FileName,0)		
+				mov FullPName,rv(g_build_filename,Current_Prj_Path,[rax].OFile.Dir,[rax].OFile.FileName,0)
 			.else
-				mov FullPName,rv(g_build_filename,Current_Project.Path,[rax].OFile.FileName,0)
+				mov FullPName,rv(g_build_filename,Current_Prj_Path,FileName,0)
 			.endif
 		.endif
+ 
         .if rv(g_file_get_contents,FullPName,addr lfcontents, 0, 0)
-invoke printf,str$(<13,10,"Files_Load_contents pOFile: %d">),pOFile   
-invoke printf,"."
-         	invoke gtk_source_buffer_new,0
-			mov rcx,pOFile
-         	mov [rcx].OFile.buffer,rax
-         	mov bufaddr,rax
-            invoke gtk_source_buffer_begin_not_undoable_action,bufaddr         		   	
-		        mov utf8 ,rv(g_locale_to_utf8 ,lfcontents, -1, 0, addr bytes_written, 0)
-		        invoke g_free,lfcontents
-		        invoke gtk_text_buffer_get_end_iter,bufaddr,addr lf_iter
-		        invoke gtk_text_buffer_insert,bufaddr ,addr lf_iter,utf8,-1
-		        invoke g_free,utf8
-            invoke gtk_source_buffer_end_not_undoable_action ,bufaddr
-            invoke gtk_text_buffer_set_modified,bufaddr,0
-            invoke gtk_text_buffer_get_start_iter,bufaddr,addr lf_iter
-            invoke gtk_text_buffer_place_cursor,bufaddr,addr lf_iter
-         	invoke g_signal_connect_data,bufaddr    ,str$("changed")    ,addr Files_Text_Buffer_Changed    ,pOFile,0,0      
-			mov rcx,pOFile
-         	m2m PLanguage,[rcx].OFile.ProgrammingLanguage
+		invoke gtk_source_buffer_new,0
+		mov rcx,pOFile
+		mov [rcx].OFile.buffer,rax
+		mov bufaddr,rax
+		invoke gtk_source_buffer_begin_not_undoable_action,bufaddr         		   	
+		mov utf8 ,rv(g_locale_to_utf8 ,lfcontents, -1, 0, addr bytes_written, 0)
+		invoke g_free,lfcontents
+		invoke gtk_text_buffer_get_end_iter,bufaddr,addr lf_iter
+		invoke gtk_text_buffer_insert,bufaddr ,addr lf_iter,utf8,-1
+		invoke g_free,utf8
+		invoke gtk_source_buffer_end_not_undoable_action ,bufaddr
+		invoke gtk_text_buffer_set_modified,bufaddr,0
+		invoke gtk_text_buffer_get_start_iter,bufaddr,addr lf_iter
+		invoke gtk_text_buffer_place_cursor,bufaddr,addr lf_iter
+		invoke g_signal_connect_data,bufaddr    ,str$("changed")    ,addr Files_Text_Buffer_Changed    ,pOFile,0,0      
+		mov rcx,pOFile
+		m2m PLanguage,[rcx].OFile.ProgrammingLanguage
 
-			mov GGtkSourceStyleScheme,rv( gtk_source_style_scheme_manager_get_scheme,GGtkSourceStyleSchemeManager,PLanguage)       
-			invoke gtk_source_buffer_set_style_scheme,bufaddr, GGtkSourceStyleScheme         
-			mov rax,pOFile
-			invoke gtk_source_language_manager_guess_language,GGtkSourceLanguageManager,[rax].OFile.FileName,0
-		    invoke gtk_source_buffer_set_language ,bufaddr, rax
-		    invoke gtk_source_buffer_set_highlight_syntax,bufaddr,-1        
+		mov GGtkSourceStyleScheme,rv( gtk_source_style_scheme_manager_get_scheme,GGtkSourceStyleSchemeManager,PLanguage)       
+		invoke gtk_source_buffer_set_style_scheme,bufaddr, GGtkSourceStyleScheme         
+		mov rax,pOFile
+		invoke gtk_source_language_manager_guess_language,GGtkSourceLanguageManager,[rax].OFile.FileName,0
+		invoke gtk_source_buffer_set_language ,bufaddr, rax
+		invoke gtk_source_buffer_set_highlight_syntax,bufaddr,-1        
             
     		invoke g_free,FullPName	
             mov rax,-1
@@ -424,7 +427,7 @@ invoke printf,"."
 		local  _fileName:gpointer
 		local OFilesIndex:gpointer
 		mov _fileName,__fileName
-		m2m OFilesIndex,Current_Project.OFiles
+		m2m OFilesIndex,Current_Prj_OFiles
 		.if OFilesIndex==0
 			xor rax,rax
 			ret

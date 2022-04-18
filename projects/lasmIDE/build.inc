@@ -46,10 +46,10 @@
         local __s:gpointer      
         
         mov __s,__s_
-        m2m r_@SRC,Current_Project.MainFile
-        m2m r_@EXE,Current_Project._Name
+        m2m r_@SRC,Current_Prj_MainFile
+        m2m r_@EXE,Current_Prj_Name
         mov r_@OBJ,rv(get_o_name,r_@SRC)
-        m2m r_@DIR,Current_Project.Path
+        m2m r_@DIR,Current_Prj_Path
         lea rcx,replace_variable_buffer
         mov rdx,__s
         replace_variable@B:
@@ -199,11 +199,11 @@
     run_current_project PROC
     	local runcmd:gpointer
         local retv   :gpointer
-        .if Current_Project.FileName==0 
+        .if Current_Prj_FileName==0
             ret
         .endif
 		
-        m2m runcmd,Current_Project.Run_cmd       
+        m2m runcmd,Current_Prj_Run_cmd
         .if	runcmd
 		    mov runcmd,rv(g_strdup,rv(replace_variable_with_value_str,runcmd))
         .endif
@@ -282,15 +282,15 @@
         local _len:gpointer
         local show_watchendIter:GtkTextIter
         
-        .if Current_Project.FileName==0 
+        .if Current_Prj_FileName==0
             ret
         .endif
 		
-        m2m Linkcmd,Current_Project.Link       
+        m2m Linkcmd,Current_Prj_Link
         .if	Linkcmd
 		    mov Linkcmd,rv(g_strdup,rv(replace_variable_with_value_str,Linkcmd))
         .endif
-        m2m Link_optlst,Current_Project.Link_opt 
+        m2m Link_optlst,Current_Prj_Link_opt
         .if	Link_optlst
 		    mov Link_optlst,rv(g_strsplit,rv(replace_variable_with_value_str,Link_optlst),";",-1)
 		    ;mov b__,rax
@@ -357,18 +357,18 @@
         local Assemble_optlst:gpointer
 
         
-        .if Current_Project.FileName==0 
+        .if Current_Prj_FileName==0
             ret
         .endif
         ;call save_all_tab;save_current_tab
         mov rdi,-1
         call Projects_Save_Current_Project_Files_Content
-		m2m Assemblecmd,Current_Project.Assemble	
+		m2m Assemblecmd,Current_Prj_Assemble
 		.if	Assemblecmd
 	        mov Assemblecmd,rv(g_strdup,rv(replace_variable_with_value_str,Assemblecmd))
 		.endif 	
         
-        m2m Assemble_optlst,Current_Project.Assemble_opt
+        m2m Assemble_optlst,Current_Prj_Assemble_opt
         .if Assemble_optlst
 	        mov Assemble_optlst,rv(g_strsplit,rv(replace_variable_with_value_str,Assemble_optlst),";",-1)        
         .endif

@@ -6,7 +6,7 @@
     slist               DQ  0    
 .code
 
-enum    stng_EOS, \         ; End of settings list
+enum    stng_EOS, \         
         stng_paned1_Position, \
         stng_paned2_Position, \
         stng_show_line_numbre, \
