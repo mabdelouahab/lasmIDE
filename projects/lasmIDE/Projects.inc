@@ -405,7 +405,8 @@ OProject ENDS
 
         mov shift_,shift__
         .if 	Current_Prj_FileName==0
-        	ret
+ 		xor rax,rax
+	       	ret
         .endif
 		invoke Projects_Save_Current_Project_And_Files,shift_
 		.if rax==0
@@ -573,7 +574,8 @@ OProject ENDS
 				invoke g_key_file_save_to_file,kf,FullPName,addr _err
 			   	invoke g_key_file_free,kf	
  				g_free(prjpath)
- 				g_free(FullPName)			
+ 				g_free(FullPName)	
+ 				xor rax,rax		
 			.else
 				lea r12,_err
 				mov r12,[r12]
