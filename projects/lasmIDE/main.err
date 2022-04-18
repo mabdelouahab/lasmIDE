@@ -1,3 +1,0 @@
-main.inc(455) : Error A2106: Cannot open file: "signal_connect.asm" [ENOENT]
- main.inc(455): Included by
-  main.asm(1): Main line code
