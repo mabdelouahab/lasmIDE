@@ -1,0 +1,25 @@
+[Project]
+Name=UASM_Empty
+Description=Empty project
+MainFile=main.asm
+Assemble=uasm255 -elf64 $SRC
+Link=gcc -o $EXE $OBJ -fno-pie -no-pie
+Run_cmd=./$EXE
+Files=main.asm;main.inc;
+Dirs=
+
+[main.asm]
+Name=main
+Description=main
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=asmfileicon
+Content=\tinclude main.inc \n.code\n\n	main  PROC  argc:QWORD, argv:QWORD\n	      xor rax,rax \n	      ret \n	main  ENDP\n	           \nend  
+
+[main.inc]
+Name=main
+Description=main
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=incfileicon
+Content=;\n

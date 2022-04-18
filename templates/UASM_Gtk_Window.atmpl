@@ -1,0 +1,25 @@
+[Project]
+Name=UASM_Gtk_Window
+Description=Gtk Window with UASM
+MainFile=main.asm
+Assemble=uasm255 -elf64 $SRC
+Link=gcc -o $EXE $OBJ
+Link_opt=pkg-config --libs gtk+-3.0 gthread-2.0 gobject-2.0 gmodule-no-export-2.0
+Run_cmd=./$EXE
+Files=main.asm;main.inc;
+
+[main.asm]
+Name=main
+Description=main
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=asmfileicon
+Content=\tinclude main.inc \n.code\n\n	main  PROC  argc:QWORD, argv:QWORD\n	      LOCAL app:GtkApplication, status:DWORD\n	   \n	      mov app, RV(gtk_application_new , CStr("uasm.gtk.example"), G_APPLICATION_FLAGS_NONE)  \n	      invoke g_signal_connect_data, app, CStr("activate"), ADDR activate, NULL, NULL, NULL\n	      invoke g_application_run , app, 0 , 0 \n	      mov status, eax\n	      invoke g_object_unref, app\n	      mov eax, status \n	      ret \n	main  ENDP\n\n	activate PROC  app:GtkApplication, user_data:gpointer \n		 LOCAL window:GtkWidget\n\n		 mov window , RV(gtk_application_window_new, app)\n		 invoke gtk_window_set_title, window, CStr("Window")\n		 invoke gtk_window_set_default_size, window, 200, 200\n		 invoke gtk_widget_show_all, window\n		 ret\n	activate ENDP  \n                    \nend  
+
+[main.inc]
+Name=main
+Description=main
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=incfileicon
+Content=\n\tGtkApplication 	TYPEDEF QWORD \n	GtkWidget      	TYPEDEF QWORD\n	gpointer      	 	TYPEDEF QWORD  \n\n	g_signal_connect_data 		PROTO :QWORD,:QWORD, :QWORD, :QWORD, :QWORD, :QWORD\n	gtk_window_set_default_size  	PROTO :QWORD, :QWORD, :QWORD\n	g_application_run     			PROTO :QWORD,:QWORD, :QWORD\n	gtk_application_window_new   PROTO :QWORD\n	gtk_application_new   		PROTO :QWORD,:QWORD\n	gtk_window_set_title  		PROTO :QWORD,:QWORD\n	gtk_widget_show_all   		PROTO :QWORD\n	g_object_unref 				PROTO :QWORD\n\n	G_APPLICATION_FLAGS_NONE equ 0\n\n	NULL EQU 0\n
