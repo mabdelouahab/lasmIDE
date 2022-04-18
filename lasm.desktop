@@ -3,8 +3,8 @@
 Type=Application
 Name=lasm
 Comment=Linux Assembly
-Exec=/shareddocs/programmation/lasm/lasm
-Path=/shareddocs/programmation/lasm
-Icon=/shareddocs/programmation/lasm/Icons/lasm.png
+Exec=/path/to/lasm/lasm
+Path=/path/to/lasm
+Icon=/path/to/lasm/Icons/lasm.png
 Categories=Development;
 Terminal=false
