@@ -95,10 +95,10 @@
 		Helpers_signal_connect_data	"WMnOpenFile"	,"activate",On_WMnOpenFile_Clicked
 		Helpers_signal_connect_data	"WMnSaveAs"	,"activate",On_WMnSaveAs_Clicked
 		Helpers_signal_connect_data	"WMnSaveAll"	,"activate",On_WMnSaveAll_Clicked
-		Helpers_signal_connect_data	"WMnCut"	,"activate",On_WMnCut_Clicked
-		Helpers_signal_connect_data	"WMnCopy"	,"activate",On_WMnCopy_Clicked
-		Helpers_signal_connect_data	"WMnPaste"	,"activate",On_WMnPaste_Clicked
-		Helpers_signal_connect_data	"WMnDelete"	,"activate",On_WMnDelete_Clicked
+		Helpers_signal_connect_data	"WMnCut"	,"activate",On_WMnTBCut_Clicked
+		Helpers_signal_connect_data	"WMnCopy"	,"activate",On_WMnTBCopy_Clicked
+		Helpers_signal_connect_data	"WMnPaste"	,"activate",On_WMnTBPaste_Clicked
+		Helpers_signal_connect_data	"WMnDelete"	,"activate",On_WMnTBDelete_Clicked
 		Helpers_signal_connect_data	"WMnFind"	,"activate",On_WMnFind_Clicked
 		Helpers_signal_connect_data	"WMnFindAndReplace"	,"activate",On_WMnFindAndReplace_Clicked
 		Helpers_signal_connect_data	"WMnSellectAll"	,"activate",On_WMnSellectAll_Clicked

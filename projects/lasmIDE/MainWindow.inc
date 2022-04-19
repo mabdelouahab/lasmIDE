@@ -282,22 +282,7 @@ GDK_SELECTION_CLIPBOARD = _GDK_MAKE_ATOM
 		msgbox "Incomplete Code"
 		Ret
 	On_WMnSaveAll_Clicked ENDP
-	On_WMnCut_Clicked PROC
-		msgbox "Incomplete Code"
-		Ret
-	On_WMnCut_Clicked ENDP
-	On_WMnCopy_Clicked PROC
-		msgbox "Incomplete Code"
-		Ret
-	On_WMnCopy_Clicked ENDP
-	On_WMnPaste_Clicked PROC
-		msgbox "Incomplete Code"
-		Ret
-	On_WMnPaste_Clicked ENDP
-	On_WMnDelete_Clicked PROC
-		msgbox "Incomplete Code"
-		Ret
-	On_WMnDelete_Clicked ENDP
+
 	On_WMnFind_Clicked PROC
 		msgbox "Incomplete Code"
 		Ret
