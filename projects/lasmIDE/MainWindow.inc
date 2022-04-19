@@ -127,6 +127,52 @@
 	.endif
 		 RET
 	On_WMnTBRedo_activate ENDP   	
+	gtk_clipboard_get proto :vararg
+_GDK_MAKE_ATOM = 69
+GDK_SELECTION_CLIPBOARD = _GDK_MAKE_ATOM
+
+	On_WMnTBCut_Clicked PROC
+		local buf:gpointer
+		local clipboard:gpointer
+		mov buf,rv(Notebook_Get_Current_Buffer)
+		.if buf
+			mov clipboard,rv( gtk_clipboard_get,GDK_SELECTION_CLIPBOARD)
+			gtk_text_buffer_cut_clipboard (buf, clipboard, -1)
+		.endif
+		Ret
+	On_WMnTBCut_Clicked ENDP
+	On_WMnTBCopy_Clicked PROC
+		local buf:gpointer
+		local clipboard:gpointer
+		local text:gpointer
+		mov buf,rv(Notebook_Get_Current_Buffer)
+		.if buf
+			mov clipboard,rv( gtk_clipboard_get,GDK_SELECTION_CLIPBOARD)
+			gtk_text_buffer_copy_clipboard (buf, clipboard)
+		.endif
+		Ret
+	On_WMnTBCopy_Clicked ENDP
+	On_WMnTBPaste_Clicked PROC
+		local buf:gpointer
+		local clipboard:gpointer
+		mov buf,rv(Notebook_Get_Current_Buffer)
+		.if buf
+			mov clipboard ,rv(gtk_clipboard_get,GDK_SELECTION_CLIPBOARD)
+			gtk_text_buffer_paste_clipboard (buf, clipboard, 0, -1)
+		.endif
+		Ret
+	On_WMnTBPaste_Clicked ENDP
+	On_WMnTBDelete_Clicked PROC
+		local buf:gpointer
+		mov buf,rv(Notebook_Get_Current_Buffer)
+		.if buf
+			        gtk_text_buffer_delete_selection (buf, 0, -1);
+		.endif
+		Ret
+	On_WMnTBDelete_Clicked ENDP	
+	
+	
+	
  	On_WMnTBFind_Clicked PROC
 		local buf:gpointer
 		mov buf,rv(Notebook_Get_Current_Buffer)
@@ -163,38 +209,9 @@
 		msgbox "Incomplete Code"
 		Ret
 	On_WMnTBSaveAll_Clicked ENDP
-	On_WMnTBCut_Clicked PROC
-		local buf:gpointer
-		mov buf,rv(Notebook_Get_Current_Buffer)
-		.if buf
-			msgbox "Incomplete Code"
-		.endif
-		Ret
-	On_WMnTBCut_Clicked ENDP
-	On_WMnTBCopy_Clicked PROC
-		local buf:gpointer
-		mov buf,rv(Notebook_Get_Current_Buffer)
-		.if buf
-			msgbox "Incomplete Code"
-		.endif
-		Ret
-	On_WMnTBCopy_Clicked ENDP
-	On_WMnTBPaste_Clicked PROC
-		local buf:gpointer
-		mov buf,rv(Notebook_Get_Current_Buffer)
-		.if buf
-			msgbox "Incomplete Code"
-		.endif
-		Ret
-	On_WMnTBPaste_Clicked ENDP
-	On_WMnTBDelete_Clicked PROC
-		local buf:gpointer
-		mov buf,rv(Notebook_Get_Current_Buffer)
-		.if buf
-			msgbox "Incomplete Code"
-		.endif
-		Ret
-	On_WMnTBDelete_Clicked ENDP
+	
+
+
 	On_WMnTBUnindent_Clicked PROC
 		local buf:gpointer
 		mov buf,rv(Notebook_Get_Current_Buffer)
