@@ -2,9 +2,9 @@ OPTION DOTNAME
 IFDEF __UASM__
 	OPTION LITERALS:ON
 ENDIF
-IFNDEF RAX
-    rax TEXTEQU <eax>
-ENDIF
+;IFNDEF RAX
+;    rax TEXTEQU <eax>
+;ENDIF
 str$ macro str__
 local _strL
     .data
@@ -12,7 +12,7 @@ local _strL
     .code
     EXITM<offset _strL>
 endm
-    TypeOf MACRO arg
+    _TypeOf MACRO arg
       EXITM % opattr(arg)
     ENDM
     Ty_Variable_GLOBAL 	EQU < 42 >
@@ -51,6 +51,11 @@ local vforconst
 		mov rcx,v
     ENDIF
     EXITM<rcx>
+endm
+.ifline macro @__Con,@__fn:vararg
+	.IF @__Con			
+		invoke @__fn
+	.ENDIF 
 endm
 CnstStr macro __cnststring
 	local adr__cnststring
