@@ -460,7 +460,9 @@
 		local __event:gpointer
             	mov __event,___event
            	mov rax,__event
-		.if     ([rax].GdkEventKey.state && GDK_CONTROL_MASK)
+           	mov ecx,[rax].GdkEventKey.state
+           	and ecx,GDK_CONTROL_MASK
+		.if    ecx
 			.if ([rax].GdkEventKey.keyval	== 0066h ) || ( [rax].GdkEventKey.keyval	==0068h);GDK_KEY_f ;GDK_KEY_h
 				Init_WFARBox()
 			.endif
