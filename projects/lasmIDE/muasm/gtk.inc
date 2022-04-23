@@ -59,6 +59,10 @@
 	include ./gtk/gtk_combo_box_text.inc	
 	include ./gtk/gtk_combo_box.inc
 	include ./gtk/gtk_toggle_button.inc
+	include ./gtk/gtk_source_search_context.inc
+	include ./gtk/gtk_source_search_settings.inc
+	;include ./gtk/gdkkeysyms.inc
+
 
  
 	gtkproperty struct
@@ -188,7 +192,26 @@
 	GDK_PAD_GROUP_MODE      = 47
 	;GDK_EVENT_LAST        ; helper variable for decls */
 	GdkEventType typedef dword
-	
+
+    GDK_SHIFT_MASK		  			= 1 shl 0
+    GDK_LOCK_MASK		  			= 1 shl 1
+    GDK_CONTROL_MASK		  		= 1 shl 2
+    GDK_MOD1_MASK		  			= 1 shl 3
+    GDK_MOD2_MASK		  			= 1 shl 4
+    GDK_MOD3_MASK		  			= 1 shl 5
+    GDK_MOD4_MASK		  			= 1 shl 6
+    GDK_MOD5_MASK		  			= 1 shl 7
+    GDK_BUTTON1_MASK		  		= 1 shl 8
+    GDK_BUTTON2_MASK		  		= 1 shl 9
+    GDK_BUTTON3_MASK		  		= 1 shl 10
+    GDK_BUTTON4_MASK		  		= 1 shl 11
+    GDK_BUTTON5_MASK		  		= 1 shl 12
+    GDK_SUPER_MASK		  			= 1 shl 26
+    GDK_HYPER_MASK		  			= 1 shl 27
+    GDK_META_MASK		  			= 1 shl 28
+    GDK_RELEASE_MASK		  		= 1 shl 30
+    GDK_MODIFIER_MASK		  		= 0x5c001fff
+    	
 	GdkEventButton struct sizeof gpointer
 		_type 		GdkEventType	GDK_NOTHING
 		window 		gpointer	0	;GdkWindow *
@@ -203,6 +226,20 @@
 		x_root 		gdouble		0.0
 		y_root 		gdouble		0.0
 	GdkEventButton ends
+	GdkEventKey		STRUC sizeof gpointer
+		_type				gint ?
+		window				gpointer ?
+		send_event			gint8 ?
+		time				guint32 ?
+		state				guint ?
+		keyval				guint ?
+		_length				gint ?
+		string				gpointer ?
+		hardware_keycode	guint16 ?
+		_group				guint8 ?
+		is_modifier			guint ? ; : 1
+	GdkEventKey		ENDS
+	
 	enum GTK_MESSAGE_INFO,GTK_MESSAGE_WARNING, GTK_MESSAGE_QUESTION, GTK_MESSAGE_ERROR, GTK_MESSAGE_OTHER	
 
 	messagebox macro _flags,_type,_buttons,__message_format,_msg:vararg
