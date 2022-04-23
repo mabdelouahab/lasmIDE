@@ -211,7 +211,7 @@
 		invoke g_signal_connect_data,lbutton,str$("clicked")	,addr 	Notebook_On_Close_Button_Clicked 	,pOFile,0,0     
 		invoke g_signal_connect_data,lbutton,str$("enter")		,addr   Notebook_On_Close_Button_Enter 		,pOFile,0,0     
 		invoke g_signal_connect_data,lbutton,str$("leave")		,addr   Notebook_On_Close_Button_Leave	 	,pOFile,0,0  
-	       	invoke g_signal_connect_data,lview    ,str$("key-press-event")    ,addr On_Buffer_key_press_event   ,pOFile,0,0      
+	      	invoke g_signal_connect_data,lview    ,str$("key-press-event")    ,addr On_Buffer_key_press_event   ,pOFile,0,0      
 	       	
      
 

@@ -465,6 +465,7 @@
 				Init_WFARBox()
 			.endif
 		.endif
+		xor rax,rax
 		ret
 	On_Buffer_key_press_event ENDP	
 	On_gtk_text_buffer_mark_set PROC textbuffer__:gpointer,_d1:gpointer,_d2:gpointer,_pOFile:gpointer
