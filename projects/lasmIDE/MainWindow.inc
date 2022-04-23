@@ -177,7 +177,7 @@ GDK_SELECTION_CLIPBOARD = _GDK_MAKE_ATOM
 		local buf:gpointer
 		mov buf,rv(Notebook_Get_Current_Buffer)
 		.if buf
-			Init_WFARBox("Incomplete Code")
+			Init_WFARBox()
 		.endif
 		Ret
 	On_WMnTBFind_Clicked ENDP
@@ -185,7 +185,7 @@ GDK_SELECTION_CLIPBOARD = _GDK_MAKE_ATOM
 		local buf:gpointer
 		mov buf,rv(Notebook_Get_Current_Buffer)
 		.if buf
-			Init_WFARBox("Incomplete Code")
+			Init_WFARBox()
 		.endif
 		Ret
 	On_WMnTBReplace_Clicked ENDP

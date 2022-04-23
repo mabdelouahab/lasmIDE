@@ -8,10 +8,12 @@
 		icon				gpointer	0
 		buffer				gpointer	0
 		NotebookPage		gpointer	0
-		Dir 				gpointer	0
+		Dir 					gpointer	0
 		Content				gpointer	0
 		Modified			gpointer	0
 		Path				gpointer	0
+		search_context		gpointer	0
+		source_view			gpointer	0
 	OFile		ENDS
 
 	.code
@@ -391,6 +393,10 @@
 		mov rcx,pOFile
 		mov [rcx].OFile.buffer,rax
 		mov bufaddr,rax
+		gtk_source_search_context_new (bufaddr, 0 )
+		mov rcx,pOFile
+		mov [rcx].OFile.search_context,rax
+		mov rax,rcx
 		invoke gtk_source_buffer_begin_not_undoable_action,bufaddr         		   	
 		mov utf8 ,rv(g_locale_to_utf8 ,lfcontents, -1, 0, addr bytes_written, 0)
 		invoke g_free,lfcontents
@@ -402,6 +408,8 @@
 		invoke gtk_text_buffer_get_start_iter,bufaddr,addr lf_iter
 		invoke gtk_text_buffer_place_cursor,bufaddr,addr lf_iter
 		invoke g_signal_connect_data,bufaddr    ,str$("changed")    ,addr Files_Text_Buffer_Changed    ,pOFile,0,0      
+	       	invoke g_signal_connect_data,bufaddr    ,str$("mark-set")    ,addr On_gtk_text_buffer_mark_set   ,pOFile,0,0      
+
 		mov rcx,pOFile
 		m2m PLanguage,[rcx].OFile.ProgrammingLanguage
 
@@ -410,8 +418,8 @@
 		mov rax,pOFile
 		invoke gtk_source_language_manager_guess_language,GGtkSourceLanguageManager,[rax].OFile.FileName,0
 		invoke gtk_source_buffer_set_language ,bufaddr, rax
-		invoke gtk_source_buffer_set_highlight_syntax,bufaddr,-1        
-            
+		invoke gtk_source_buffer_set_highlight_syntax,bufaddr,-1          
+      
     		invoke g_free,FullPName	
             mov rax,-1
             ret
@@ -423,6 +431,69 @@
 		.endif	
 		ret
 	Files_Load_contents ENDP
+	Notebook_Get_Current_Buffer proto
+	.data
+		__Old__start_iter       GtkTextIter	<>
+		__Old__end_iter         GtkTextIter    <>    	
+	.code
+	On_gtk_text_buffer_Selection_Changed PROC __Buffer:gpointer,_pOFile:gpointer
+		local buf:gpointer
+		local pOFile:gpointer
+		local Sel_Text:gpointer
+		local _search_settings:gpointer
+		local _search_context:gpointer
+		local __start_iter         :GtkTextIter
+		local __end_iter           :GtkTextIter        
+		
+		mov buf,__Buffer
+		mov pOFile,_pOFile
+		mov rcx,pOFile
+		m2m _search_context,[rcx].OFile.search_context
+		mov _search_settings,rv(gtk_source_search_context_get_settings,_search_context)
+		gtk_text_buffer_get_selection_bounds(buf,addr __Old__start_iter,addr __Old__end_iter)
+		mov Sel_Text,rv(gtk_text_buffer_get_text,buf,addr __Old__start_iter,addr __Old__end_iter,0)	
+		gtk_source_search_settings_set_search_text (_search_settings,Sel_Text)    
+		g_free(Sel_Text)
+		ret
+	On_gtk_text_buffer_Selection_Changed ENDP	 
+	On_Buffer_key_press_event PROC widget__:gpointer,___event:gpointer,_user_data:gpointer
+		local __event:gpointer
+            	mov __event,___event
+           	mov rax,__event
+		.if     ([rax].GdkEventKey.state && GDK_CONTROL_MASK)
+			.if ([rax].GdkEventKey.keyval	== 0066h ) || ( [rax].GdkEventKey.keyval	==0068h);GDK_KEY_f ;GDK_KEY_h
+				Init_WFARBox()
+			.endif
+		.endif
+		ret
+	On_Buffer_key_press_event ENDP	
+	On_gtk_text_buffer_mark_set PROC textbuffer__:gpointer,_d1:gpointer,_d2:gpointer,_pOFile:gpointer
+		local buf:gpointer
+		local pOFile:gpointer
+		local __start_iter         :GtkTextIter
+		local __end_iter           :GtkTextIter        
+		mov buf,textbuffer__
+		mov pOFile,_pOFile
+		.if buf
+		        .if rv(gtk_text_buffer_get_has_selection,buf)
+		        	gtk_text_buffer_get_selection_bounds(buf,addr __start_iter,addr __end_iter)
+		        	.if __Old__start_iter.dummy1==0
+						On_gtk_text_buffer_Selection_Changed(buf,pOFile)
+		        	.else
+					.if gtk_text_iter_compare(addr __start_iter,addr __Old__start_iter)
+						On_gtk_text_buffer_Selection_Changed(buf,pOFile)
+					.else
+						.if gtk_text_iter_compare(addr __end_iter,addr __Old__end_iter)
+							On_gtk_text_buffer_Selection_Changed(buf,pOFile)
+						.endif
+					.endif			         	
+		        	.endif
+		        .endif
+		.endif
+		ret
+	On_gtk_text_buffer_mark_set ENDP
+	
+	
 	Files_Get_OFile_From_Name PROC __fileName:gpointer
 		local  _fileName:gpointer
 		local OFilesIndex:gpointer

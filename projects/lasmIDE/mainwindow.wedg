@@ -55,11 +55,11 @@
  		Helpers_signal_connect_data	"WMnTBAssemble"		,"clicked"		,assemble_current_project
  		Helpers_signal_connect_data	"WMnTBPreAssemble"	,"clicked"		,preassemble_current_project
  		
- 		Helpers_signal_connect_data	"WMnSave"			,"activate"			,save_current_tab
+ 		Helpers_signal_connect_data	"WMnSave"			,"activate"			,Notebook_Save_Current_Tab
  		
  		Helpers_signal_connect_data	"WMnProjectOption"	,"activate"			,dialog_project_option
  		Helpers_signal_connect_data	"WMnPFromTemplate"	,"activate"		,MainWindow_callback_New_Project_From_Template
- 		Helpers_signal_connect_data	"WMnSaveFile"		,"activate"			,save_current_tab
+ 		Helpers_signal_connect_data	"WMnSaveFile"		,"activate"			,Notebook_Save_Current_Tab
  		Helpers_signal_connect_data	"WMnOpenProject"	,"activate"			,MainWindow_callback_Open_Project
  		Helpers_signal_connect_data	"WMnMakeTemplate"	,"activate"		,MainWindow_callback_Save_Project_As_Template
 
@@ -70,9 +70,9 @@
 
 		Helpers_signal_connect_data	"WMnTBNewFile"	,"clicked"	,On_WMnTBNewFile_Clicked
 		Helpers_signal_connect_data	"WMnTBOpenFile"	,"clicked"	,On_WMnTBOpenFile_Clicked
-		Helpers_signal_connect_data	"WMnSaveFile"	,"clicked"	,On_WMnSaveFile_Clicked
+		Helpers_signal_connect_data	"WMnSaveFile"	,"clicked"	,Notebook_Save_Current_Tab
 
-		Helpers_signal_connect_data	"WMnTBSaveAll"	,"clicked"	,On_WMnTBSaveAll_Clicked
+		Helpers_signal_connect_data	"WMnTBSaveAll"	,"clicked"	,Notebook_Save_All_Tab
 		Helpers_signal_connect_data	"WMnTBCut"		,"clicked"	,On_WMnTBCut_Clicked
 		Helpers_signal_connect_data	"WMnTBCopy"		,"clicked"	,On_WMnTBCopy_Clicked
 		Helpers_signal_connect_data	"WMnTBPaste"	,"clicked"	,On_WMnTBPaste_Clicked
@@ -81,7 +81,6 @@
 		Helpers_signal_connect_data	"WMnTBIndent"	,"clicked"	,On_WMnTBIndent_Clicked
 		Helpers_signal_connect_data	"WMnTBFind"		,"clicked"	,On_WMnTBFind_Clicked
 		Helpers_signal_connect_data	"WMnTBReplace"	,"clicked"	,On_WMnTBReplace_Clicked
-
 
 		Helpers_signal_connect_data	"WMn_NewFile_asm"	,"activate",On_WMn_NewFile_asm_Clicked
 		Helpers_signal_connect_data	"WMn_NewFile_inc"	,"activate",On_WMn_NewFile_inc_Clicked
@@ -94,7 +93,7 @@
 		Helpers_signal_connect_data	"WMn_NewFile"	,"activate",On_WMn_NewFile_Clicked
 		Helpers_signal_connect_data	"WMnOpenFile"	,"activate",On_WMnOpenFile_Clicked
 		Helpers_signal_connect_data	"WMnSaveAs"	,"activate",On_WMnSaveAs_Clicked
-		Helpers_signal_connect_data	"WMnSaveAll"	,"activate",On_WMnSaveAll_Clicked
+		Helpers_signal_connect_data	"WMnSaveAll"	,"activate",Notebook_Save_All_Tab
 		Helpers_signal_connect_data	"WMnCut"	,"activate",On_WMnTBCut_Clicked
 		Helpers_signal_connect_data	"WMnCopy"	,"activate",On_WMnTBCopy_Clicked
 		Helpers_signal_connect_data	"WMnPaste"	,"activate",On_WMnTBPaste_Clicked

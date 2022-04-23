@@ -3,7 +3,7 @@
 	Notebook_Get_Current_Buffer PROC
 		local current_page:gpointer
 		local OFilesIndex:gpointer
-        mov current_page,rv( gtk_notebook_get_nth_page,WNotebook,rv(gtk_notebook_get_current_page,WNotebook))
+        	mov current_page,rv( gtk_notebook_get_nth_page,WNotebook,rv(gtk_notebook_get_current_page,WNotebook))
 		m2m OFilesIndex,Current_Prj_OFiles
 		.if OFilesIndex==0
 			xor rax,rax
@@ -25,6 +25,55 @@
         xor rax,rax
         RET
 	Notebook_Get_Current_Buffer ENDP
+	Notebook_Get_Current_FileName PROC
+		local current_page:gpointer
+		local OFilesIndex:gpointer
+        	mov current_page,rv( gtk_notebook_get_nth_page,WNotebook,rv(gtk_notebook_get_current_page,WNotebook))
+		m2m OFilesIndex,Current_Prj_OFiles
+		.if OFilesIndex==0
+			xor rax,rax
+			ret
+		.else
+			@@:
+			mov rax,OFilesIndex
+			mov rax,gpointer ptr [rax]
+		 	.if rax
+		 		mov rcx,[rax].OFile.NotebookPage
+		 		.if rcx==current_page
+		 			mov rax,[rax].OFile.FileName
+		 			ret
+		 		.endif
+				add OFilesIndex	,sizeof gpointer   			 			
+				jmp @B
+			.endif			
+		.endif
+        xor rax,rax
+        RET
+	Notebook_Get_Current_FileName ENDP
+	Notebook_Get_Current_OFile PROC
+		local current_page:gpointer
+		local OFilesIndex:gpointer
+        	mov current_page,rv( gtk_notebook_get_nth_page,WNotebook,rv(gtk_notebook_get_current_page,WNotebook))
+		m2m OFilesIndex,Current_Prj_OFiles
+		.if OFilesIndex==0
+			xor rax,rax
+			ret
+		.else
+			@@:
+			mov rax,OFilesIndex
+			mov rax,gpointer ptr [rax]
+		 	.if rax
+		 		mov rcx,[rax].OFile.NotebookPage
+		 		.if rcx==current_page
+		 			ret
+		 		.endif
+				add OFilesIndex	,sizeof gpointer   			 			
+				jmp @B
+			.endif			
+		.endif
+        xor rax,rax
+        RET
+	Notebook_Get_Current_OFile ENDP
 	Notebook_Get_N PROC	_NotebookPage:gpointer
 		local NotebookPage:gpointer
 		local nbkIndex:gpointer
@@ -44,14 +93,78 @@
 		MOV RAX,-1
 		RET
 	Notebook_Get_N ENDP
-	
 	Notebook_Save_Current_Tab PROC
-	
+		local dir		               :gpointer
+		local buffer               :gpointer
+		local fname                :gpointer
+		local bndtxt               :gpointer
+		local _Ofile:gpointer
+		local __start_iter         :GtkTextIter
+		local __end_iter           :GtkTextIter        
+		mov _Ofile,rv(Notebook_Get_Current_OFile)
+		.if _Ofile
+			.if [rax].OFile.Modified
+				mov rcx,rax
+				m2m fname,[rcx].OFile.FileName
+				m2m buffer,[rcx].OFile.buffer       	
+				m2m dir,[rcx].OFile.Dir       	
+				invoke gtk_text_buffer_get_bounds,buffer,addr __start_iter,addr __end_iter
+				mov bndtxt ,rv( gtk_text_buffer_get_text,buffer,addr __start_iter,addr __end_iter,-1)
+				.if Dir==0
+					invoke g_file_set_contents,fname,bndtxt,-1,0
+				.else
+					mov fname,rv(g_build_filename,Dir,fname,0)
+					invoke g_file_set_contents,fname,bndtxt,-1,0
+					invoke g_free,fname        
+				.endif           
+				mov rax, _Ofile
+				mov [rax].OFile.Modified,0				                 
+			.endif
+		.endif
 		ret
 	Notebook_Save_Current_Tab ENDP	
 	Notebook_Save_All_Tab PROC
-	
-		ret
+		local OFilesIndex:gpointer
+		local dir		               :gpointer
+		local buffer               :gpointer
+		local fname                :gpointer
+		local bndtxt               :gpointer
+		local _Ofile:gpointer
+		local __start_iter         :GtkTextIter
+		local __end_iter           :GtkTextIter        
+		m2m OFilesIndex,Current_Prj_OFiles
+		.if OFilesIndex==0
+			xor rax,rax
+			ret
+		.else
+			@@:
+			mov rax,OFilesIndex
+			mov rax,gpointer ptr [rax]
+		 	.if rax
+				.if [rax].OFile.Modified
+					mov _Ofile,rax
+					mov rcx,rax
+					m2m fname,[rcx].OFile.FileName
+					m2m buffer,[rcx].OFile.buffer       	
+					m2m dir,[rcx].OFile.Dir       	
+					invoke gtk_text_buffer_get_bounds,buffer,addr __start_iter,addr __end_iter
+					mov bndtxt ,rv( gtk_text_buffer_get_text,buffer,addr __start_iter,addr __end_iter,-1)
+					.if Dir==0
+						invoke g_file_set_contents,fname,bndtxt,-1,0
+					.else
+						mov fname,rv(g_build_filename,Dir,fname,0)
+						invoke g_file_set_contents,fname,bndtxt,-1,0
+						invoke g_free,fname        
+					.endif           
+					mov rax, _Ofile
+					mov [rax].OFile.Modified,0				                 
+				.endif
+				add OFilesIndex	,sizeof gpointer   			 			
+				jmp @B
+			.endif			
+		.endif
+		xor rax,rax
+		RET
 	Notebook_Save_All_Tab ENDP
 	Notebook_Close_Tab PROC _pOFile:gpointer
 		local pOFile		:gpointer               
@@ -98,7 +211,7 @@
 		invoke g_signal_connect_data,lbutton,str$("clicked")	,addr 	Notebook_On_Close_Button_Clicked 	,pOFile,0,0     
 		invoke g_signal_connect_data,lbutton,str$("enter")		,addr   Notebook_On_Close_Button_Enter 		,pOFile,0,0     
 		invoke g_signal_connect_data,lbutton,str$("leave")		,addr   Notebook_On_Close_Button_Leave	 	,pOFile,0,0  
-
+	       	invoke g_signal_connect_data,lview    ,str$("key-press-event")    ,addr On_Buffer_key_press_event   ,pOFile,0,0      
 	       	
      
 
@@ -117,6 +230,7 @@
             mov curPage,eax
 			mov rcx,pOFile
 	     	m2m [rcx].OFile.NotebookPage,lscrolledwindow
+	     	m2m [rcx].OFile.source_view,lview
 				
 	        invoke g_signal_connect_data,lbutton,str$("clicked"),addr Notebook_On_Close_Button_Clicked ,lscrolledwindow,0,0     
 	    .endif
