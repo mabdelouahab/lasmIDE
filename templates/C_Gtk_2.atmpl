@@ -1,0 +1,27 @@
+[Project]
+Name=C_Gtk_2
+Description=C Hello World GtK
+MainFile=main.c
+Assemble=gcc -m64  -c  $SRC 
+Link=gcc -o $EXE $OBJ
+Assemble_opt=pkg-config --cflags gtk+-3.0 
+Link_opt=pkg-config --libs gtk+-3.0
+Run_cmd=./$EXE
+Files=main.c;main.h;
+Dirs=
+
+[main.c]
+Name=main
+Description=main
+ProgrammingLanguage=c
+StyleScheme=c
+icon=cfileicon
+Content=#include <gtk/gtk.h>\n\n/* This is a callback function. The data arguments are ignored\n * in this example. More on callbacks below.\n */\nstatic void\nprint_hello (GtkWidget *widget,\n             gpointer   data)\n{\n  g_print ("Hello World\\n");\n}\n\nstatic gboolean\non_delete_event (GtkWidget *widget,\n                 GdkEvent  *event,\n                 gpointer   data)\n{\n  /* If you return FALSE in the "delete_event" signal handler,\n   * GTK will emit the "destroy" signal. Returning TRUE means\n   * you don't want the window to be destroyed.\n   *\n   * This is useful for popping up 'are you sure you want to quit?'\n   * type dialogs.\n   */\n\n  g_print ("delete event occurred\\n");\n\n  return TRUE;\n}\n\nint\nmain (int   argc,\n      char *argv[])\n{\n  /* GtkWidget is the storage type for widgets */\n  GtkWidget *window;\n  GtkWidget *button;\n\n  /* This is called in all GTK applications. Arguments are parsed\n   * from the command line and are returned to the application.\n   */\n  gtk_init (&argc, &argv);\n\n  /* create a new window, and set its title */\n  window = gtk_window_new (GTK_WINDOW_TOPLEVEL);\n  gtk_window_set_title (GTK_WINDOW (window), "Hello");\n\n  /* When the window emits the "delete-event" signal (which is emitted\n   * by GTK+ in response to an event coming from the window manager,\n   * usually as a result of clicking the "close" window control), we\n   * ask it to call the on_delete_event() function as defined above.\n   *\n   * The data passed to the callback function is NULL and is ignored\n   * in the callback function.\n   */\n  g_signal_connect (window, "delete-event", G_CALLBACK (on_delete_event), NULL);\n\n  /* Here we connect the "destroy" event to the gtk_main_quit() function.\n   *\n   * This signal is emitted when we call gtk_widget_destroy() on the window,\n   * or if we return FALSE in the "delete_event" callback.\n   */\n  g_signal_connect (window, "destroy", G_CALLBACK (gtk_main_quit), NULL);\n\n  /* Sets the border width of the window. */\n  gtk_container_set_border_width (GTK_CONTAINER (window), 10);\n\n  /* Creates a new button with the label "Hello World". */\n  button = gtk_button_new_with_label ("Hello World");\n\n  /* When the button receives the "clicked" signal, it will call the\n   * function print_hello() passing it NULL as its argument.\n   *\n   * The print_hello() function is defined above.\n   */\n  g_signal_connect (button, "clicked", G_CALLBACK (print_hello), NULL);\n\n  /* The g_signal_connect_swapped() function will connect the "clicked" signal\n   * of the button to the gtk_widget_destroy() function; instead of calling it\n   * using the button as its argument, it will swap it with the user data\n   * argument. This will cause the window to be destroyed by calling\n   * gtk_widget_destroy() on the window.\n   */\n  g_signal_connect_swapped (button, "clicked", G_CALLBACK (gtk_widget_destroy), window);\n\n  /* This packs the button into the window. A GtkWindow inherits from GtkBin,\n   * which is a special container that can only have one child\n   */\n  gtk_container_add (GTK_CONTAINER (window), button);\n\n  /* The final step is to display this newly created widget... */\n  gtk_widget_show (button);\n\n  /* ... and the window */\n  gtk_widget_show (window);\n\n  /* All GTK applications must have a gtk_main(). Control ends here\n   * and waits for an event to occur (like a key press or a mouse event),\n   * until gtk_main_quit() is called.\n   */\n  gtk_main ();\n\n  return 0;\n}\n
+
+[main.h]
+Name=main
+Description=main
+ProgrammingLanguage=c
+StyleScheme=c
+icon=hfileicon
+Content=

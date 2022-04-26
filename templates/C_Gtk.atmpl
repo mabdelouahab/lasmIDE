@@ -1,0 +1,27 @@
+[Project]
+Name=C_Gtk
+Description=C Hellow World GTK
+MainFile=main.c
+Assemble=gcc -m64  -c  $SRC 
+Link=gcc -o $EXE $OBJ
+Assemble_opt=pkg-config --cflags gtk+-3.0 
+Link_opt=pkg-config --libs gtk+-3.0
+Run_cmd=./$EXE
+Files=main.c;main.h;
+Dirs=
+
+[main.c]
+Name=main
+Description=main
+ProgrammingLanguage=c
+StyleScheme=c
+icon=cfileicon
+Content=#include <gtk/gtk.h>\n\nint\nmain (int   argc,\n      char *argv[])\n{\n  GtkWidget *window;\n\n  gtk_init (&argc, &argv);\n\n  window = gtk_window_new (GTK_WINDOW_TOPLEVEL);\n  gtk_window_set_title (GTK_WINDOW (window), "Window");\n\n  g_signal_connect (window, "destroy", G_CALLBACK (gtk_main_quit), NULL);\n\n  gtk_widget_show (window);\n\n  gtk_main ();\n\n  return 0;\n}\n
+
+[main.h]
+Name=main
+Description=main
+ProgrammingLanguage=c
+StyleScheme=c
+icon=hfileicon
+Content=

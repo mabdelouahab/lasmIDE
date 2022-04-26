@@ -1,0 +1,28 @@
+[Project]
+Name=C_Hello_World
+Description=Hello World By C
+MainFile=main.c
+Assemble=gcc  -c  $SRC  
+Link=gcc -o $EXE $OBJ  
+Path=/shareddocs/programmation/lasm/projects/ctest
+Assemble_opt=
+Link_opt=
+Run_cmd=./$EXE
+Files=main.c;main.h;
+Dirs=
+
+[main.c]
+Name=main
+Description=main
+ProgrammingLanguage=c
+StyleScheme=c
+icon=cfileicon
+Content=#include <stdio.h>\nint main()\n{\n    printf("Hello World\\n");\n   printf("By lasm\\n");\n   return 0;\n}\n
+
+[main.h]
+Name=main
+Description=main
+ProgrammingLanguage=c
+StyleScheme=c
+icon=hfileicon
+Content=

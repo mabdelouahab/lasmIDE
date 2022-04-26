@@ -1,0 +1,33 @@
+[Project]
+Name=CPP_Class
+Description=C++ Hello World Class
+MainFile=main.c
+Assemble=g++  -c $SRC  Greeter.cpp
+Link=g++ -o $EXE   $OBJ Greeter.o
+Run_cmd=./$EXE
+Files=main.c;main.h;main.cpp;
+Dirs=
+
+[main.c]
+Name=main
+Description=main
+ProgrammingLanguage=cpp
+StyleScheme=cpp
+icon=cfileicon
+Content=#include <iostream>\n#include "Greeter.h"\n\nusing namespace std;\n\nint main()\n{\n	Greeter _greeter;\n	_greeter.text = "\\nHi";\n	cout << _greeter.greet("Carl");\n	cout << _greeter.greet("Peter");\n	_greeter.text = "Hello programmer";\n	cout << _greeter.greet("Richard\\n");\n	//cin.get();\n	return 0;\n}
+
+[main.h]
+Name=main
+Description=main
+ProgrammingLanguage=c
+StyleScheme=c
+icon=hfileicon
+Content=
+
+[main.cpp]
+Name=main.cpp
+Description=main.cpp
+ProgrammingLanguage=cpp
+StyleScheme=cpp
+icon=cfileicon
+Content=
