@@ -103,7 +103,7 @@
         m2m 	[rcx].OFile.FileName			,FFileName
 		m2m 	[rcx].OFile.Description			,FName	 
 		str2m 	[rcx].OFile.ProgrammingLanguage	,"c" 
-		str2m 	[rcx].OFile.StyleScheme			,"assembly"	 
+		str2m 	[rcx].OFile.StyleScheme			,"c"	 
 		str2m 	[rcx].OFile.icon				,"cfileicon" 
 		mov 	[rcx].OFile.viewer				,0	 
 		mov 	[rcx].OFile.buffer				,0	 
@@ -128,7 +128,7 @@
         m2m 	[rcx].OFile.FileName			,FFileName
 		m2m 	[rcx].OFile.Description			,FName	 
 		str2m 	[rcx].OFile.ProgrammingLanguage	,"c" 
-		str2m 	[rcx].OFile.StyleScheme			,"assembly"	 
+		str2m 	[rcx].OFile.StyleScheme			,"c"	 
 		str2m 	[rcx].OFile.icon				,"hfileicon" 
 		mov 	[rcx].OFile.viewer				,0	 
 		mov 	[rcx].OFile.buffer				,0	 
@@ -200,7 +200,7 @@
         invoke g_malloc,sizeof OFile    
         mov rcx,rax  
 		m2m 	[rcx].OFile._Name				,FName		
-        m2m 	[rcx].OFile.FileName			,FFileName
+        	m2m 	[rcx].OFile.FileName			,FFileName
 		m2m 	[rcx].OFile.Description			,FName	 
 		str2m 	[rcx].OFile.ProgrammingLanguage	,"text" 
 		str2m 	[rcx].OFile.StyleScheme			,"classic"	 
