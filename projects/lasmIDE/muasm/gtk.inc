@@ -192,7 +192,7 @@
 	GDK_PAD_GROUP_MODE      = 47
 	;GDK_EVENT_LAST        ; helper variable for decls */
 	GdkEventType typedef dword
-
+GdkModifierType typedef qWORD
     GDK_SHIFT_MASK		  			= 1 shl 0
     GDK_LOCK_MASK		  			= 1 shl 1
     GDK_CONTROL_MASK		  		= 1 shl 2
@@ -211,6 +211,43 @@
     GDK_META_MASK		  			= 1 shl 28
     GDK_RELEASE_MASK		  		= 1 shl 30
     GDK_MODIFIER_MASK		  		= 0x5c001fff
+
+
+	_GdkRectangle   struct
+		x       dword    ?
+		y       dword   ?
+		width_  dword   ?
+		height  dword   ?
+	_GdkRectangle   ends
+
+	gtk_font_chooser_get_font  proto :vararg
+	gtk_font_chooser_dialog_new proto :vararg
+	gtk_font_selection_dialog_new proto :vararg
+	gtk_font_selection_dialog_get_font_name  proto :vararg
+	pango_font_description_from_string  proto :vararg
+	gtk_color_selection_dialog_new proto :vararg
+	gtk_color_chooser_dialog_new proto :vararg
+	gtk_color_chooser_get_rgba proto :vararg
+	gdk_color_to_string proto :vararg
+	g_strsplit proto :vararg
+	gtk_expander_new proto :vararg
+	gtk_expander_set_expanded proto :vararg
+
+	gdk_rgba_to_string proto :vararg
+	gdk_rgba_parse proto :vararg
+	gtk_source_completion_words_new proto :vararg
+	gtk_source_completion_words_register proto :vararg
+	gtk_source_completion_add_provider proto :vararg
+	gtk_check_menu_item_toggled proto :vararg
+	gtk_check_menu_item_get_active proto :vararg
+
+	GTK_TEXT_WINDOW_WIDGET EQU 1
+	GTK_WINDOW_POPUP EQU 1
+	GTK_WRAP_NONE EQU 0
+	GTK_WRAP_WORD_CHAR EQU 3
+	GTK_STYLE_PROVIDER_PRIORITY_USER EQU 800
+	G_FILE_TEST_EXISTS = 1  shl  4
+
     	
 	GdkEventButton struct sizeof gpointer
 		_type 		GdkEventType	GDK_NOTHING

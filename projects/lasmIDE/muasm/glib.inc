@@ -128,6 +128,21 @@ IFNDEF ___glib___
 
 
 
+	GQuark typedef guint32
+
+	GError typedef ptr _GError
+	_GError struct 8
+		domain 	GQuark 		?
+		code   	gint 		?
+		message gpointer 	?  ;gchar       *
+	_GError ends
+
+	TRUE EQU 1
+	NULL EQU 0
+	FALSE EQU 0
+
+
+
        
 ENDIF
 
