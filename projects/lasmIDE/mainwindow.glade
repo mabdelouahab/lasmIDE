@@ -1,1047 +1,1098 @@
-<?xml version="1.0" encoding="UTF-8"?> 
- <interface> 
-   <object class="GtkImage" id="W_ICON_Assemble"> 
-     <property name="visible">True</property> 
-     <property name="can_focus">False</property> 
-     <property name="stock">gtk-missing-image</property> 
-   </object> 
-   <object class="GtkImage" id="W_ICON_Build"> 
-     <property name="visible">True</property> 
-     <property name="can_focus">False</property> 
-     <property name="stock">gtk-missing-image</property> 
-   </object> 
-   <object class="GtkImage" id="W_ICON_Pre_Assemble"> 
-     <property name="visible">True</property> 
-     <property name="can_focus">False</property> 
-     <property name="stock">gtk-missing-image</property> 
-   </object> 
-   <object class="GtkImage" id="W_ICON_Save"> 
-     <property name="visible">True</property> 
-     <property name="can_focus">False</property> 
-     <property name="stock">gtk-missing-image</property> 
-   </object> 
-   <object class="GtkImage" id="W_ICON_Save_All"> 
-     <property name="visible">True</property> 
-     <property name="can_focus">False</property> 
-     <property name="stock">gtk-missing-image</property> 
-   </object> 
-   <object class="GtkWindow" id="WMainwindow"> 
-     <property name="width_request">800</property> 
-     <property name="height_request">600</property> 
-     <property name="can_focus">False</property> 
-     <child> 
-       <placeholder/> 
-     </child> 
-     <child> 
-       <object class="GtkBox"> 
-         <property name="visible">True</property> 
-         <property name="can_focus">False</property> 
-         <property name="orientation">vertical</property> 
-         <child> 
-           <object class="GtkAlignment"> 
-             <property name="visible">True</property> 
-             <property name="can_focus">False</property> 
-             <child> 
-               <object class="GtkMenuBar" id="WTMenuBar"> 
-                 <property name="width_request">800</property> 
-                 <property name="height_request">25</property> 
-                 <property name="visible">True</property> 
-                 <property name="can_focus">False</property> 
-                 <child> 
-                   <object class="GtkMenuItem"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">File</property> 
-                     <child type="submenu"> 
-                       <object class="GtkMenu"> 
-                         <property name="visible">True</property> 
-                         <property name="can_focus">False</property> 
-                         <child> 
-                           <object class="GtkMenuItem" id="WMnNewFile"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="label" translatable="yes">new</property> 
-                             <property name="use_underline">True</property> 
-                             <child type="submenu"> 
-                               <object class="GtkMenu"> 
-                                 <property name="visible">True</property> 
-                                 <property name="can_focus">False</property> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMn_NewFile_asm"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">Assembly module (.asm)</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMn_NewFile_inc"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">Include file (.inc)</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMn_NewFile_wedg"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">Assembly gtk Interface (.wedg)</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMn_NewFile_rc"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">Ressource file (.rc)</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkSeparatorMenuItem"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMn_NewFile_c"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">C file (.c)</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMn_NewFile_h"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">Header File (.h)</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkSeparatorMenuItem"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMn_NewFile_txt"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">Text file (.txt)</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMn_NewFile_xml"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">Xml File (.xml)</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkSeparatorMenuItem"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMn_NewFile"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">File</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                               </object> 
-                             </child> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkImageMenuItem" id="WMnOpenFile"> 
-                             <property name="label">gtk-open</property> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="use_underline">True</property> 
-                             <property name="use_stock">True</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkImageMenuItem" id="WMnSave"> 
-                             <property name="label">gtk-save</property> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="use_underline">True</property> 
-                             <property name="use_stock">True</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkImageMenuItem" id="WMnSaveAs"> 
-                             <property name="label">gtk-save-as</property> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="use_underline">True</property> 
-                             <property name="use_stock">True</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkMenuItem" id="WMnSaveAll"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="label" translatable="yes">Save all</property> 
-                             <property name="use_underline">True</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkSeparatorMenuItem"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkImageMenuItem" id="WMnQuit"> 
-                             <property name="label">gtk-quit</property> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="use_underline">True</property> 
-                             <property name="use_stock">True</property> 
-                           </object> 
-                         </child> 
-                       </object> 
-                     </child> 
-                   </object> 
-                 </child> 
-                 <child> 
-                   <object class="GtkMenuItem"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">Edit</property> 
-                     <child type="submenu"> 
-                       <object class="GtkMenu"> 
-                         <property name="visible">True</property> 
-                         <property name="can_focus">False</property> 
-                         <child> 
-                           <object class="GtkImageMenuItem" id="WMnCut"> 
-                             <property name="label">gtk-cut</property> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="use_underline">True</property> 
-                             <property name="use_stock">True</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkImageMenuItem" id="WMnCopy"> 
-                             <property name="label">gtk-copy</property> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="use_underline">True</property> 
-                             <property name="use_stock">True</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkImageMenuItem" id="WMnPaste"> 
-                             <property name="label">gtk-paste</property> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="use_underline">True</property> 
-                             <property name="use_stock">True</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkImageMenuItem" id="WMnDelete"> 
-                             <property name="label">gtk-delete</property> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="use_underline">True</property> 
-                             <property name="use_stock">True</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkSeparatorMenuItem"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkImageMenuItem" id="WMnFind"> 
-                             <property name="label">gtk-find</property> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="use_underline">True</property> 
-                             <property name="use_stock">True</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkImageMenuItem" id="WMnFindAndReplace"> 
-                             <property name="label">gtk-find-and-replace</property> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="use_underline">True</property> 
-                             <property name="use_stock">True</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkSeparatorMenuItem"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkMenuItem" id="WMnSellectAll"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                           </object> 
-                         </child> 
-                       </object> 
-                     </child> 
-                   </object> 
-                 </child> 
-                 <child> 
-                   <object class="GtkMenuItem"  id="WMProject"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">Project</property> 
-                     <child type="submenu"> 
-                       <object class="GtkMenu"> 
-                         <property name="visible">True</property> 
-                         <property name="can_focus">False</property> 
-                         <child> 
-                           <object class="GtkMenuItem" id="WMnNewProject"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="label" translatable="yes">New project</property> 
-                             <child type="submenu"> 
-                               <object class="GtkMenu"> 
-                                 <property name="visible">True</property> 
-                                 <property name="can_focus">False</property> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMnEmptyProject"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">Empty project</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMnPFromTemplate"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">From template</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                               </object> 
-                             </child> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkMenuItem"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="label" translatable="yes">Open project</property> 
-
-                             <child type="submenu"> 
-                               <object class="GtkMenu" id="WMnOpenProjectsubmenu"> 
-                                 <property name="visible">True</property> 
-                                 <property name="can_focus">False</property> 
-                         		<child> 
-                           			<object class="GtkMenuItem" id="WMnOpenProject"> 
-                             				<property name="visible">True</property> 
-                            				<property name="can_focus">False</property> 
-                             				<property name="label" translatable="yes">Browse</property> 
-                               		</object> 
-                         		</child> 
-                               </object> 
-                             </child> 
-
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkSeparatorMenuItem"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <!--object class="GtkMenuItem" id="WMnAddFile"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="label" translatable="yes">Add new</property> 
-                             <property name="use_underline">True</property> 
-                             <child type="submenu"> 
-                               <object class="GtkMenu"> 
-                                 <property name="visible">True</property> 
-                                 <property name="can_focus">False</property> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMn_AddFile_asm"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">Assembly module (.asm)</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMn_AddFile_inc"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">Include file (.inc)</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMn_AddFile_wedg"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">Assembly gtk Interface (.wedg)</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMn_AddFile_rc"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">Ressource file (.rc)</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkSeparatorMenuItem"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMn_AddFile_c"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">C file (.c)</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMn_AddFile_h"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">Header File (.h)</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkSeparatorMenuItem"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMn_AddFile_txt"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">Text file (.txt)</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMn_AddFile_xml"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">Xml File (.xml)</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkSeparatorMenuItem"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                   </object> 
-                                 </child> 
-                                 <child> 
-                                   <object class="GtkMenuItem" id="WMn_AddFile"> 
-                                     <property name="visible">True</property> 
-                                     <property name="can_focus">False</property> 
-                                     <property name="label" translatable="yes">File</property> 
-                                     <property name="use_underline">True</property> 
-                                   </object> 
-                                 </child> 
-                               </object> 
-                             </child> 
-                           </object--> 
-                         </child> 
-                         <child> 
-                           <object class="GtkSeparatorMenuItem"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkMenuItem" id="WMnMakeTemplate"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="label" translatable="yes">Save as template</property> 
-                             <property name="use_underline">True</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkSeparatorMenuItem"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkMenuItem" id="WMnProjectOption"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="label" translatable="yes">Project option</property> 
-                             <property name="use_underline">True</property> 
-                           </object> 
-                         </child> 
-                       </object> 
-                     </child> 
-                   </object> 
-                 </child> 
-                 <child> 
-                   <object class="GtkMenuItem"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">Build</property> 
-                     <child type="submenu"> 
-                       <object class="GtkMenu"> 
-                         <property name="visible">True</property> 
-                         <property name="can_focus">False</property> 
-                         <child> 
-                           <object class="GtkMenuItem" id="WMnAssemble"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="label" translatable="yes">Assemble</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkMenuItem" id="WMnLink"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="label" translatable="yes">Link</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkMenuItem" id="WMnBuild"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="label" translatable="yes">Build</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkMenuItem" id="WMnRun"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="label" translatable="yes">Run</property> 
-                           </object> 
-                         </child> 
-                         <child> 
-                           <object class="GtkMenuItem" id="WMnDoAll"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="label" translatable="yes">Do all</property> 
-                           </object> 
-                         </child> 
-                       </object> 
-                     </child> 
-                   </object> 
-                 </child> 
-                 <child> 
-                   <object class="GtkMenuItem"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">Tools</property> 
-                   </object> 
-                 </child> 
-                 <child> 
-                   <object class="GtkMenuItem"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">Settings</property> 
-                     <child type="submenu"> 
-                       <object class="GtkMenu"> 
-                         <property name="visible">True</property> 
-                         <property name="can_focus">False</property> 
-                         <child> 
-                           <object class="GtkMenuItem" id="WMnSetting"> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="label" translatable="yes">Setting</property> 
-                           </object> 
-                         </child> 
-                       </object> 
-                     </child> 
-                   </object> 
-                 </child> 
-                 <child> 
-                   <object class="GtkMenuItem"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">View</property> 
-                   </object> 
-                 </child> 
-                 <child> 
-                   <object class="GtkMenuItem"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">Help</property> 
-                     <child type="submenu"> 
-                       <object class="GtkMenu"> 
-                         <property name="visible">True</property> 
-                         <property name="can_focus">False</property> 
-                         <child> 
-                           <object class="GtkImageMenuItem" id="WMnAbout"> 
-                             <property name="label">gtk-about</property> 
-                             <property name="visible">True</property> 
-                             <property name="can_focus">False</property> 
-                             <property name="use_underline">True</property> 
-                             <property name="use_stock">True</property> 
-                           </object> 
-                         </child> 
-                       </object> 
-                     </child> 
-                   </object> 
-                 </child> 
-               </object> 
-             </child> 
-           </object> 
-           <packing> 
-             <property name="expand">False</property> 
-             <property name="fill">True</property> 
-             <property name="position">0</property> 
-           </packing> 
-         </child> 
-         <child> 
-           <object class="GtkAlignment"> 
-             <property name="visible">True</property> 
-             <property name="can_focus">False</property> 
-             <child> 
-               <object class="GtkToolbar" id="WToolBar"> 
-                 <property name="width_request">800</property> 
-                 <property name="height_request">38</property> 
-                 <property name="visible">True</property> 
-                 <property name="can_focus">False</property> 
-                 <property name="border_width">1</property> 
-                 <property name="toolbar_style">icons</property> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnTBNewFile"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="tooltip_text" translatable="yes">New empty file</property> 
-                     <property name="label" translatable="yes">New</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="stock_id">gtk-new</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnTBOpenFile"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="tooltip_text" translatable="yes">Open file</property> 
-                     <property name="label" translatable="yes">Open</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="stock_id">gtk-open</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnSaveFile"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="tooltip_text" translatable="yes">Save current file</property> 
-                     <property name="label" translatable="yes">Save</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="icon_widget">W_ICON_Save</property> 
-;                     <property name="stock_id">gtk-save</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnTBSaveAll"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="tooltip_text" translatable="yes">Save All</property> 
-                     <property name="label" translatable="yes">S</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="icon_widget">W_ICON_Save_All</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkSeparatorToolItem"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnTBCut"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">Cut</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="stock_id">gtk-cut</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnTBCopy"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">Copy</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="stock_id">gtk-copy</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnTBPaste"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">Paste</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="stock_id">gtk-paste</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnTBDelete"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">Delete</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="stock_id">gtk-delete</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkSeparatorToolItem"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnTBUnindent"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="tooltip_text" translatable="yes">unindent</property> 
-                     <property name="label" translatable="yes">Unindent</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="stock_id">gtk-unindent</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnTBIndent"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="tooltip_text" translatable="yes">indent</property> 
-                     <property name="label" translatable="yes">Indent</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="stock_id">gtk-indent</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkSeparatorToolItem"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnTBUndo"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">Undo</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="stock_id">gtk-undo</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnTBRedo"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">Redo</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="stock_id">gtk-redo</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkSeparatorToolItem"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnTBFind"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">Find</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="stock_id">gtk-find</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnTBReplace"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">Replace</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="stock_id">gtk-find-and-replace</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkSeparatorToolItem"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnTBPreAssemble"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">Pre-Assemble</property> 
-                     <property name="tooltip_text" translatable="yes">Pre-Assemble</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="icon_widget">W_ICON_Pre_Assemble</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnTBAssemble"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">Assemble</property> 
-                     <property name="tooltip_text" translatable="yes">Assemble project</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="icon_widget">W_ICON_Assemble</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnTBBuild"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">Build</property> 
-                     <property name="tooltip_text" translatable="yes">Build project</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="icon_widget">W_ICON_Build</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnTBRun"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="label" translatable="yes">Run</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="stock_id">gtk-media-play</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkToolButton" id="WMnTBStopRun"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">False</property> 
-                     <property name="tooltip_text" translatable="yes">Stop running</property> 
-                     <property name="label" translatable="yes">Stop</property> 
-                     <property name="use_underline">True</property> 
-                     <property name="stock_id">gtk-media-stop</property> 
-                   </object> 
-                   <packing> 
-                     <property name="expand">False</property> 
-                     <property name="homogeneous">True</property> 
-                   </packing> 
-                 </child> 
-               </object> 
-             </child> 
-           </object> 
-           <packing> 
-             <property name="expand">False</property> 
-             <property name="fill">True</property> 
-             <property name="position">1</property> 
-           </packing> 
-         </child> 
-         <child> 
-           <object class="GtkBox"> 
-             <property name="visible">True</property> 
-             <property name="can_focus">False</property> 
-             <property name="homogeneous">True</property> 
-             <child> 
-               <object class="GtkPaned" id="WPaned1"> 
-                 <property name="visible">True</property> 
-                 <property name="can_focus">True</property> 
-                 <property name="orientation">vertical</property> 
-                 <child> 
-                   <object class="GtkPaned" id="WPaned2"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">True</property> 
-                     <child> 
-			
-			
-	;		DB	'     <object class="GtkBox" id="WBoxTFR"> 
-	;		DB	'    <property name="visible">True</property> 
-	;		DB	'    <property name="can-focus">False</property> 
-	;		DB	'    <property name="orientation">vertical</property> 
-	;		DB	'    <property name="baseline-position">bottom</property> 
-	;		DB	'    <child> 
-      <object class="GtkScrolledWindow" id="WTreeViewContainer"> 
-        <property name="visible">True</property> 
-        <property name="can-focus">True</property> 
-        <property name="shadow-type">in</property> 
-        <child> 
-          <object class="GtkTreeView" id="WProjectTreeView"> 
-            <property name="visible">True</property> 
-            <property name="can-focus">True</property> 
-            <property name="enable-tree-lines">True</property> 
-          </object> 
-        </child> 
-      </object> 
-		;	DB	'      <packing> 
-		;	DB	'        <property name="expand">False</property> 
-		;	DB	'        <property name="fill">True</property> 
-		;	DB	'        <property name="position">0</property> 
-		;	DB	'      </packing> 
-		;	DB	'    </child> 
-			;DB	'    <child> 
-			;DB	'    </child> 
-		;	DB	'  </object> 			
-		;	DB	'                       <packing> 
-		;	DB	'                         <property name="resize">False</property> 
-		;	DB	'                         <property name="shrink">True</property> 
-		;	DB	'                       </packing> 
-                     </child> 
-                     <child> 
-                       <object class="GtkScrolledWindow" id="NoteBookContainer"> 
-                         <property name="visible">True</property> 
-                         <property name="can_focus">True</property> 
-                         <property name="shadow_type">in</property> 
-                         <child> 
-                           <placeholder/> 
-                         </child> 
-                       </object> 
-                       <packing> 
-                         <property name="resize">True</property> 
-                         <property name="shrink">True</property> 
-                       </packing> 
-                     </child> 
-                   </object> 
-                   <packing> 
-                     <property name="resize">False</property> 
-                     <property name="shrink">True</property> 
-                   </packing> 
-                 </child> 
-                 <child> 
-                   <object class="GtkScrolledWindow" id="WWatchScrolledWindow"> 
-                     <property name="visible">True</property> 
-                     <property name="can_focus">True</property> 
-                     <property name="shadow_type">in</property> 
-                     <child> 
-                     </child> 
-                   </object> 
-                   <packing> 
-                     <property name="resize">True</property> 
-                     <property name="shrink">True</property> 
-                   </packing> 
-                 </child> 
-               </object> 
-               <packing> 
-                 <property name="expand">False</property> 
-                 <property name="fill">True</property> 
-                 <property name="position">0</property> 
-               </packing> 
-             </child> 
-           </object> 
-           <packing> 
-             <property name="expand">True</property> 
-             <property name="fill">True</property> 
-             <property name="position">2</property> 
-           </packing> 
-         </child> 
-       </object> 
-     </child> 
-   </object> 
-   <object class="GtkListStore" id="liststore1"/> 
- </interface>
-
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.38.2 -->
+<interface>
+  <requires lib="gtk+" version="3.10"/>
+  <object class="GtkImage" id="W_ICON_Assemble">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="W_ICON_Build">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="W_ICON_Pre_Assemble">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="W_ICON_Save">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="W_ICON_Save_All">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkWindow" id="WMainwindow">
+    <property name="can-focus">False</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkAlignment">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <child>
+              <object class="GtkMenuBar" id="WTMenuBar">
+                <property name="width-request">800</property>
+                <property name="height-request">25</property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">File</property>
+                    <child type="submenu">
+                      <object class="GtkMenu">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <child>
+                          <object class="GtkMenuItem" id="WMnNewFile">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">new</property>
+                            <property name="use-underline">True</property>
+                            <child type="submenu">
+                              <object class="GtkMenu">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <child>
+                                  <object class="GtkMenuItem" id="WMn_NewFile_asm">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">Assembly module (.asm)</property>
+                                    <property name="use-underline">True</property>
+                                    <signal name="activate" handler="On_WMn_NewFile_asm_Clicked" swapped="no"/>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkMenuItem" id="WMn_NewFile_inc">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">Include file (.inc)</property>
+                                    <property name="use-underline">True</property>
+                                    <signal name="activate" handler="On_WMn_NewFile_inc_Clicked" swapped="no"/>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkMenuItem" id="WMn_NewFile_wedg">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">Assembly gtk Interface (.wedg)</property>
+                                    <property name="use-underline">True</property>
+                                    <signal name="activate" handler="On_WMn_NewFile_wedg_Clicked" swapped="no"/>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkMenuItem" id="WMn_NewFile_rc">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">Ressource file (.rc)</property>
+                                    <property name="use-underline">True</property>
+                                    <signal name="activate" handler="On_WMn_NewFile_rc_Clicked" swapped="no"/>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkSeparatorMenuItem">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkMenuItem" id="WMn_NewFile_c">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">C file (.c)</property>
+                                    <property name="use-underline">True</property>
+                                    <signal name="activate" handler="On_WMn_NewFile_c_Clicked" swapped="no"/>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkMenuItem" id="WMn_NewFile_h">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">Header File (.h)</property>
+                                    <property name="use-underline">True</property>
+                                    <signal name="activate" handler="On_WMn_NewFile_h_Clicked" swapped="no"/>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkSeparatorMenuItem">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkMenuItem" id="WMn_NewFile_txt">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">Text file (.txt)</property>
+                                    <property name="use-underline">True</property>
+                                    <signal name="activate" handler="On_WMn_NewFile_txt_Clicked" swapped="no"/>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkMenuItem" id="WMn_NewFile_xml">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">Xml File (.xml)</property>
+                                    <property name="use-underline">True</property>
+                                    <signal name="activate" handler="On_WMn_NewFile_xml_Clicked" swapped="no"/>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkSeparatorMenuItem">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkMenuItem" id="WMn_NewFile">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">File</property>
+                                    <property name="use-underline">True</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem" id="WMnOpenFile">
+                            <property name="label">gtk-open</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="use-underline">True</property>
+                            <property name="use-stock">True</property>
+                            <signal name="activate" handler="On_WMnOpenFile_Clicked" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem" id="WMnSave">
+                            <property name="label">gtk-save</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="use-underline">True</property>
+                            <property name="use-stock">True</property>
+                            <signal name="activate" handler="Notebook_Save_Current_Tab" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem" id="WMnSaveAs">
+                            <property name="label">gtk-save-as</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="use-underline">True</property>
+                            <property name="use-stock">True</property>
+                            <signal name="activate" handler="On_WMnSaveAs_Clicked" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkMenuItem" id="WMnSaveAll">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Save all</property>
+                            <property name="use-underline">True</property>
+                            <signal name="activate" handler="Notebook_Save_All_Tab" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkSeparatorMenuItem">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem" id="WMnQuit">
+                            <property name="label">gtk-quit</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="use-underline">True</property>
+                            <property name="use-stock">True</property>
+                            <signal name="activate" handler="MainWindow_callback_wQuit" swapped="no"/>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Edit</property>
+                    <child type="submenu">
+                      <object class="GtkMenu">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <child>
+                          <object class="GtkImageMenuItem" id="WMnCut">
+                            <property name="label">gtk-cut</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="use-underline">True</property>
+                            <property name="use-stock">True</property>
+                            <signal name="activate" handler="On_WMnTBCut_Clicked" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem" id="WMnCopy">
+                            <property name="label">gtk-copy</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="use-underline">True</property>
+                            <property name="use-stock">True</property>
+                            <signal name="activate" handler="On_WMnTBCopy_Clicked" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem" id="WMnPaste">
+                            <property name="label">gtk-paste</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="use-underline">True</property>
+                            <property name="use-stock">True</property>
+                            <signal name="activate" handler="On_WMnTBPaste_Clicked" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem" id="WMnDelete">
+                            <property name="label">gtk-delete</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="use-underline">True</property>
+                            <property name="use-stock">True</property>
+                            <signal name="activate" handler="On_WMnTBDelete_Clicked" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkSeparatorMenuItem">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem" id="WMnFind">
+                            <property name="label">gtk-find</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="use-underline">True</property>
+                            <property name="use-stock">True</property>
+                            <signal name="activate" handler="Init_WFARBox" swapped="no"/>
+                            <accelerator key="f" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem" id="WMnFindAndReplace">
+                            <property name="label">gtk-find-and-replace</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="use-underline">True</property>
+                            <property name="use-stock">True</property>
+                            <signal name="activate" handler="On_WMnFindAndReplace_Clicked" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkSeparatorMenuItem">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkMenuItem" id="WMnSellectAll">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <signal name="activate" handler="On_WMnSellectAll_Clicked" swapped="no"/>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem" id="WMProject">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Project</property>
+                    <child type="submenu">
+                      <object class="GtkMenu">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <child>
+                          <object class="GtkMenuItem" id="WMnNewProject">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">New project</property>
+                            <child type="submenu">
+                              <object class="GtkMenu">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <child>
+                                  <object class="GtkMenuItem" id="WMnEmptyProject">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">Empty project</property>
+                                    <property name="use-underline">True</property>
+                                    <signal name="activate" handler="MainWindow_CallBack_New_Empty_Project" swapped="no"/>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkMenuItem" id="WMnPFromTemplate">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">From template</property>
+                                    <property name="use-underline">True</property>
+                                    <signal name="activate" handler="MainWindow_callback_New_Project_From_Template" swapped="no"/>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkMenuItem">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Open project</property>
+                            <child type="submenu">
+                              <object class="GtkMenu" id="WMnOpenProjectsubmenu">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <child>
+                                  <object class="GtkMenuItem" id="WMnOpenProject">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">Browse</property>
+                                    <signal name="activate" handler="MainWindow_callback_Open_Project" swapped="no"/>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkSeparatorMenuItem">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkSeparatorMenuItem">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkMenuItem" id="WMnMakeTemplate">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Save as template</property>
+                            <property name="use-underline">True</property>
+                            <signal name="activate" handler="MainWindow_callback_Save_Project_As_Template" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkSeparatorMenuItem">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkMenuItem" id="WMnProjectOption">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Project option</property>
+                            <property name="use-underline">True</property>
+                            <signal name="activate" handler="dialog_project_option" swapped="no"/>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Build</property>
+                    <child type="submenu">
+                      <object class="GtkMenu">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <child>
+                          <object class="GtkMenuItem" id="WMnAssemble">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Assemble</property>
+                            <signal name="activate" handler="On_WMnAssemble_Clicked" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkMenuItem" id="WMnLink">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Link</property>
+                            <signal name="activate" handler="On_WMnLink_Clicked" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkMenuItem" id="WMnBuild">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Build</property>
+                            <signal name="activate" handler="On_WMnBuild_Clicked" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkMenuItem" id="WMnRun">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Run</property>
+                            <signal name="activate" handler="On_WMnRun_Clicked" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkMenuItem" id="WMnDoAll">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Do all</property>
+                            <signal name="activate" handler="On_WMnDoAll_Clicked" swapped="no"/>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem" id="Tools">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">_Tools</property>
+                    <property name="use-underline">True</property>
+                    <child type="submenu">
+                      <object class="GtkMenu">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <child>
+                          <object class="GtkMenuItem" id="WMnToolsFont">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">_Font</property>
+                            <property name="use-underline">True</property>
+                            <signal name="activate" handler="menu_Tools_Font" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkMenuItem" id="WMnToolsColor">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">_Color</property>
+                            <property name="use-underline">True</property>
+                            <signal name="activate" handler="menu_Tools_Color" swapped="no"/>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Settings</property>
+                    <child type="submenu">
+                      <object class="GtkMenu">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <child>
+                          <object class="GtkMenuItem" id="WMnSetting">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Setting</property>
+                            <signal name="activate" handler="On_WMnSetting_Clicked" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkCheckMenuItem" id="menu_Settings_WordWrap">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">WordWrap</property>
+                            <property name="use-underline">True</property>
+                            <signal name="toggled" handler="menu_Settings_WordWrap_toggled_cb" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkCheckMenuItem" id="menu_settings_highlight">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="tooltip-text" translatable="yes">Turn On or OFF highlight of current line</property>
+                            <property name="label" translatable="yes">highlight_current_line</property>
+                            <property name="use-underline">True</property>
+                            <signal name="toggled" handler="menu_settings_highlight_cb" swapped="no"/>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">View</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="right-justified">True</property>
+                    <property name="label" translatable="yes">Help</property>
+                    <child type="submenu">
+                      <object class="GtkMenu">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <child>
+                          <object class="GtkImageMenuItem" id="WMnAbout">
+                            <property name="label">gtk-about</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="use-underline">True</property>
+                            <property name="use-stock">True</property>
+                            <signal name="activate" handler="On_WMnAbout_Clicked" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkMenuItem">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">_Function</property>
+                            <property name="use-underline">True</property>
+                            <signal name="activate" handler="menu_Help_Function" swapped="no"/>
+                            <accelerator key="F1" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkAlignment">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <child>
+              <object class="GtkToolbar" id="WToolBar">
+                <property name="width-request">800</property>
+                <property name="height-request">38</property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="border-width">1</property>
+                <property name="toolbar-style">icons</property>
+                <child>
+                  <object class="GtkToolButton" id="WMnTBNewFile">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">New empty file</property>
+                    <property name="label" translatable="yes">New</property>
+                    <property name="use-underline">True</property>
+                    <property name="stock-id">gtk-new</property>
+                    <signal name="clicked" handler="On_WMnTBNewFile_Clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="WMnTBOpenFile">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">Open file</property>
+                    <property name="label" translatable="yes">Open</property>
+                    <property name="use-underline">True</property>
+                    <property name="stock-id">gtk-open</property>
+                    <signal name="clicked" handler="On_WMnTBOpenFile_Clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="WMnSaveFile">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">Save current file</property>
+                    <property name="label" translatable="yes">Save</property>
+                    <property name="use-underline">True</property>
+                    <property name="stock-id">gtk-save</property>
+                    <property name="icon-widget">W_ICON_Save</property>
+                    <signal name="clicked" handler="Notebook_Save_Current_Tab" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="WMnTBSaveAll">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">Save All</property>
+                    <property name="label" translatable="yes">S</property>
+                    <property name="use-underline">True</property>
+                    <property name="icon-widget">W_ICON_Save_All</property>
+                    <signal name="clicked" handler="Notebook_Save_All_Tab" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSeparatorToolItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="WMnTBCut">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Cut</property>
+                    <property name="use-underline">True</property>
+                    <property name="stock-id">gtk-cut</property>
+                    <signal name="clicked" handler="On_WMnTBCut_Clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="WMnTBCopy">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Copy</property>
+                    <property name="use-underline">True</property>
+                    <property name="stock-id">gtk-copy</property>
+                    <signal name="clicked" handler="On_WMnTBCopy_Clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="WMnTBPaste">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Paste</property>
+                    <property name="use-underline">True</property>
+                    <property name="stock-id">gtk-paste</property>
+                    <signal name="clicked" handler="On_WMnTBPaste_Clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="WMnTBDelete">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Delete</property>
+                    <property name="use-underline">True</property>
+                    <property name="stock-id">gtk-delete</property>
+                    <signal name="clicked" handler="On_WMnTBDelete_Clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSeparatorToolItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="WMnTBUnindent">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">unindent</property>
+                    <property name="label" translatable="yes">Unindent</property>
+                    <property name="use-underline">True</property>
+                    <property name="stock-id">gtk-unindent</property>
+                    <signal name="clicked" handler="On_WMnTBUnindent_Clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="WMnTBIndent">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">indent</property>
+                    <property name="label" translatable="yes">Indent</property>
+                    <property name="use-underline">True</property>
+                    <property name="stock-id">gtk-indent</property>
+                    <signal name="clicked" handler="On_WMnTBIndent_Clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSeparatorToolItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="WMnTBUndo">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Undo</property>
+                    <property name="use-underline">True</property>
+                    <property name="stock-id">gtk-undo</property>
+                    <signal name="clicked" handler="On_WMnTBUndo_activate" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="WMnTBRedo">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Redo</property>
+                    <property name="use-underline">True</property>
+                    <property name="stock-id">gtk-redo</property>
+                    <signal name="clicked" handler="On_WMnTBRedo_activate" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSeparatorToolItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="WMnTBFind">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Find</property>
+                    <property name="use-underline">True</property>
+                    <property name="stock-id">gtk-find</property>
+                    <signal name="clicked" handler="Init_WFARBox" swapped="no"/>
+                    <accelerator key="f" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="WMnTBReplace">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Replace</property>
+                    <property name="use-underline">True</property>
+                    <property name="stock-id">gtk-find-and-replace</property>
+                    <signal name="clicked" handler="On_WMnTBReplace_Clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSeparatorToolItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="WMnTBPreAssemble">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">Pre-Assemble</property>
+                    <property name="label" translatable="yes">Pre-Assemble</property>
+                    <property name="use-underline">True</property>
+                    <property name="icon-widget">W_ICON_Pre_Assemble</property>
+                    <signal name="clicked" handler="preassemble_current_project" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="WMnTBAssemble">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">Assemble project</property>
+                    <property name="label" translatable="yes">Assemble</property>
+                    <property name="use-underline">True</property>
+                    <property name="icon-widget">W_ICON_Assemble</property>
+                    <signal name="clicked" handler="assemble_current_project" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="WMnTBBuild">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">Build project</property>
+                    <property name="label" translatable="yes">Build</property>
+                    <property name="use-underline">True</property>
+                    <property name="icon-widget">W_ICON_Build</property>
+                    <signal name="clicked" handler="build_toolbar" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="WMnTBRun">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Run</property>
+                    <property name="use-underline">True</property>
+                    <property name="stock-id">gtk-media-play</property>
+                    <signal name="clicked" handler="run_toolbar" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="WMnTBStopRun">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">Stop running</property>
+                    <property name="label" translatable="yes">Stop</property>
+                    <property name="use-underline">True</property>
+                    <property name="stock-id">gtk-media-stop</property>
+                    <signal name="clicked" handler="stoprun_current_project" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">vertical</property>
+            <property name="homogeneous">True</property>
+            <property name="baseline-position">top</property>
+            <child>
+              <object class="GtkPaned" id="WPaned1">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="orientation">vertical</property>
+                <signal name="size-allocate" handler="OnPaned1sizeallocate" swapped="no"/>
+                <child>
+                  <object class="GtkPaned" id="WPaned2">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <signal name="size-allocate" handler="OnPaned2sizeallocate" swapped="no"/>
+                    <child>
+                      <object class="GtkBox" id="WBoxTFR">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <property name="homogeneous">True</property>
+                        <property name="baseline-position">top</property>
+                        <child>
+                          <object class="GtkScrolledWindow" id="WTreeViewContainer">
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="shadow-type">in</property>
+                            <child>
+                              <object class="GtkTreeView" id="WProjectTreeView">
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="enable-tree-lines">True</property>
+                                <child internal-child="selection">
+                                  <object class="GtkTreeSelection"/>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="resize">False</property>
+                        <property name="shrink">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkScrolledWindow" id="NoteBookContainer">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="shadow-type">in</property>
+                        <child>
+                          <placeholder/>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="resize">True</property>
+                        <property name="shrink">False</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="resize">False</property>
+                    <property name="shrink">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow" id="WWatchScrolledWindow">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="shadow-type">in</property>
+                    <property name="propagate-natural-height">True</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="resize">False</property>
+                    <property name="shrink">False</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkColorChooserDialog" id="DialogColor">
+    <property name="can-focus">False</property>
+    <property name="type-hint">dialog</property>
+    <property name="transient-for">WMainwindow</property>
+    <property name="rgba">rgb(255,255,255)</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can-focus">False</property>
+            <property name="layout-style">end</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkFontChooserDialog" id="DialogFont">
+    <property name="can-focus">False</property>
+    <property name="type-hint">dialog</property>
+    <property name="transient-for">WMainwindow</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can-focus">False</property>
+            <property name="layout-style">end</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkListStore" id="liststore1"/>
+</interface>

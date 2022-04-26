@@ -5,14 +5,15 @@
 	OPTION LITERALS:ON
 	OPTION DOTNAME 
 
-
 	include	./muasm/mmacros.inc
 	include 	./muasm/libc.inc
 	include 	./muasm/unistd_64.inc
 	include 	./muasm/glib.inc
 	include 	./muasm/gtk.inc
 	include 	./muasm/cairo.inc
-	
+	include include.inc
+
+
 	include inputbox.asm
 	include Helpers.inc
 	include Settings.inc
@@ -52,6 +53,8 @@
 	work_key                			gpointer    0
 	project_key             			gpointer    0
 
+    completion                  gpointer 0
+    provider                    gpointer 0
 
 	NotebookPageArray   		gpointer    256 dup(0)   
 	Arg_Project		                	gpointer  0

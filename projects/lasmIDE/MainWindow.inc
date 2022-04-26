@@ -100,11 +100,20 @@
 		Projects_Create_New_Project_From_Template()
 		ret
 	MainWindow_callback_New_Project_From_Template endp	
+	
+;--------------------------------------------------------
 	MainWindow_callback_wQuit PROC
-		invoke gtk_main_quit
-		RET
+    invoke gtk_paned_get_position,WPaned1
+	invoke STNG_Set,stng_paned1_Position,eax
+
+    invoke gtk_paned_get_position,WPaned2
+	invoke STNG_Set,stng_paned2_Position,eax
+
+	invoke gtk_main_quit
+	RET
 	MainWindow_callback_wQuit   ENDP
-    
+;--------------------------------------------------------
+
 	On_WMnTBUndo_activate PROC
 		local buf:gpointer
 		mov buf,rv(Notebook_Get_Current_Buffer)

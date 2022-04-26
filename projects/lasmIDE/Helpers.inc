@@ -135,6 +135,39 @@
 		ENDIF
     	.endif
     endm
+    Helpers_SaveKeyString macro C_,  _@key_file,_@group_name,_@key,_@string
+   	IFNDEF Helpers_Err
+   		.DATA
+   			Helpers_Err	gpointer	0
+   		.CODE
+   	ENDIF
+    	.if C_
+		invoke g_key_file_set_string,  _@key_file,_@group_name,_@key,_@string
+    	.else	
+		mov Helpers_Err,0
+		invoke g_key_file_remove_key,  _@key_file,_@group_name,_@key,addr Helpers_Err
+    	.endif    	
+    endm
+    Helpers_SaveKeyString_RAX macro C_,  _@key_file,_@group_name,_@key,_@string
+     	IFNDEF RAX_PushV
+    		.DATA
+    			RAX_PushV	gpointer	0
+    		.CODE
+    	ENDIF
+  	IFNDEF Helpers_Err
+   		.DATA
+   			Helpers_Err	gpointer	0
+   		.CODE
+   	ENDIF
+	MOV RAX_PushV,RAX
+    	.if C_
+		invoke g_key_file_set_string,  _@key_file,_@group_name,_@key,_@string
+    	.else	
+		mov Helpers_Err,0
+		invoke g_key_file_remove_key,  _@key_file,_@group_name,_@key,addr Helpers_Err
+    	.endif    	
+	MOV RAX,RAX_PushV
+    endm
     Helpers_if_RAX macro C_,fn_,arg_:vararg
     	IFNDEF RAX_PushV
     		.DATA
@@ -160,11 +193,14 @@
     	invoke gtk_entry_get_text,wid__
     	invoke g_strdup,rax
     	.if rax
-			.if byte ptr [rax]
-				mov Var__,rax
-			.endif
-    	.endif
-    	
+		.if byte ptr [rax]
+			mov Var__,rax
+	   	.else
+	    		mov Var__,0
+		.endif
+    	.else
+    		mov Var__,0
+   	.endif
     endm
  	Helpers_signal_connect_data  macro wedg_,Event_,CallB__
  		invoke g_signal_connect_data,   rv(gtk_builder_get_object,GGtkBuilder,wedg_),Event_,addr CallB__,0,0,0         

@@ -1,85 +1,84 @@
 .DATA
 	WFARBox			       	 	gpointer    0
 	WCckBRegular          		gpointer    0
-	WCckBMatchBackW        	gpointer    0
+	WCckBMatchBackW        	    gpointer    0
 	WCckBWarp          			gpointer    0
 	WCckBMatchWord            	gpointer    0
-	WCckBMatchCase 	        gpointer    0
+	WCckBMatchCase 	            gpointer    0
 
 	WCBText          			gpointer    0
 	WCBReplaceW          		gpointer    0
  
 	WBtnFind          			gpointer    0
 	WBtnFindAndReplace      	gpointer    0
-	WBtnReplaceAll          		gpointer    0
+	WBtnReplaceAll          	gpointer    0
 	WBtnClose         			gpointer    0
 
-		search_settings         			gpointer    0
-		search_context         			gpointer    0
+	search_settings         	gpointer    0
+	search_context         		gpointer    0
+
 .CODE
-    Init_WFARBox proc 
-        local lbuilder  :gpointer
-        local buffer  :gpointer
-        local text:gpointer
-	local _err:gpointer
-	local iter:GtkTextIter
-  		local _search_IterST           :GtkTextIter
-  		local _search_IterEN           :GtkTextIter
-	    	mov _err,0
-            mov lbuilder,rv(gtk_builder_new)
-   	invoke gtk_builder_add_from_string, lbuilder,addr FARBoxInterface ,-1,addr _err
-;	invoke gtk_builder_add_from_file  , lbuilder,str$("/shareddocs/programmation/lasm/lasmIDE/findreplace.glade"),addr _err 
+Init_WFARBox proc 
+    local lbuilder:gpointer
+    local buffer:gpointer
+    local text:gpointer
+    local _err:GError
+    local iter:GtkTextIter
+    local _search_IterST           :GtkTextIter
+    local _search_IterEN           :GtkTextIter
+
+    local provider1:gpointer
+    local display:gpointer
+    local screen:gpointer
+
+
+
+
+	mov _err,0
+	mov lbuilder,rv(gtk_builder_new)
+	invoke gtk_builder_add_from_string,lbuilder,addr FARBoxInterface,FARBoxInterface_sz,addr _err
+	invoke gtk_builder_connect_signals,lbuilder,0       ;this will connect all signals to respective functions in glade xml file
         
-        .if rax
-             mov   WFARBox        	,0
-             mov   WFARBox        	,rv(gtk_builder_get_object, lbuilder,str$("WFARBox"))
-            mov   WCckBRegular  ,rv(gtk_builder_get_object, lbuilder,str$("WCckBRegular"))
-            mov	WCckBMatchBackW          	,rv(gtk_builder_get_object, lbuilder,str$("WCckBMatchBackW"))
-            mov 	WCckBWarp         	,rv(gtk_builder_get_object, lbuilder,str$("WCckBWarp"))
-            mov 	WCckBMatchWord    ,rv(gtk_builder_get_object, lbuilder,str$("WCckBMatchWord"))
-            mov	WCckBMatchCase          	,rv(gtk_builder_get_object, lbuilder,str$("WCckBMatchCase"))
-            mov 	WCBText          	,rv(gtk_builder_get_object, lbuilder,str$("CBSearchText"))
-            mov	WCBReplaceW     ,rv(gtk_builder_get_object, lbuilder,str$("CBReplaceText"))
-            mov 	WBtnFind         	,rv(gtk_builder_get_object, lbuilder,str$("WBtnFind1"))
-            mov	WBtnFindAndReplace           	,rv(gtk_builder_get_object, lbuilder,str$("WBtnFindAndReplace1"))
-            mov 	WBtnReplaceAll    ,rv(gtk_builder_get_object, lbuilder,str$("WBtnReplaceAll1"))
-            mov 	WBtnClose         	,rv(gtk_builder_get_object, lbuilder,str$("WBtnClose1"))
-		Notebook_Get_Current_Buffer proto
-		mov buffer,rv(Notebook_Get_Current_Buffer)
-	.if buffer
-		.if rv(gtk_text_buffer_get_has_selection,buffer)
-			gtk_text_buffer_get_selection_bounds(buffer,addr _search_IterST,addr _search_IterEN)
-			gtk_text_buffer_get_text(buffer,addr _search_IterST,addr _search_IterEN);
-			gtk_combo_box_text_insert_text(WCBText,0,rax)
-			gtk_combo_box_set_active(WCBText,0)
-		.endif          
-	.endif
-    
-            invoke g_signal_connect_data,WBtnFind   			 ,str$("clicked")    ,addr On_WFARBox_WBtnFind_clicked    				,0,0,0     
-             invoke g_signal_connect_data,WBtnFindAndReplace    ,str$("clicked")    	,addr On_WFARBox_WBtnFindAndReplace_clicked    	,1,0,0     ;On_WFARBox_WBtnFindAndReplace_clicked
-             invoke g_signal_connect_data,WBtnReplaceAll    		,str$("clicked")    	,addr  On_WFARBox_WBtnReplaceAll_clicked   		,0,0,0     ;
-             invoke g_signal_connect_data,WBtnClose    			,str$("clicked")	,addr On_WFARBox_WBtnClose_clicked    				,0,0,0     
+;    .if rax
+        mov   WFARBox        	,0
+        mov   WFARBox        	,rv(gtk_builder_get_object, lbuilder,str$("WFARBox"))
+        mov 	WCBText          	,rv(gtk_builder_get_object, lbuilder,str$("CBSearchText"))
+        mov	WCBReplaceW     ,rv(gtk_builder_get_object, lbuilder,str$("CBReplaceText"))
 
-            invoke g_signal_connect_data,WCBText    			,str$("changed")	,addr On_WFARBox_WCBText_changed    				,0,0,0     
-            
-             invoke g_signal_connect_data,WCckBRegular    		,str$("clicked")	,addr On_WFARBox_WCckBRegular_clicked    			,0,0,0     
-             invoke g_signal_connect_data,WCckBMatchBackW   	,str$("clicked")	,addr On_WFARBox_WCckBMatchBackW_clicked    	,0,0,0     
-             invoke g_signal_connect_data,WCckBWarp    		,str$("clicked")	,addr On_WFARBox_WCckBWarp_clicked    			,0,0,0     
-             invoke g_signal_connect_data,WCckBMatchWord    	,str$("clicked")	,addr On_WFARBox_WCckBMatchWord_clicked    	,0,0,0     
-             invoke g_signal_connect_data,WCckBMatchCase    	,str$("clicked")	,addr On_WFARBox_WCckBMatchCase_clicked    		,0,0,0     
-
-            invoke gtk_widget_show_all ,WFARBox
-            
-                xor rax,rax
-        .else
- 		    lea r12,_err
-		    mov r12,[r12]
-		    mov r12,QWORD PTR [r12+8]
-		    invoke printf,str$(<13,10,"Error loading interface {%s}">),r12
-            	xor rax,rax
+        Notebook_Get_Current_Buffer proto
+        mov buffer,rv(Notebook_Get_Current_Buffer)
+        .if buffer
+            .if rv(gtk_text_buffer_get_has_selection,buffer)
+                gtk_text_buffer_get_selection_bounds(buffer,addr _search_IterST,addr _search_IterEN)
+                gtk_text_buffer_get_text(buffer,addr _search_IterST,addr _search_IterEN);
+                gtk_combo_box_text_insert_text(WCBText,0,rax)
+                gtk_combo_box_set_active(WCBText,0)
+            .endif 
+	;----------------------------------------------------------------------
+	;button colors in search dialog using css data
+	;it's necessary name a widget with "gtk_widget_set_name" function, but I have inserted name in glade, so I'm not calling this function
+	;after a widget have a name, we can change their style by using CSS and refer to it with an hashtag name.
+		invoke gtk_css_provider_new
+		mov provider1,rax
+		invoke gdk_display_get_default
+		mov display,rax
+		invoke gdk_display_get_default_screen,display
+		mov screen,rax
+		invoke gtk_style_context_add_provider_for_screen,screen,provider1,GTK_STYLE_PROVIDER_PRIORITY_USER
+		invoke gtk_css_provider_load_from_data,provider1,CStr("#WFARBox {background:#555753; color:#d3d7cf} #WBtnFind {background:#204a87; color:#25bfdc} #WBtnFindAndReplace {background:#4e9a06; color:#6dea1a} #WBtnReplaceAll {background:#740303; color:#ff0000} #WBtnClose {background:#8f5902; color:#fbf716}"),-1,NULL
+	;----------------------------------------------------------------------
+		invoke gtk_widget_show_all,WFARBox
+		xor rax,rax
         .endif
-        RET
-    Init_WFARBox endp
+;    .else
+;        lea r12,_err
+;        mov r12,[r12]
+;        mov r12,QWORD PTR [r12+8]
+;        invoke printf,str$(<13,10,"Error loading interface {%s}">),r12
+;        xor rax,rax
+;    .endif 
+RET
+Init_WFARBox endp
     
     .data
 		 _search_IterE           GtkTextIter <>
@@ -245,305 +244,18 @@
         RET
     On_WFARBox_WCckBMatchCase_clicked ENDP
 
-            	         	 
- 
-.DATA
-    FARBoxInterface	 \
-		DB	'<interface>',13,10
-		DB	'  <requires lib="gtk+" version="3.0"/>',13,10
-		DB	'  <object class="GtkWindow" id="WFARBox">',13,10
-		DB	'    <property name="can-focus">False</property>',13,10
-		DB	'    <property name="window-position">center-on-parent</property>',13,10
-		DB	'    <property name="destroy-with-parent">True</property>',13,10
-		DB	'    <property name="icon-name">applications-office</property>',13,10
-		DB	'    <property name="type-hint">dialog</property>',13,10
-		DB	'    <property name="gravity">center</property>',13,10
-		DB	'    <child>',13,10
-		DB	'      <object class="GtkBox">',13,10
-		DB	'        <property name="visible">True</property>',13,10
-		DB	'        <property name="can-focus">False</property>',13,10
-		DB	'        <property name="margin-left">6</property>',13,10
-		DB	'        <property name="margin-right">6</property>',13,10
-		DB	'        <property name="margin-top">6</property>',13,10
-		DB	'        <property name="margin-bottom">8</property>',13,10
-		DB	'        <child>',13,10
-		DB	'          <object class="GtkBox">',13,10
-		DB	'            <property name="width-request">334</property>',13,10
-		DB	'            <property name="visible">True</property>',13,10
-		DB	'            <property name="can-focus">False</property>',13,10
-		DB	'            <property name="margin-left">2</property>',13,10
-		DB	'            <property name="margin-right">2</property>',13,10
-		DB	'            <property name="margin-top">2</property>',13,10
-		DB	'            <property name="margin-bottom">2</property>',13,10
-		DB	'            <property name="orientation">vertical</property>',13,10
-		DB	'            <child>',13,10
-		DB	'              <object class="GtkBox">',13,10
-		DB	'                <property name="visible">True</property>',13,10
-		DB	'                <property name="can-focus">False</property>',13,10
-		DB	'                <child>',13,10
-		DB	'                  <object class="GtkLabel">',13,10
-		DB	'                    <property name="width-request">96</property>',13,10
-		DB	'                    <property name="visible">True</property>',13,10
-		DB	'                    <property name="can-focus">False</property>',13,10
-		DB	'                    <property name="margin-left">6</property>',13,10
-		DB	'                    <property name="margin-right">6</property>',13,10
-		DB	'                    <property name="margin-top">2</property>',13,10
-		DB	'                    <property name="margin-bottom">2</property>',13,10
-		DB	'                    <property name="label" translatable="yes">Search for:    </property>',13,10
-		DB	'                    <property name="justify">right</property>',13,10
-		DB	'                    <property name="wrap">True</property>',13,10
-		DB	'                    <property name="ellipsize">start</property>',13,10
-		DB	'                  </object>',13,10
-		DB	'                  <packing>',13,10
-		DB	'                    <property name="expand">False</property>',13,10
-		DB	'                    <property name="fill">True</property>',13,10
-		DB	'                    <property name="position">0</property>',13,10
-		DB	'                  </packing>',13,10
-		DB	'                </child>',13,10
-		DB	'                <child>',13,10
-		DB	'                  <object class="GtkComboBoxText" id="CBSearchText">',13,10
-		DB	'                    <property name="visible">True</property>',13,10
-		DB	'                    <property name="can-focus">False</property>',13,10
-		DB	'                    <property name="has-entry">True</property>',13,10
-		DB	'                    <child internal-child="entry">',13,10
-		DB	'                      <object class="GtkEntry">',13,10
-		DB	'                        <property name="visible">True</property>',13,10
-		DB	'                        <property name="can-focus">True</property>',13,10
-		DB	'                      </object>',13,10
-		DB	'                    </child>',13,10
-		DB	'                  </object>',13,10
-		DB	'                  <packing>',13,10
-		DB	'                    <property name="expand">True</property>',13,10
-		DB	'                    <property name="fill">True</property>',13,10
-		DB	'                    <property name="position">1</property>',13,10
-		DB	'                  </packing>',13,10
-		DB	'                </child>',13,10
-		DB	'              </object>',13,10
-		DB	'              <packing>',13,10
-		DB	'                <property name="expand">False</property>',13,10
-		DB	'                <property name="fill">True</property>',13,10
-		DB	'                <property name="position">0</property>',13,10
-		DB	'              </packing>',13,10
-		DB	'            </child>',13,10
-		DB	'            <child>',13,10
-		DB	'              <object class="GtkBox">',13,10
-		DB	'                <property name="visible">True</property>',13,10
-		DB	'                <property name="can-focus">False</property>',13,10
-		DB	'                <child>',13,10
-		DB	'                  <object class="GtkLabel">',13,10
-		DB	'                    <property name="width-request">96</property>',13,10
-		DB	'                    <property name="visible">True</property>',13,10
-		DB	'                    <property name="can-focus">False</property>',13,10
-		DB	'                    <property name="margin-left">6</property>',13,10
-		DB	'                    <property name="margin-right">6</property>',13,10
-		DB	'                    <property name="margin-top">2</property>',13,10
-		DB	'                    <property name="margin-bottom">2</property>',13,10
-		DB	'                    <property name="label" translatable="yes">Replace with</property>',13,10
-		DB	'                    <property name="justify">right</property>',13,10
-		DB	'                    <property name="wrap">True</property>',13,10
-		DB	'                    <property name="ellipsize">start</property>',13,10
-		DB	'                  </object>',13,10
-		DB	'                  <packing>',13,10
-		DB	'                    <property name="expand">False</property>',13,10
-		DB	'                    <property name="fill">True</property>',13,10
-		DB	'                    <property name="position">0</property>',13,10
-		DB	'                  </packing>',13,10
-		DB	'                </child>',13,10
-		DB	'                <child>',13,10
-		DB	'                  <object class="GtkComboBoxText" id="CBReplaceText">',13,10
-		DB	'                    <property name="visible">True</property>',13,10
-		DB	'                    <property name="can-focus">False</property>',13,10
-		DB	'                    <property name="has-entry">True</property>',13,10
-		DB	'                    <child internal-child="entry">',13,10
-		DB	'                      <object class="GtkEntry">',13,10
-		DB	'                        <property name="visible">True</property>',13,10
-		DB	'                        <property name="can-focus">True</property>',13,10
-		DB	'                      </object>',13,10
-		DB	'                    </child>',13,10
-		DB	'                  </object>',13,10
-		DB	'                  <packing>',13,10
-		DB	'                    <property name="expand">True</property>',13,10
-		DB	'                    <property name="fill">True</property>',13,10
-		DB	'                    <property name="position">1</property>',13,10
-		DB	'                  </packing>',13,10
-		DB	'                </child>',13,10
-		DB	'              </object>',13,10
-		DB	'              <packing>',13,10
-		DB	'                <property name="expand">False</property>',13,10
-		DB	'                <property name="fill">True</property>',13,10
-		DB	'                <property name="position">1</property>',13,10
-		DB	'              </packing>',13,10
-		DB	'            </child>',13,10
-		DB	'            <child>',13,10
-		DB	'              <!-- n-columns=2 n-rows=4 -->',13,10
-		DB	'              <object class="GtkGrid">',13,10
-		DB	'                <property name="visible">True</property>',13,10
-		DB	'                <property name="can-focus">False</property>',13,10
-		DB	'                <property name="margin-left">100</property>',13,10
-		DB	'                <property name="margin-top">16</property>',13,10
-		DB	'                <property name="margin-bottom">20</property>',13,10
-		DB	'                <property name="orientation">vertical</property>',13,10
-		DB	'                <property name="row-spacing">5</property>',13,10
-		DB	'                <property name="column-spacing">3</property>',13,10
-		DB	'                <child>',13,10
-		DB	'                  <object class="GtkCheckButton" id="WCckBMatchCase">',13,10
-		DB	'                    <property name="label" translatable="yes">Match case </property>',13,10
-		DB	'                    <property name="visible">True</property>',13,10
-		DB	'                    <property name="can-focus">True</property>',13,10
-		DB	'                    <property name="receives-default">False</property>',13,10
-		DB	'                    <property name="draw-indicator">True</property>',13,10
-		DB	'                  </object>',13,10
-		DB	'                  <packing>',13,10
-		DB	'                    <property name="left-attach">0</property>',13,10
-		DB	'                    <property name="top-attach">1</property>',13,10
-		DB	'                  </packing>',13,10
-		DB	'                </child>',13,10
-		DB	'                <child>',13,10
-		DB	'                  <object class="GtkCheckButton" id="WCckBMatchWord">',13,10
-		DB	'                    <property name="label" translatable="yes">Match entire word only</property>',13,10
-		DB	'                    <property name="visible">True</property>',13,10
-		DB	'                    <property name="can-focus">True</property>',13,10
-		DB	'                    <property name="receives-default">False</property>',13,10
-		DB	'                    <property name="draw-indicator">True</property>',13,10
-		DB	'                  </object>',13,10
-		DB	'                  <packing>',13,10
-		DB	'                    <property name="left-attach">1</property>',13,10
-		DB	'                    <property name="top-attach">1</property>',13,10
-		DB	'                  </packing>',13,10
-		DB	'                </child>',13,10
-		DB	'                <child>',13,10
-		DB	'                  <object class="GtkCheckButton" id="WCckBWarp">',13,10
-		DB	'                    <property name="label" translatable="yes">Warp around</property>',13,10
-		DB	'                    <property name="visible">True</property>',13,10
-		DB	'                    <property name="can-focus">True</property>',13,10
-		DB	'                    <property name="receives-default">False</property>',13,10
-		DB	'                    <property name="draw-indicator">True</property>',13,10
-		DB	'                  </object>',13,10
-		DB	'                  <packing>',13,10
-		DB	'                    <property name="left-attach">0</property>',13,10
-		DB	'                    <property name="top-attach">2</property>',13,10
-		DB	'                  </packing>',13,10
-		DB	'                </child>',13,10
-		DB	'                <child>',13,10
-		DB	'                  <object class="GtkCheckButton" id="WCckBMatchBackW">',13,10
-		DB	'                    <property name="label" translatable="yes">Search backwards          </property>',13,10
-		DB	'                    <property name="visible">True</property>',13,10
-		DB	'                    <property name="can-focus">True</property>',13,10
-		DB	'                    <property name="receives-default">False</property>',13,10
-		DB	'                    <property name="draw-indicator">True</property>',13,10
-		DB	'                  </object>',13,10
-		DB	'                  <packing>',13,10
-		DB	'                    <property name="left-attach">1</property>',13,10
-		DB	'                    <property name="top-attach">2</property>',13,10
-		DB	'                  </packing>',13,10
-		DB	'                </child>',13,10
-		DB	'                <child>',13,10
-		DB	'                  <object class="GtkCheckButton" id="WCckBRegular">',13,10
-		DB	'                    <property name="label" translatable="yes">Regular expression</property>',13,10
-		DB	'                    <property name="visible">True</property>',13,10
-		DB	'                    <property name="can-focus">True</property>',13,10
-		DB	'                    <property name="receives-default">False</property>',13,10
-		DB	'                    <property name="draw-indicator">True</property>',13,10
-		DB	'                  </object>',13,10
-		DB	'                  <packing>',13,10
-		DB	'                    <property name="left-attach">0</property>',13,10
-		DB	'                    <property name="top-attach">3</property>',13,10
-		DB	'                  </packing>',13,10
-		DB	'                </child>',13,10
-		DB	'                <child>',13,10
-		DB	'                  <placeholder/>',13,10
-		DB	'                </child>',13,10
-		DB	'                <child>',13,10
-		DB	'                  <placeholder/>',13,10
-		DB	'                </child>',13,10
-		DB	'                <child>',13,10
-		DB	'                  <placeholder/>',13,10
-		DB	'                </child>',13,10
-		DB	'              </object>',13,10
-		DB	'              <packing>',13,10
-		DB	'                <property name="expand">False</property>',13,10
-		DB	'                <property name="fill">True</property>',13,10
-		DB	'                <property name="position">2</property>',13,10
-		DB	'              </packing>',13,10
-		DB	'            </child>',13,10
-		DB	'            <child>',13,10
-		DB	'              <object class="GtkButtonBox">',13,10
-		DB	'                <property name="width-request">96</property>',13,10
-		DB	'                <property name="visible">True</property>',13,10
-		DB	'                <property name="can-focus">False</property>',13,10
-		DB	'                <property name="margin-top">2</property>',13,10
-		DB	'                <property name="layout-style">start</property>',13,10
-		DB	'                <child>',13,10
-		DB	'                  <object class="GtkButton" id="WBtnFind1">',13,10
-		DB	'                    <property name="label">gtk-find</property>',13,10
-		DB	'                    <property name="width-request">100</property>',13,10
-		DB	'                    <property name="visible">True</property>',13,10
-		DB	'                    <property name="can-focus">True</property>',13,10
-		DB	'                    <property name="receives-default">True</property>',13,10
-		DB	'                    <property name="use-stock">True</property>',13,10
-		DB	'                  </object>',13,10
-		DB	'                  <packing>',13,10
-		DB	'                    <property name="expand">True</property>',13,10
-		DB	'                    <property name="fill">True</property>',13,10
-		DB	'                    <property name="position">0</property>',13,10
-		DB	'                  </packing>',13,10
-		DB	'                </child>',13,10
-		DB	'                <child>',13,10
-		DB	'                  <object class="GtkButton" id="WBtnFindAndReplace1">',13,10
-		DB	'                    <property name="label">Replace</property>',13,10
-		DB	'                    <property name="visible">True</property>',13,10
-		DB	'                    <property name="can-focus">True</property>',13,10
-		DB	'                    <property name="receives-default">True</property>',13,10
-		DB	'                  </object>',13,10
-		DB	'                  <packing>',13,10
-		DB	'                    <property name="expand">True</property>',13,10
-		DB	'                    <property name="fill">True</property>',13,10
-		DB	'                    <property name="position">1</property>',13,10
-		DB	'                  </packing>',13,10
-		DB	'                </child>',13,10
-		DB	'                <child>',13,10
-		DB	'                  <object class="GtkButton" id="WBtnReplaceAll1">',13,10
-		DB	'                    <property name="label" translatable="yes">Replace all</property>',13,10
-		DB	'                    <property name="visible">True</property>',13,10
-		DB	'                    <property name="can-focus">True</property>',13,10
-		DB	'                    <property name="receives-default">True</property>',13,10
-		DB	'                  </object>',13,10
-		DB	'                  <packing>',13,10
-		DB	'                    <property name="expand">True</property>',13,10
-		DB	'                    <property name="fill">True</property>',13,10
-		DB	'                    <property name="position">2</property>',13,10
-		DB	'                  </packing>',13,10
-		DB	'                </child>',13,10
-		DB	'                <child>',13,10
-		DB	'                  <object class="GtkButton" id="WBtnClose1">',13,10
-		DB	'                    <property name="label">gtk-close</property>',13,10
-		DB	'                    <property name="visible">True</property>',13,10
-		DB	'                    <property name="can-focus">True</property>',13,10
-		DB	'                    <property name="receives-default">True</property>',13,10
-		DB	'                    <property name="use-stock">True</property>',13,10
-		DB	'                  </object>',13,10
-		DB	'                  <packing>',13,10
-		DB	'                    <property name="expand">True</property>',13,10
-		DB	'                    <property name="fill">True</property>',13,10
-		DB	'                    <property name="position">3</property>',13,10
-		DB	'                  </packing>',13,10
-		DB	'                </child>',13,10
-		DB	'              </object>',13,10
-		DB	'              <packing>',13,10
-		DB	'                <property name="expand">True</property>',13,10
-		DB	'                <property name="fill">True</property>',13,10
-		DB	'                <property name="position">3</property>',13,10
-		DB	'              </packing>',13,10
-		DB	'            </child>',13,10
-		DB	'          </object>',13,10
-		DB	'          <packing>',13,10
-		DB	'            <property name="expand">False</property>',13,10
-		DB	'            <property name="fill">True</property>',13,10
-		DB	'            <property name="position">0</property>',13,10
-		DB	'          </packing>',13,10
-		DB	'        </child>',13,10
-		DB	'      </object>',13,10
-		DB	'    </child>',13,10
-		DB	'  </object>',13,10
-		DB	'</interface>',0
-    
+	align 16
+	GDK_Escape	EQU	0ff1bh
+	keyboard_escape proc  widget__:gpointer,___event:gpointer,_user_data:gpointer
+		.if [rsi].GdkEventKey.keyval == GDK_Escape
+			invoke gtk_widget_destroy,WFARBox
+		.endif
+	xor eax,eax
+	ret
+	keyboard_escape endp
+	.DATA
+	    FARBoxInterface label qword
+	    incbin <findreplace.glade>
+	    FARBoxInterface_sz equ $-FARBoxInterface
+
+

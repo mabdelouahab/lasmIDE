@@ -133,11 +133,6 @@
         lea rax,replace_variable_buffer
         ret
     replace_variable_with_value_str endp
-
-    
-
-    
-
     
     	;########################################################################	run and stop
     .DATA
@@ -288,16 +283,29 @@
 		
         m2m Linkcmd,Current_Prj_Link
         .if	Linkcmd
-		    mov Linkcmd,rv(g_strdup,rv(replace_variable_with_value_str,Linkcmd))
+        	mov rax,Linkcmd
+        	.if byte ptr [rax]
+			mov Linkcmd,rv(g_strdup,rv(replace_variable_with_value_str,Linkcmd))
+        	.else
+        		mov Linkcmd,0
+        	.endif
         .endif
         m2m Link_optlst,Current_Prj_Link_opt
         .if	Link_optlst
-		    mov Link_optlst,rv(g_strsplit,rv(replace_variable_with_value_str,Link_optlst),";",-1)
-		    ;mov b__,rax
+        	mov rax,Link_optlst
+        	.if byte ptr [rax]
+			mov Link_optlst,rv(g_strsplit,rv(replace_variable_with_value_str,Link_optlst),";",-1)
+        	.else
+        		mov Link_optlst,0
+        	.endif
         .endif
-        mov retv,rv( spawn_run_ex2,Linkcmd,Link_optlst,addr build_CallBack,addr build_Exited,addr build_handler_id)
         .if	Linkcmd
-		    invoke g_free,Linkcmd
+       		 mov retv,rv( spawn_run_ex2,Linkcmd,Link_optlst,addr build_CallBack,addr build_Exited,addr build_handler_id)
+       		 invoke g_free,Linkcmd
+        .else
+		.if build_run
+			invoke run_current_project
+		.endif        	
         .endif
         .if	Link_optlst
 		    invoke g_strfreev,Link_optlst
@@ -384,11 +392,82 @@
     assemble_current_project ENDP
     
     	;########################################################################	Pre-Assemble
+     .DATA
+    	preassemble_handler_id		gulong		0	
+    	preassemble_status			gint		0	    	
+    	preassemble_assemble			gboolean	0	
+    .CODE
+    preassemble_CallBack 	PROC	_term:gpointer,_pid:gpointer,_err:gpointer,_user_data:gpointer
+     	local term:gpointer
+     	local pid:gpointer
+     	local err:gpointer
+     	local user_data:gpointer
+     	mov term,_term
+     	mov pid,_pid
+     	mov err,_err
+     	mov user_data,_user_data
+
+     	.if err==0
+     		Terminal_Print_Line "Pre-Assemble started..."     		
+     	.else
+      		Terminal_Print_Line "Fail to Pre-Assemble project"
+            mov rax,err
+            invoke printf,str$(<13,10,"ERROR(Pre-Assemble ) [%d]:{%s}">),QWORD PTR [rax],QWORD PTR [rax+8]
+ 			mov preassemble_assemble,0
+ 		    xor rax,rax        
+     	.endif  	
+    	RET
+    preassemble_CallBack 	ENDP
+    preassemble_Exited 	PROC ___vteterminal:gpointer,__status:gint,___user_data:gpointer
+ 		local __vteterminal:gpointer
+ 		local _status:gint
+ 		local __user_data:gpointer
+ 		
+ 		mov __vteterminal,___vteterminal
+ 		mov _status,__status
+ 		mov __user_data,___user_data
+     		invoke g_signal_handler_disconnect,WTerminal,preassemble_handler_id	
+ 		.if _status==0
+ 			Terminal_Print "... SUCCESS"
+ 			m2m preassemble_status,_status
+ 			.if preassemble_assemble
+ 				invoke assemble_current_project 
+ 			.endif
+ 		.endif     	
+ 		mov preassemble_assemble,0
+    	RET
+    preassemble_Exited 	ENDP
     preassemble_current_project PROC
+        local PreAssemblecmd:gpointer
+        local retv   :gpointer
+        local preassemble_optlst:gpointer
+
+        
+        .if Current_Prj_FileName==0
+            ret
+        .endif
+        ;call save_all_tab;save_current_tab
+        mov rdi,-1
+        call Projects_Save_Current_Project_Files_Content
+		m2m PreAssemblecmd,Current_Prj_PreAssemble
+		.if	PreAssemblecmd
+	        mov PreAssemblecmd,rv(g_strdup,rv(replace_variable_with_value_str,PreAssemblecmd))
+		.endif 	
+        
+        m2m preassemble_optlst,Current_Prj_PreAssemble_opt
+        .if preassemble_optlst
+	        mov preassemble_optlst,rv(g_strsplit,rv(replace_variable_with_value_str,preassemble_optlst),";",-1)        
+        .endif
+        
+        mov retv,rv( spawn_run_ex2,PreAssemblecmd,preassemble_optlst,addr preassemble_CallBack,addr preassemble_Exited,addr preassemble_handler_id);
+        .if preassemble_optlst
+        	invoke g_strfreev,preassemble_optlst
+        .endif        
+		.if	PreAssemblecmd
+        	invoke g_free,PreAssemblecmd
+		.endif 	
         RET
     preassemble_current_project ENDP
-
-
 
 
     .data   

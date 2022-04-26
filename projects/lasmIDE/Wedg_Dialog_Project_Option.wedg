@@ -65,7 +65,7 @@ IFNDEF dialog_project_option
         	mov Current_Prj_MainFile,rax
         .endif 
 
-        Helpers_gtk_entry_get_text Current_Prj_Description		,Wedg_DPO_Entry_Project_Desc
+        Helpers_gtk_entry_get_text Current_Prj_Description			,Wedg_DPO_Entry_Project_Desc
         Helpers_gtk_entry_get_text Current_Prj_PreAssemble		,Wedg_DPO_Entry_Pre_Assemble_cmd
         Helpers_gtk_entry_get_text Current_Prj_PreAssemble_opt	,Wedg_DPO_Entry_Pre_Assemble_AdOpt
         Helpers_gtk_entry_get_text Current_Prj_Assemble			,Wedg_DPO_Entry_Assemble_cmd

@@ -6,6 +6,7 @@
 		ProgrammingLanguage	gpointer	0
 		StyleScheme			gpointer	0
 		icon				gpointer	0
+        viewer				gpointer	0
 		buffer				gpointer	0
 		NotebookPage		gpointer	0
 		Dir 					gpointer	0
@@ -31,6 +32,7 @@
 		str2m 	[rcx].OFile.ProgrammingLanguage	,"assembly" 
 		str2m 	[rcx].OFile.StyleScheme			,"assembly"	 
 		str2m 	[rcx].OFile.icon				,"asmfileicon" 
+		mov 	[rcx].OFile.viewer				,0	 
 		mov 	[rcx].OFile.buffer				,0	 
 		mov 	[rcx].OFile.NotebookPage		,0	 
 		mov 	[rcx].OFile.Dir					,0	 
@@ -53,6 +55,7 @@
 		str2m 	[rcx].OFile.ProgrammingLanguage	,"assembly" 
 		str2m 	[rcx].OFile.StyleScheme			,"assembly"	 
 		str2m 	[rcx].OFile.icon				,"incfileicon" 
+		mov 	[rcx].OFile.viewer				,0	 
 		mov 	[rcx].OFile.buffer				,0	 
 		mov 	[rcx].OFile.NotebookPage		,0	 
 		mov 	[rcx].OFile.Dir					,0	 
@@ -77,6 +80,7 @@
 		str2m 	[rcx].OFile.ProgrammingLanguage	,"assembly" 
 		str2m 	[rcx].OFile.StyleScheme			,"assembly"	 
 		str2m 	[rcx].OFile.icon				,"wedgfileicon" 
+		mov 	[rcx].OFile.viewer				,0	 
 		mov 	[rcx].OFile.buffer				,0	 
 		mov 	[rcx].OFile.NotebookPage		,0	 
 		mov 	[rcx].OFile.Dir					,0	 
@@ -101,6 +105,7 @@
 		str2m 	[rcx].OFile.ProgrammingLanguage	,"c" 
 		str2m 	[rcx].OFile.StyleScheme			,"assembly"	 
 		str2m 	[rcx].OFile.icon				,"cfileicon" 
+		mov 	[rcx].OFile.viewer				,0	 
 		mov 	[rcx].OFile.buffer				,0	 
 		mov 	[rcx].OFile.NotebookPage		,0	 
 		mov 	[rcx].OFile.Dir					,0	 
@@ -125,6 +130,7 @@
 		str2m 	[rcx].OFile.ProgrammingLanguage	,"c" 
 		str2m 	[rcx].OFile.StyleScheme			,"assembly"	 
 		str2m 	[rcx].OFile.icon				,"hfileicon" 
+		mov 	[rcx].OFile.viewer				,0	 
 		mov 	[rcx].OFile.buffer				,0	 
 		mov 	[rcx].OFile.NotebookPage		,0	 
 		mov 	[rcx].OFile.Dir					,0	 
@@ -149,6 +155,7 @@
 		str2m 	[rcx].OFile.ProgrammingLanguage	,"text" 
 		str2m 	[rcx].OFile.StyleScheme			,"classic"	 
 		str2m 	[rcx].OFile.icon				,"txtfileicon" 
+		mov 	[rcx].OFile.viewer				,0	 
 		mov 	[rcx].OFile.buffer				,0	 
 		mov 	[rcx].OFile.NotebookPage		,0	 
 		mov 	[rcx].OFile.Dir					,0	 
@@ -173,6 +180,7 @@
 		str2m 	[rcx].OFile.ProgrammingLanguage	,"rc" 
 		str2m 	[rcx].OFile.StyleScheme			,"classic"	 
 		str2m 	[rcx].OFile.icon				,"rcfileicon" 
+		mov 	[rcx].OFile.viewer				,0	 
 		mov 	[rcx].OFile.buffer				,0	 
 		mov 	[rcx].OFile.NotebookPage		,0	 
 		mov 	[rcx].OFile.Dir					,0	 
@@ -197,6 +205,7 @@
 		str2m 	[rcx].OFile.ProgrammingLanguage	,"text" 
 		str2m 	[rcx].OFile.StyleScheme			,"classic"	 
 		str2m 	[rcx].OFile.icon				,"txtfileicon" 
+		mov 	[rcx].OFile.viewer				,0	 
 		mov 	[rcx].OFile.buffer				,0	 
 		mov 	[rcx].OFile.NotebookPage		,0	 
 		mov 	[rcx].OFile.Dir					,0	 
@@ -221,6 +230,7 @@
 		str2m 	[rcx].OFile.ProgrammingLanguage	,"xml" 
 		str2m 	[rcx].OFile.StyleScheme			,"assembly"	 
 		str2m 	[rcx].OFile.icon				,"xmlfileicon" 
+		mov 	[rcx].OFile.viewer				,0	 
 		mov 	[rcx].OFile.buffer				,0	 
 		mov 	[rcx].OFile.NotebookPage		,0	 
 		mov 	[rcx].OFile.Dir					,0	 
@@ -322,6 +332,7 @@
 		mov [rcx].OFile.Dir					,Helpers_rv_rcx(g_key_file_get_string,	lKeyProject,file_Key_,"Dir",0)
 		mov [rcx].OFile.Content				,Helpers_rv_rcx(g_key_file_get_string,	lKeyProject,file_Key_,"Content",0)
 		m2m [rcx].OFile.FileName			,file_Key_
+		mov [rcx].OFile.viewer				,0	 
 		mov [rcx].OFile.buffer				,0
 		mov	[rcx].OFile.Modified			,0
 		mov [rcx].OFile.NotebookPage		,0			
@@ -455,21 +466,8 @@
 		gtk_source_search_settings_set_search_text (_search_settings,Sel_Text)    
 		g_free(Sel_Text)
 		ret
-	On_gtk_text_buffer_Selection_Changed ENDP	 
-	On_Buffer_key_press_event PROC widget__:gpointer,___event:gpointer,_user_data:gpointer
-		local __event:gpointer
-            	mov __event,___event
-           	mov rax,__event
-           	mov ecx,[rax].GdkEventKey.state
-           	and ecx,GDK_CONTROL_MASK
-		.if    ecx
-			.if ([rax].GdkEventKey.keyval	== 0066h ) || ( [rax].GdkEventKey.keyval	==0068h);GDK_KEY_f ;GDK_KEY_h
-				Init_WFARBox()
-			.endif
-		.endif
-		xor rax,rax
-		ret
-	On_Buffer_key_press_event ENDP	
+	On_gtk_text_buffer_Selection_Changed ENDP
+
 	On_gtk_text_buffer_mark_set PROC textbuffer__:gpointer,_d1:gpointer,_d2:gpointer,_pOFile:gpointer
 		local buf:gpointer
 		local pOFile:gpointer
@@ -493,6 +491,7 @@
 		        	.endif
 		        .endif
 		.endif
+		xor eax,eax
 		ret
 	On_gtk_text_buffer_mark_set ENDP
 	

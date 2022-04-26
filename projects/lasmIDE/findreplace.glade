@@ -1,45 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
+<!-- Generated with glade 3.22.2 -->
 <interface>
   <requires lib="gtk+" version="3.0"/>
   <object class="GtkWindow" id="WFARBox">
-    <property name="can-focus">False</property>
-    <property name="window-position">center-on-parent</property>
-    <property name="destroy-with-parent">True</property>
-    <property name="icon-name">applications-office</property>
-    <property name="type-hint">dialog</property>
+    <property name="name">WFARBox</property>
+    <property name="can_focus">False</property>
+    <property name="window_position">center-on-parent</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="icon_name">applications-office</property>
+    <property name="type_hint">dialog</property>
     <property name="gravity">center</property>
+    <signal name="key-press-event" handler="keyboard_escape" swapped="no"/>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="margin-left">6</property>
-        <property name="margin-right">6</property>
-        <property name="margin-top">6</property>
-        <property name="margin-bottom">8</property>
+        <property name="can_focus">False</property>
+        <property name="margin_left">6</property>
+        <property name="margin_right">6</property>
+        <property name="margin_top">6</property>
+        <property name="margin_bottom">8</property>
         <child>
           <object class="GtkBox">
-            <property name="width-request">334</property>
+            <property name="width_request">334</property>
             <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="margin-left">2</property>
-            <property name="margin-right">2</property>
-            <property name="margin-top">2</property>
-            <property name="margin-bottom">2</property>
+            <property name="can_focus">False</property>
+            <property name="margin_left">2</property>
+            <property name="margin_right">2</property>
+            <property name="margin_top">2</property>
+            <property name="margin_bottom">2</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
-                <property name="can-focus">False</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkLabel">
-                    <property name="width-request">96</property>
+                    <property name="width_request">96</property>
                     <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="margin-left">6</property>
-                    <property name="margin-right">6</property>
-                    <property name="margin-top">2</property>
-                    <property name="margin-bottom">2</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_left">6</property>
+                    <property name="margin_right">6</property>
+                    <property name="margin_top">2</property>
+                    <property name="margin_bottom">2</property>
                     <property name="label" translatable="yes">Search for:    </property>
                     <property name="justify">right</property>
                     <property name="wrap">True</property>
@@ -54,12 +59,13 @@
                 <child>
                   <object class="GtkComboBoxText" id="CBSearchText">
                     <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="has-entry">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
                     <child internal-child="entry">
                       <object class="GtkEntry">
                         <property name="visible">True</property>
-                        <property name="can-focus">True</property>
+                        <property name="can_focus">True</property>
+                        <signal name="changed" handler="On_WFARBox_WCBText_changed" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -79,16 +85,16 @@
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
-                <property name="can-focus">False</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkLabel">
-                    <property name="width-request">96</property>
+                    <property name="width_request">96</property>
                     <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="margin-left">6</property>
-                    <property name="margin-right">6</property>
-                    <property name="margin-top">2</property>
-                    <property name="margin-bottom">2</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_left">6</property>
+                    <property name="margin_right">6</property>
+                    <property name="margin_top">2</property>
+                    <property name="margin_bottom">2</property>
                     <property name="label" translatable="yes">Replace with</property>
                     <property name="justify">right</property>
                     <property name="wrap">True</property>
@@ -103,12 +109,12 @@
                 <child>
                   <object class="GtkComboBoxText" id="CBReplaceText">
                     <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="has-entry">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
                     <child internal-child="entry">
                       <object class="GtkEntry">
                         <property name="visible">True</property>
-                        <property name="can-focus">True</property>
+                        <property name="can_focus">True</property>
                       </object>
                     </child>
                   </object>
@@ -126,79 +132,83 @@
               </packing>
             </child>
             <child>
-              <!-- n-columns=2 n-rows=4 -->
               <object class="GtkGrid">
                 <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="margin-left">100</property>
-                <property name="margin-top">16</property>
-                <property name="margin-bottom">20</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">100</property>
+                <property name="margin_top">16</property>
+                <property name="margin_bottom">20</property>
                 <property name="orientation">vertical</property>
-                <property name="row-spacing">5</property>
-                <property name="column-spacing">3</property>
+                <property name="row_spacing">5</property>
+                <property name="column_spacing">3</property>
                 <child>
                   <object class="GtkCheckButton" id="WCckBMatchCase">
                     <property name="label" translatable="yes">Match case </property>
                     <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">False</property>
-                    <property name="draw-indicator">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="draw_indicator">True</property>
+                    <signal name="clicked" handler="On_WFARBox_WCckBMatchCase_clicked" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">1</property>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">1</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="WCckBMatchWord">
                     <property name="label" translatable="yes">Match entire word only</property>
                     <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">False</property>
-                    <property name="draw-indicator">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="draw_indicator">True</property>
+                    <signal name="clicked" handler="On_WFARBox_WCckBMatchWord_clicked" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">1</property>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">1</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="WCckBWarp">
                     <property name="label" translatable="yes">Warp around</property>
                     <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">False</property>
-                    <property name="draw-indicator">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="draw_indicator">True</property>
+                    <signal name="clicked" handler="On_WFARBox_WCckBWarp_clicked" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">2</property>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">2</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="WCckBMatchBackW">
                     <property name="label" translatable="yes">Search backwards          </property>
                     <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">False</property>
-                    <property name="draw-indicator">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="draw_indicator">True</property>
+                    <signal name="clicked" handler="On_WFARBox_WCckBMatchBackW_clicked" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">2</property>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">2</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="WCckBRegular">
                     <property name="label" translatable="yes">Regular expression</property>
                     <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">False</property>
-                    <property name="draw-indicator">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="draw_indicator">True</property>
+                    <signal name="clicked" handler="On_WFARBox_WCckBRegular_clicked" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">3</property>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">3</property>
                   </packing>
                 </child>
                 <child>
@@ -219,19 +229,23 @@
             </child>
             <child>
               <object class="GtkButtonBox">
-                <property name="width-request">96</property>
+                <property name="width_request">96</property>
                 <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="margin-top">2</property>
-                <property name="layout-style">start</property>
+                <property name="can_focus">False</property>
+                <property name="margin_top">2</property>
+                <property name="layout_style">start</property>
                 <child>
-                  <object class="GtkButton" id="WBtnFind1">
+                  <object class="GtkButton" id="WBtnFind">
                     <property name="label">gtk-find</property>
-                    <property name="width-request">100</property>
+                    <property name="name">WBtnFind</property>
                     <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="use-stock">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="has_focus">True</property>
+                    <property name="is_focus">True</property>
+                    <property name="can_default">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_stock">True</property>
+                    <signal name="clicked" handler="On_WFARBox_WBtnFind_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -240,11 +254,13 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="WBtnFindAndReplace1">
+                  <object class="GtkButton" id="WBtnFindAndReplace">
                     <property name="label">Replace</property>
+                    <property name="name">WBtnFindAndReplace</property>
                     <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="On_WFARBox_WBtnFindAndReplace_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -253,11 +269,13 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="WBtnReplaceAll1">
+                  <object class="GtkButton" id="WBtnReplaceAll">
                     <property name="label" translatable="yes">Replace all</property>
+                    <property name="name">WBtnReplaceAll</property>
                     <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="On_WFARBox_WBtnReplaceAll_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -266,12 +284,14 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="WBtnClose1">
+                  <object class="GtkButton" id="WBtnClose">
                     <property name="label">gtk-close</property>
+                    <property name="name">WBtnClose</property>
                     <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="use-stock">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_stock">True</property>
+                    <signal name="clicked" handler="On_WFARBox_WBtnClose_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">True</property>

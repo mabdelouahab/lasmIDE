@@ -337,17 +337,17 @@ OProject ENDS
 
         mov lKeyProject     ,rv( g_key_file_new)
         
-		Helpers_if Current_Prj_Name				,g_key_file_set_string,	lKeyProject,"Project","Name"	,Current_Prj_Name
-		Helpers_if Current_Prj_Description		,g_key_file_set_string		,lKeyProject,"Project","Description",Current_Prj_Description
-		Helpers_if Current_Prj_MainFile			,g_key_file_set_string		,lKeyProject,"Project","MainFile"	,Current_Prj_MainFile
-		Helpers_if Current_Prj_PreAssemble		,g_key_file_set_string		,lKeyProject,"Project","PreAssemble",Current_Prj_PreAssemble
-		Helpers_if Current_Prj_PreAssemble_opt	,g_key_file_set_string, 	lKeyProject,"Project","PreAssemble_opt"	,Current_Prj_PreAssemble_opt
-		Helpers_if Current_Prj_Assemble			,g_key_file_set_string		,lKeyProject,"Project","Assemble"	,Current_Prj_Assemble
-		Helpers_if Current_Prj_Link				,g_key_file_set_string		,lKeyProject,"Project","Link",Current_Prj_Link
-		Helpers_if Current_Prj_Path				,g_key_file_set_string		,lKeyProject,"Project","Path"	,Current_Prj_Path
-		Helpers_if Current_Prj_Assemble_opt		,g_key_file_set_string		,lKeyProject,"Project","Assemble_opt"	,Current_Prj_Assemble_opt
-		Helpers_if Current_Prj_Link_opt			,g_key_file_set_string		,lKeyProject,"Project","Link_opt"	,Current_Prj_Link_opt
-		Helpers_if Current_Prj_Run_cmd			,g_key_file_set_string		,lKeyProject,"Project","Run_cmd",Current_Prj_Run_cmd
+		Helpers_SaveKeyString Current_Prj_Name			,	lKeyProject,"Project","Name"	,Current_Prj_Name
+		Helpers_SaveKeyString Current_Prj_Description		,lKeyProject,"Project","Description",Current_Prj_Description
+		Helpers_SaveKeyString Current_Prj_MainFile			,lKeyProject,"Project","MainFile"	,Current_Prj_MainFile
+		Helpers_SaveKeyString Current_Prj_PreAssemble		,lKeyProject,"Project","PreAssemble",Current_Prj_PreAssemble
+		Helpers_SaveKeyString Current_Prj_PreAssemble_opt, 	lKeyProject,"Project","PreAssemble_opt"	,Current_Prj_PreAssemble_opt
+		Helpers_SaveKeyString Current_Prj_Assemble			,lKeyProject,"Project","Assemble"	,Current_Prj_Assemble
+		Helpers_SaveKeyString Current_Prj_Link				,lKeyProject,"Project","Link",Current_Prj_Link
+		;Helpers_SaveKeyString Current_Prj_Path				,lKeyProject,"Project","Path"	,Current_Prj_Path
+		Helpers_SaveKeyString Current_Prj_Assemble_opt		,lKeyProject,"Project","Assemble_opt"	,Current_Prj_Assemble_opt
+		Helpers_SaveKeyString Current_Prj_Link_opt			,lKeyProject,"Project","Link_opt"	,Current_Prj_Link_opt
+		Helpers_SaveKeyString Current_Prj_Run_cmd			,lKeyProject,"Project","Run_cmd",Current_Prj_Run_cmd
 		
 		
 		invoke g_key_file_set_string_list,lKeyProject,"Project","Files",Current_Prj_Files,Current_Prj_NFiles
@@ -355,22 +355,22 @@ OProject ENDS
 			invoke g_key_file_set_string_list,	lKeyProject,"Project","Dirs",Current_Prj_Dirs,Current_Prj_NDirs
  		;.endif
         m2m	lfiles,Current_Prj_OFiles
-        .if lfiles
+	.if lfiles
     	 @@:
     	 mov rax,lfiles
 		 mov rax,gpointer ptr [rax]
 		 .if rax
-			Helpers_if_RAX [rax].OFile._Name,g_key_file_set_string,lKeyProject,[rax].OFile.FileName,"Name",[rax].OFile._Name
-			Helpers_if_RAX [rax].OFile.Description,g_key_file_set_string,lKeyProject,[rax].OFile.FileName,"Description",[rax].OFile.Description
-			Helpers_if_RAX [rax].OFile.ProgrammingLanguage,g_key_file_set_string,lKeyProject,[rax].OFile.FileName,"ProgrammingLanguage",[rax].OFile.ProgrammingLanguage
-			Helpers_if_RAX [rax].OFile.StyleScheme,g_key_file_set_string,lKeyProject,[rax].OFile.FileName,"StyleScheme",[rax].OFile.StyleScheme
-			Helpers_if_RAX [rax].OFile.icon,g_key_file_set_string,lKeyProject,[rax].OFile.FileName,"icon",[rax].OFile.icon
-			Helpers_if_RAX [rax].OFile.Dir,g_key_file_set_string,lKeyProject,[rax].OFile.FileName,"Dir",[rax].OFile.Dir
-			Helpers_if_RAX [rax].OFile.Content,g_key_file_set_string,lKeyProject,[rax].OFile.FileName,"Content",[rax].OFile.Content
+			Helpers_SaveKeyString_RAX [rax].OFile._Name 					,lKeyProject ,[rax].OFile.FileName,"Name",[rax].OFile._Name
+			Helpers_SaveKeyString_RAX [rax].OFile.Description 			,lKeyProject ,[rax].OFile.FileName,"Description",[rax].OFile.Description
+			Helpers_SaveKeyString_RAX [rax].OFile.ProgrammingLanguage 	,lKeyProject ,[rax].OFile.FileName,"ProgrammingLanguage",[rax].OFile.ProgrammingLanguage
+			Helpers_SaveKeyString_RAX [rax].OFile.StyleScheme 			,lKeyProject ,[rax].OFile.FileName,"StyleScheme",[rax].OFile.StyleScheme
+			Helpers_SaveKeyString_RAX [rax].OFile.icon 					,lKeyProject ,[rax].OFile.FileName,"icon",[rax].OFile.icon
+			Helpers_SaveKeyString_RAX [rax].OFile.Dir 					,lKeyProject ,[rax].OFile.FileName,"Dir",[rax].OFile.Dir
+			Helpers_SaveKeyString_RAX [rax].OFile.Content 				,lKeyProject ,[rax].OFile.FileName,"Content",[rax].OFile.Content
 			add lfiles,sizeof gpointer    			
 			jmp @B
 		 .endif       		
-		.endif
+	.endif
 
     	;save to file
     	mov FullPName,rv(g_build_filename,Current_Prj_Path,Current_Prj_FileName,0)
