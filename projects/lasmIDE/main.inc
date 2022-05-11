@@ -13,10 +13,11 @@
 	include 	./muasm/cairo.inc
 	include include.inc
 
-
+ 
 	include inputbox.asm
 	include Helpers.inc
 	include Settings.inc
+	include FilesTypes.wedg
 	include icons.inc
 	include STNG.inc  
 	

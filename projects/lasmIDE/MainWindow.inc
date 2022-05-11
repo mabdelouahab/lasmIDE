@@ -5,7 +5,7 @@
 		local prjpath:gpointer
     		mov prjname,rv( user_input_box,".Input the new Project Name:","New project")
 	     	.if rax
-	  		invoke Projects_Close_Current_Project,1
+	  		invoke Projects_Close_Current_Project,0
 			invoke TreeView_Clear
 		    	invoke g_chdir,firstworkingdir;HOMEdir;
 			mov prjpath,rv(g_build_filename,ProjectsPath,prjname,0)
@@ -103,13 +103,13 @@
 	
 ;--------------------------------------------------------
 	MainWindow_callback_wQuit PROC
-    invoke gtk_paned_get_position,WPaned1
-	invoke STNG_Set,stng_paned1_Position,eax
+		invoke gtk_paned_get_position,WPaned1
+		invoke STNG_Set,stng_paned1_Position,eax
 
-    invoke gtk_paned_get_position,WPaned2
-	invoke STNG_Set,stng_paned2_Position,eax
-
-	invoke gtk_main_quit
+		invoke gtk_paned_get_position,WPaned2
+		invoke STNG_Set,stng_paned2_Position,eax
+		invoke Projects_Close_Current_Project,0
+		invoke gtk_main_quit
 	RET
 	MainWindow_callback_wQuit   ENDP
 ;--------------------------------------------------------
@@ -373,7 +373,7 @@ GDK_SELECTION_CLIPBOARD = _GDK_MAKE_ATOM
 		Ret
 	On_WMnSetting_Clicked ENDP
 	On_WMnAbout_Clicked PROC
-		msgbox "Incomplete Code"
+		invoke gtk_window_set_interactive_debugging,TRUE
 		Ret
 	On_WMnAbout_Clicked ENDP
 	 

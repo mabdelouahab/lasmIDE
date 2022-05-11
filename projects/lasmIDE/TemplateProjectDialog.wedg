@@ -77,7 +77,7 @@
 		    invoke g_signal_connect_data,WBtnCancel 		,str$("clicked")    ,addr On_WBtnCancelclicked    	,0,0,0    		     
         	invoke g_signal_connect_data,WTVListSelection	,str$("changed")    ,addr on_WTVListTemplatechanged ,0,0,0   
 
-            invoke g_dir_open,TemplatesPath, 0, addr _err;
+            	invoke g_dir_open,TemplatesPath, 0, addr _err;
 		    mov dir,rax
 		 @@: 
 		    mov filename,rv(g_dir_read_name,dir)     

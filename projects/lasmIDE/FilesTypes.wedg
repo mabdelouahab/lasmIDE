@@ -1,0 +1,182 @@
+.DATA
+	WFileType			   	gpointer    0
+	EN_TypeName          		gpointer    0
+	EN_Extention        	    gpointer    0
+	CB_ProgLang          			gpointer    0
+	CB_StyleCh            	gpointer    0
+	CB_Icon	           	gpointer    0
+
+	BTN_OK          			gpointer    0
+	BTN_Cancel          		gpointer    0
+
+.CODE
+	Init_FilesTypes proc 
+		local lbuilder:gpointer
+		local _err:gpointer
+		local dir:gpointer
+		local filename:gpointer
+ 		local _FilesTypeListe:gpointer
+		local store:gpointer
+		local l_str:gpointer
+	       local l__iter :GtkTreeIter
+			
+ 		mov _err,0
+		mov lbuilder,rv(gtk_builder_new)
+		invoke gtk_builder_add_from_string,lbuilder,addr FileTypeInterface,FileTypeInterface_sz,addr _err
+		invoke gtk_builder_connect_signals,lbuilder,0 
+
+		mov   	WFileType        	,0
+		mov   	WFileType        	,rv(gtk_builder_get_object, lbuilder,str$("DLG_FileType"))
+		
+		mov 	EN_TypeName	,rv(gtk_builder_get_object, lbuilder,str$("EN_TypeName"))
+		mov	EN_Extention    	,rv(gtk_builder_get_object, lbuilder,str$("EN_Extention"))
+		mov 	CB_ProgLang	,rv(gtk_builder_get_object, lbuilder,str$("CB_ProgLang"))
+		mov	CB_StyleCh    	,rv(gtk_builder_get_object, lbuilder,str$("CB_StyleCh"))
+		mov 	BTN_OK			,rv(gtk_builder_get_object, lbuilder,str$("BTN_OK"))
+		mov	BTN_Cancel    	,rv(gtk_builder_get_object, lbuilder,str$("BTN_Cancel"))
+		mov	CB_Icon    	,rv(gtk_builder_get_object, lbuilder,str$("CB_Icon"))
+
+ 		gtk_combo_box_set_model(CB_ProgLang,rv(gtk_list_store_new,1,G_TYPE_STRING))
+ 		gtk_combo_box_set_model(CB_StyleCh,rv(gtk_list_store_new,1,G_TYPE_STRING))
+ 		gtk_combo_box_set_model(CB_Icon,rv(gtk_list_store_new,1,G_TYPE_STRING))
+ 		gtk_combo_box_set_model(EN_TypeName,rv(gtk_list_store_new,1,G_TYPE_STRING))
+ 		
+		gtk_source_style_scheme_manager_get_scheme_ids(GGtkSourceStyleSchemeManager)
+		@@: 
+			.if gpointer ptr [rax]
+				pushrax
+					gtk_combo_box_text_append(CB_StyleCh,0,[rax])	
+				poprax
+				add rax,sizeof gpointer
+				jmp @B
+			.endif
+		gtk_source_language_manager_get_language_ids(GGtkSourceLanguageManager)
+		@@: 
+			.if  gpointer ptr [rax]
+				pushrax
+					gtk_combo_box_text_append(CB_ProgLang,0,[rax])
+				poprax
+				add rax,sizeof gpointer
+				jmp @B
+			.endif
+           	 invoke g_dir_open,IconsPath, 0, addr _err;
+           	 mov dir,rax
+		 @@: 
+		   	g_dir_read_name(dir)     
+		 	.if  rax
+		 		gtk_combo_box_text_append(CB_Icon,0,rax)
+		 		jmp @B
+		 	.endif
+		m2m _FilesTypeListe,Settings_FilesTypeListe
+		.if _FilesTypeListe
+		 @@: 
+		   	mov rax,_FilesTypeListe    
+		   	mov rax,[rax] 
+		 	.if  rax
+		 		gtk_combo_box_text_append(EN_TypeName,0,rax)
+		 		add _FilesTypeListe,8
+		 		jmp @B
+		 	.endif
+		.endif
+			
+		gtk_combo_box_set_active(CB_ProgLang,0)
+		gtk_combo_box_set_active(CB_StyleCh,0)			
+		gtk_combo_box_set_active(CB_Icon,0)			
+		gtk_combo_box_set_active(EN_TypeName,0)	
+		
+		get_combo_box_index_by_value(CB_ProgLang, "assembly")
+		.if rax!=-1
+			gtk_combo_box_set_active(CB_ProgLang,rax)
+		.endif
+		
+		invoke gtk_window_set_modal,WFileType,GTK_DIALOG_MODAL
+		invoke g_object_unref,lbuilder
+		invoke gtk_dialog_run,WFileType
+		invoke gtk_widget_destroy,WFileType  
+
+	RET
+	Init_FilesTypes endp
+	FilesTypes_Exist_Name PROC __Name1:gpointer
+		local  Name1:gpointer
+		local _FilesTypeListe:gpointer
+		
+		mov Name1,__Name1
+		m2m _FilesTypeListe,Settings_FilesTypeListe
+		.if _FilesTypeListe==0
+			xor rax,rax
+			ret
+		.else
+			@@:
+			mov rax,_FilesTypeListe
+			mov rax,gpointer ptr [rax]
+		 	.if rax
+				.if rv(g_strcmp0,rax,Name1) == 0  
+					mov rax,TRUE
+		 			ret
+		 		.endif
+				add _FilesTypeListe	,sizeof gpointer   			 			
+				jmp @B
+			.endif			
+		.endif
+		xor rax,rax
+		ret
+	FilesTypes_Exist_Name ENDP
+
+
+	On_WFileType_EN_TypeName_changed PROC
+		invoke gtk_combo_box_text_get_active_text,EN_TypeName
+		Settings_Get_Files_Type(rax)
+		
+		gtk_combo_box_set_active(CB_ProgLang,rv(get_combo_box_index_by_value,CB_ProgLang, TFile_Type_ST_ProgrammingLanguage))
+		gtk_combo_box_set_active(CB_StyleCh,rv(get_combo_box_index_by_value,CB_StyleCh, TFile_Type_ST_StyleScheme))
+		gtk_combo_box_set_active(CB_Icon,rv(get_combo_box_index_by_value,CB_Icon, TFile_Type_ST_Icon))
+		gtk_entry_set_text(EN_Extention, TFile_Type_ST_Extention)
+
+	    	ret
+	On_WFileType_EN_TypeName_changed ENDP
+	On_WFileType_BTN_Add_clicked PROC
+		local ftname:gpointer
+    		mov ftname,rv( user_input_box,".Input the new File type Name:","New file type")
+	     	.if rax
+			.if rv(FilesTypes_Exist_Name,ftname)
+				msgbox "file type already exists"
+			.else
+				gtk_combo_box_text_append(EN_TypeName,0,ftname)
+				gtk_combo_box_set_active(EN_TypeName,rv(get_combo_box_index_by_value,EN_TypeName, ftname))
+				Settings_Append_Files_Type( ftname,"assembly", "assembly","inc.png" , "asm")
+			.endif
+	    	.endif		
+	    	ret
+	On_WFileType_BTN_Add_clicked ENDP
+	
+	On_WFileType_BTN_Remove_clicked PROC
+	    	ret
+	On_WFileType_BTN_Remove_clicked ENDP
+
+
+	On_WFileType_BTN_Save_clicked PROC
+		local TFileType_ProgrammingLanguage	:gpointer
+		local TFileType_StyleScheme				:gpointer
+		local TFileType_Icon						:gpointer
+		local TFileType_Extention					:gpointer
+		
+		mov  TFileType_ProgrammingLanguage	,rv(gtk_combo_box_text_get_active_text	,CB_ProgLang)
+		mov  TFileType_StyleScheme				,rv(gtk_combo_box_text_get_active_text	,CB_StyleCh)
+		mov  TFileType_Icon						,rv(gtk_combo_box_text_get_active_text	,CB_Icon)
+		mov  TFileType_Extention					,rv(gtk_entry_get_text	,EN_Extention)
+
+		Settings_Append_Files_Type( rv(gtk_combo_box_text_get_active_text,EN_TypeName),TFileType_ProgrammingLanguage , TFileType_StyleScheme,TFileType_Icon , TFileType_Extention)
+	    	ret
+	On_WFileType_BTN_Save_clicked ENDP
+	On_WFileType_BTN_Close_clicked PROC
+		invoke gtk_widget_destroy,WFileType
+		mov   WFileType,0
+		RET
+	On_WFileType_BTN_Close_clicked ENDP
+	     
+	.DATA
+	    FileTypeInterface label qword
+	    incbin <FileType.glade>
+	    FileTypeInterface_sz equ $-FileTypeInterface
+
+

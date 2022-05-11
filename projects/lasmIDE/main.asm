@@ -7,6 +7,7 @@ include main.inc
 		mov  largc,_argc    
 		mov  largv,_argv   
 		invoke gInit
+		;	call aaaa
 		.if largc > 1 
 			mov rax,largv
 			add rax,sizeof gpointer
@@ -18,5 +19,7 @@ include main.inc
 		xor rax,rax
 		ret
 	main ENDP
+
+
 	end 
 	

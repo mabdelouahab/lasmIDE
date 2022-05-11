@@ -130,7 +130,7 @@ menu_settings_highlight gpointer 0
 
 
 		invoke g_signal_connect_data,WMainwindow    ,str$("show")    ,addr On_Show    ,0,0,0     
-		invoke g_signal_connect_data,WMainwindow    ,str$("destroy")    ,addr MainWindow_callback_wQuit    ,0,0,0     
+		invoke g_signal_connect_data,WMainwindow    ,str$("destroy")    ,addr MainWindow_callback_wQuit    ,0,0,0     ;close-request
 
 
 		.if rv(STNG_Get,stng_paned1_Position,addr position)

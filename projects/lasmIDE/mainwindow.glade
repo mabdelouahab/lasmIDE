@@ -414,6 +414,15 @@
                             <signal name="activate" handler="dialog_project_option" swapped="no"/>
                           </object>
                         </child>
+                        <child>
+                          <object class="GtkMenuItem" id="WMnProjectFilesType">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Files types</property>
+                            <property name="use-underline">True</property>
+                            <signal name="activate" handler="Init_FilesTypes" swapped="no"/>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>

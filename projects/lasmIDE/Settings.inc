@@ -46,6 +46,9 @@
 		Helpers_Setting_var		Settings_Last_Project8		,gpointer	,0		,string	,"PROJECT"	 
 		Helpers_Setting_var		Settings_Last_Project9		,gpointer	,0		,string	,"PROJECT"	 
 
+
+
+
 	LastProjectMenuList macro
 	local m
 		 m=1
@@ -76,14 +79,123 @@
 	Settings_Load	PROC
 		local settingKEY	:gpointer
 		local FullPName	:gpointer
+		mov settingKEY     ,rv( g_key_file_new)      
+		IFNB <firstworkingdir>
 			mov FullPName,rv(g_build_filename,firstworkingdir,SETTING_FileName,0)
-			mov settingKEY     ,rv( g_key_file_new)      
 			invoke g_key_file_load_from_file,settingKEY,FullPName, 0,0   
-			Helpers_Setting_var_Get
-			invoke g_key_file_free,settingKEY
 			invoke g_free,FullPName
+		ELSE
+			invoke g_key_file_load_from_file,settingKEY,SETTING_FileName, 0,0   
+		ENDIF
+		Helpers_Setting_var_Get
+		mov Settings_FilesTypeListe						,rv(g_key_file_get_string_list,settingKEY,"FilesTypeListe","Settings_FilesTypeListe",addr Settings_NFilesTypeListe,0)
+		mov Settings_Folding_EndOf_First_Word_Liste		,rv(g_key_file_get_string_list,settingKEY,"Folding","Settings_Folding_EndOf_First_Word_Liste",addr Settings_NFolding_First_Word_Liste,0)
+		mov Settings_Folding_EndOf_Second_Word_Liste	,rv(g_key_file_get_string_list,settingKEY,"Folding","Settings_Folding_EndOf_Second_Word_Liste",addr Settings_NFolding_Second_Word_Liste,0)
+
+		mov Settings_Folding_First_Word_Liste				,rv(g_key_file_get_string_list,settingKEY,"Folding","Settings_Folding_First_Word_Liste",addr Settings_NFolding_First_Word_Liste,0)
+		mov Settings_Folding_Second_Word_Liste			,rv(g_key_file_get_string_list,settingKEY,"Folding","Settings_Folding_Second_Word_Liste",addr Settings_NFolding_Second_Word_Liste,0)
+
+		mov Settings_Folding_First_Word_End_Liste		,rv(g_key_file_get_string_list,settingKEY,"Folding","Settings_Folding_First_Word_End_Liste",addr Settings_NFolding_First_Word_End_Liste,0)
+		mov Settings_Folding_Second_Word_End_Liste		,rv(g_key_file_get_string_list,settingKEY,"Folding","Settings_Folding_Second_Word_End_Liste",addr Settings_NFolding_Second_Word_End_Liste,0)
+		invoke g_key_file_free,settingKEY
 		ret
 	Settings_Load	ENDP
+
+
+	.data
+		Settings_FilesTypeListe						gpointer	0
+		Settings_NFilesTypeListe						qword		0
+ 
+		Settings_Folding_First_Word_Liste				gpointer	0
+		Settings_Folding_EndOf_First_Word_Liste		gpointer	0
+		Settings_NFolding_First_Word_Liste			qword		0
+
+		Settings_Folding_Second_Word_Liste			gpointer	0
+		Settings_Folding_EndOf_Second_Word_Liste	gpointer	0
+		Settings_NFolding_Second_Word_Liste			qword		0
+ 
+		Settings_Folding_First_Word_End_Liste			gpointer	0
+		Settings_NFolding_First_Word_End_Liste		qword		0
+
+		Settings_Folding_Second_Word_End_Liste		gpointer	0
+		Settings_NFolding_Second_Word_End_Liste		qword		0
+ 
+
+		TFile_Type_ST__Name				gpointer	0
+		TFile_Type_ST_ProgrammingLanguage	gpointer	0
+		TFile_Type_ST_StyleScheme			gpointer	0
+		TFile_Type_ST_Icon					gpointer	0
+        	TFile_Type_ST_Extention				gpointer	0
+	.code
+	
+	Settings_Get_Files_Type	PROC _ftypeName:gpointer
+		local settingKEY	:gpointer
+		local FullPName	:gpointer
+        	local ftypeName:gpointer
+        		mov ftypeName,_ftypeName
+			mov settingKEY     ,rv( g_key_file_new)      
+			IFNB <firstworkingdir>
+				mov FullPName,rv(g_build_filename,firstworkingdir,SETTING_FileName,0)
+				invoke g_key_file_load_from_file,settingKEY,FullPName, 0,0   
+				invoke g_free,FullPName
+			ELSE
+				invoke g_key_file_load_from_file,settingKEY,SETTING_FileName, 0,0   
+			ENDIF
+			mov TFile_Type_ST__Name				,rv(g_key_file_get_string,settingKEY,ftypeName,"_Name",0)
+			mov TFile_Type_ST_ProgrammingLanguage	,rv(g_key_file_get_string,settingKEY,ftypeName,"ProgrammingLanguage",0)
+			mov TFile_Type_ST_StyleScheme			,rv(g_key_file_get_string,settingKEY,ftypeName,"StyleScheme",0)
+			mov TFile_Type_ST_Icon					,rv(g_key_file_get_string,settingKEY,ftypeName,"Icon",0)
+			mov TFile_Type_ST_Extention				,rv(g_key_file_get_string,settingKEY,ftypeName,"Extention",0)
+			invoke g_key_file_free,settingKEY
+		ret
+	Settings_Get_Files_Type	ENDP
+	
+	Settings_Append_Files_Type	PROC _ftypeName:gpointer,ProgrammingLanguage :gpointer, StyleScheme:gpointer,Icon :gpointer, Extention:gpointer
+		local __Name				:gpointer	
+		local _ProgrammingLanguage :gpointer	
+		local _StyleScheme			:gpointer	
+		local _Icon					:gpointer	
+        	local _Extention				:gpointer	
+		local settingKEY	:gpointer
+		local FullPName	:gpointer
+
+			mov __Name				,_ftypeName		
+			mov _ProgrammingLanguage	,ProgrammingLanguage	
+			mov _StyleScheme			,StyleScheme		
+			mov _Icon					,Icon		
+			mov _Extention				,Extention
+							  						
+
+			mov settingKEY     ,rv( g_key_file_new)      
+			IFNB <firstworkingdir>
+				mov FullPName,rv(g_build_filename,firstworkingdir,SETTING_FileName,0)
+				invoke g_key_file_load_from_file,settingKEY,FullPName, 0,0   
+				invoke g_free,FullPName
+			ELSE
+				invoke g_key_file_load_from_file,settingKEY,SETTING_FileName, 0,0   
+			ENDIF
+			g_key_file_set_string(	settingKEY	,__Name	,"_Name"				,__Name	)	
+			g_key_file_set_string(	settingKEY	,__Name	,"ProgrammingLanguage",_ProgrammingLanguage	)	
+			g_key_file_set_string(	settingKEY	,__Name	,"StyleScheme"			,_StyleScheme	)	
+			g_key_file_set_string(	settingKEY	,__Name	,"Icon"					,_Icon	)	
+			g_key_file_set_string(	settingKEY	,__Name	,"Extention"				,_Extention	)	
+			FilesTypes_Exist_Name proto :gpointer
+			.if rv(FilesTypes_Exist_Name,	__Name)==0
+				mov Settings_FilesTypeListe,rv(List_Append,Settings_FilesTypeListe,__Name,addr Settings_NFilesTypeListe)
+				invoke g_key_file_set_string_list,settingKEY,"FilesTypeListe","Settings_FilesTypeListe",Settings_FilesTypeListe,Settings_NFilesTypeListe
+			.endif
+ 
+			IFNB <firstworkingdir>
+				mov FullPName,rv(g_build_filename,firstworkingdir,SETTING_FileName,0)
+				invoke g_key_file_save_to_file,settingKEY,FullPName,0
+				invoke g_free,FullPName
+			ELSE
+				invoke g_key_file_save_to_file,settingKEY,SETTING_FileName,0
+			ENDIF
+			invoke g_key_file_free,settingKEY
+		ret
+	Settings_Append_Files_Type	ENDP
+	
 	Settings_InsertInProjectList	PROC  __ProjectStr:gpointer
 	local ProjectStr:gpointer
 	
@@ -189,12 +301,41 @@
 	Settings_Save	PROC
 		local settingKEY	:gpointer     
 		local FullPName	:gpointer
-	     	mov FullPName,rv(g_build_filename,firstworkingdir,SETTING_FileName,0)
-		mov settingKEY     ,rv( g_key_file_new)    
+
+
+			mov settingKEY     ,rv( g_key_file_new)      
+			IFNB <firstworkingdir>
+				mov FullPName,rv(g_build_filename,firstworkingdir,SETTING_FileName,0)
+				invoke g_key_file_load_from_file,settingKEY,FullPName, 0,0   
+				invoke g_free,FullPName
+			ELSE
+				invoke g_key_file_load_from_file,settingKEY,SETTING_FileName, 0,0   
+			ENDIF
+
+
+	     	;mov FullPName,rv(g_build_filename,firstworkingdir,SETTING_FileName,0)
+		;mov settingKEY     ,rv( g_key_file_new)    
 			Helpers_Setting_var_Set
+
+		invoke g_key_file_set_string_list,settingKEY,"FilesTypeListe","Settings_FilesTypeListe",Settings_FilesTypeListe,Settings_NFilesTypeListe
+		invoke g_key_file_set_string_list,settingKEY,"Folding","Settings_Folding_EndOf_First_Word_Liste",Settings_Folding_EndOf_First_Word_Liste,Settings_NFolding_First_Word_Liste
+		invoke g_key_file_set_string_list,settingKEY,"Folding","Settings_Folding_EndOf_Second_Word_Liste",Settings_Folding_EndOf_Second_Word_Liste	,Settings_NFolding_Second_Word_Liste
+		invoke g_key_file_set_string_list,settingKEY,"Folding","Settings_Folding_First_Word_Liste",Settings_Folding_First_Word_Liste	,Settings_NFolding_First_Word_Liste
+		invoke g_key_file_set_string_list,settingKEY,"Folding","Settings_Folding_Second_Word_Liste",Settings_Folding_Second_Word_Liste	,Settings_NFolding_Second_Word_Liste
+		invoke g_key_file_set_string_list,settingKEY,"Folding","Settings_Folding_First_Word_End_Liste",Settings_Folding_First_Word_End_Liste	,Settings_NFolding_First_Word_End_Liste
+		invoke g_key_file_set_string_list,settingKEY,"Folding","Settings_Folding_Second_Word_End_Liste",Settings_Folding_Second_Word_End_Liste	,Settings_NFolding_Second_Word_End_Liste
+				
 	    	invoke g_key_file_save_to_file,settingKEY,FullPName,0
+		IFNB <firstworkingdir>
+			mov FullPName,rv(g_build_filename,firstworkingdir,SETTING_FileName,0)
+			invoke g_key_file_save_to_file,settingKEY,FullPName,0
+			invoke g_free,FullPName
+		ELSE
+			invoke g_key_file_save_to_file,settingKEY,SETTING_FileName,0
+		ENDIF
+
 	    	invoke g_key_file_free,settingKEY
-	    	invoke g_free,FullPName
+
 		ret
 	Settings_Save	ENDP	
 	

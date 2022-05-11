@@ -82,22 +82,22 @@
 	Icons_Init ENDP
 	  
     ;asm extention
-    asmfileicon          DB	089h,050h,04eh,047h,00dh,00ah,01ah,00ah,000h,000h,000h,00dh,049h,048h,044h,052h
-			DB	000h,000h,000h,020h,000h,000h,000h,020h,008h,006h,000h,000h,000h,073h,07ah,07ah
-			DB	0f4h,000h,000h,000h,009h,070h,048h,059h,073h,000h,000h,00bh,013h,000h,000h,00bh
-			DB	013h,001h,000h,09ah,09ch,018h,000h,000h,000h,0aah,049h,044h,041h,054h,058h,0c3h
-			DB	0edh,096h,04bh,012h,080h,030h,008h,043h,089h,0e3h,0fdh,0afh,01ch,017h,06eh,0d4h
-			DB	0e9h,007h,06dh,04bh,0eah,028h,04bh,036h,03ch,021h,069h,084h,0edh,045h,08bh,02bh
-			DB	0a4h,09ah,051h,000h,0bch,0ceh,05ah,02ch,0beh,070h,084h,050h,000h,09ch,020h,056h
-			DB	0c1h,0f0h,0e3h,009h,088h,08ah,016h,0e0h,0d0h,00bh,02ah,05ah,0c2h,0a5h,00fh,0b5h
-			DB	006h,02ch,007h,040h,0c7h,0d7h,0b2h,071h,0e5h,036h,083h,00bh,02ch,0e7h,002h,028h
-			DB	048h,056h,087h,0a0h,098h,080h,083h,0c3h,066h,096h,010h,01fh,04bh,01ah,090h,08bh
-			DB	050h,092h,003h,04bh,087h,0c7h,0a4h,09bh,006h,0f8h,010h,002h,06fh,03ah,081h,01bh
-			DB	000h,085h,03eh,07ah,09eh,063h,0cah,00dh,0e0h,089h,09ah,05bh,001h,0a8h,0deh,000h
-			DB	0a2h,0edh,097h,07bh,08ah,03dh,043h,018h,0e1h,082h,0e6h,0bfh,0dch,011h,000h,01ch
-			DB	001h,079h,027h,08eh,087h,0c6h,0b5h,0cah,005h,0fch,05ch,01ch,0ffh,000h,0f3h,001h
-			DB	040h,09dh,005h,01bh,093h,0c5h,022h,039h,00dh,034h,0d3h,01bh,000h,000h,000h,000h
-			DB	049h,045h,04eh,044h,0aeh,042h,060h,082h
+    asmfileicon       DB	089h,050h,04eh,047h,00dh,00ah,01ah,00ah,000h,000h,000h,00dh,049h,048h,044h,052h
+				DB	000h,000h,000h,020h,000h,000h,000h,020h,008h,006h,000h,000h,000h,073h,07ah,07ah
+				DB	0f4h,000h,000h,000h,009h,070h,048h,059h,073h,000h,000h,00bh,013h,000h,000h,00bh
+				DB	013h,001h,000h,09ah,09ch,018h,000h,000h,000h,0aah,049h,044h,041h,054h,058h,0c3h
+				DB	0edh,096h,04bh,012h,080h,030h,008h,043h,089h,0e3h,0fdh,0afh,01ch,017h,06eh,0d4h
+				DB	0e9h,007h,06dh,04bh,0eah,028h,04bh,036h,03ch,021h,069h,084h,0edh,045h,08bh,02bh
+				DB	0a4h,09ah,051h,000h,0bch,0ceh,05ah,02ch,0beh,070h,084h,050h,000h,09ch,020h,056h
+				DB	0c1h,0f0h,0e3h,009h,088h,08ah,016h,0e0h,0d0h,00bh,02ah,05ah,0c2h,0a5h,00fh,0b5h
+				DB	006h,02ch,007h,040h,0c7h,0d7h,0b2h,071h,0e5h,036h,083h,00bh,02ch,0e7h,002h,028h
+				DB	048h,056h,087h,0a0h,098h,080h,083h,0c3h,066h,096h,010h,01fh,04bh,01ah,090h,08bh
+				DB	050h,092h,003h,04bh,087h,0c7h,0a4h,09bh,006h,0f8h,010h,002h,06fh,03ah,081h,01bh
+				DB	000h,085h,03eh,07ah,09eh,063h,0cah,00dh,0e0h,089h,09ah,05bh,001h,0a8h,0deh,000h
+				DB	0a2h,0edh,097h,07bh,08ah,03dh,043h,018h,0e1h,082h,0e6h,0bfh,0dch,011h,000h,01ch
+				DB	001h,079h,027h,08eh,087h,0c6h,0b5h,0cah,005h,0fch,05ch,01ch,0ffh,000h,0f3h,001h
+				DB	040h,09dh,005h,01bh,093h,0c5h,022h,039h,00dh,034h,0d3h,01bh,000h,000h,000h,000h
+				DB	049h,045h,04eh,044h,0aeh,042h,060h,082h
     asmfileiconSZ        Dq  $-asmfileicon
     ;inc extention
     incfileicon          DB	089h,050h,04eh,047h,00dh,00ah,01ah,00ah,000h,000h,000h,00dh,049h,048h,044h,052h

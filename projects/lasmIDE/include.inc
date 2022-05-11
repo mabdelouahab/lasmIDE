@@ -66,6 +66,11 @@ TRUE EQU 1
 NULL EQU 0
 FALSE EQU 0
 GTK_TEXT_WINDOW_WIDGET EQU 1
+GTK_TEXT_WINDOW_WIDGET = 1
+GTK_TEXT_WINDOW_TEXT = 2
+GTK_TEXT_WINDOW_LEFT = 3
+
+
 GTK_WINDOW_POPUP EQU 1
 GTK_WRAP_NONE EQU 0
 GTK_WRAP_WORD_CHAR EQU 3
@@ -99,4 +104,116 @@ code   gint ?
 message gpointer ?  ;gchar       *
 _GError ends
 
+
+gtk_text_mark_set_visible proto :vararg
+
+_GdkRectangle	struct
+x	gint	?
+y	gint	?
+width_	gint	?
+height	gint	?
+_GdkRectangle	ends
+
+.code
+
+	List_Append	PROC	_old_DatasList:gpointer,_OData:gpointer,_pNewSz:gpointer
+		local old_Datas	:gpointer
+		local Nold_Datas	:gpointer
+		local Nnew_Datas	:gpointer
+
+		local newLDatas	:gpointer
+		local lOData:gpointer
+		local ODatasI:gpointer
+		local byte_:gpointer	
+ 		mov lOData,_OData
+		mov old_Datas,_old_DatasList
+ 		mov Nold_Datas,0
+ 		.if old_Datas
+	 		mov rax,old_Datas
+	 		@@:
+	 		.if qword ptr [rax]
+	 			inc Nold_Datas
+	 			add rax,sizeof gpointer
+	 			jmp @B
+	 		.endif
+ 		.endif
+ 		m2m Nnew_Datas,Nold_Datas
+		inc Nnew_Datas
+		.if _pNewSz
+			mov r10,_pNewSz
+			m2m [r10],Nnew_Datas
+		.endif
+	 	xor rax,rax
+		mov rax,Nnew_Datas
+		inc rax ;null terminate array
+		mov rcx,sizeof gpointer
+		mul rcx
+		mov byte_,rax
+		mov newLDatas,rv(g_malloc,byte_)
+		mov rcx,old_Datas
+		mov rdx,newLDatas
+		.if Nold_Datas
+			@@:
+			.if gpointer ptr [rcx]
+				m2m gpointer ptr [rdx],gpointer ptr [rcx]	
+				add rcx	,sizeof gpointer 
+				add rdx	,sizeof gpointer   			 			
+				jmp @B
+			.endif
+		.endif
+		m2m gpointer ptr [rdx],lOData
+		add rdx	,sizeof gpointer   			 			
+		mov gpointer ptr [rdx],0
+		.if Nold_Datas
+			 invoke g_free,old_Datas
+		.endif
+		 mov rax,newLDatas
+		ret
+	List_Append	ENDP
+	
+	align 16
+get_combo_box_index_by_value proc _combobox:gpointer,__value:gpointer
+	local combobox:gpointer
+	local _value:gpointer
+	local tvalue:gpointer
+	local model:gpointer
+	local index:qword
+	local iter_:GtkTreeIter
+	mov combobox,_combobox
+	mov _value,__value
+	mov index,0
+	mov model,rv(gtk_combo_box_get_model,combobox);
+	.if model==0
+		mov rax,-1
+		ret
+	.endif
+	.if rv(gtk_tree_model_get_iter_first,model,addr iter_)==0
+		mov rax,-1
+		ret
+	.endif
+	@@:
+		invoke gtk_tree_model_get,model,addr iter_,0,addr tvalue, -1,0,0,0,0
+		.if rv(g_strcmp0,tvalue,_value) == 0  
+			mov rax ,index
+			ret			
+		.endif		
+		inc index
+		.if rv(gtk_tree_model_iter_next,model,addr iter_)
+			jmp @B
+		.endif
+ 	mov rax ,-1
+	ret 
+get_combo_box_index_by_value endp
+get_combo_box_append_ PROC  _combobox:gpointer,_str:qword  
+	local combobox:gpointer
+        local store:gpointer
+        local l_str:gpointer
+        local l__iter :gpointer
+	mov combobox,_combobox
+        mov l_str,_str  
+	mov store,rv(gtk_combo_box_get_model,combobox);
+        invoke gtk_list_store_append,store, addr l__iter 
+        invoke gtk_list_store_set,store, addr l__iter, 0, l_str, -1 ,0,0,0,0
+        RET
+get_combo_box_append_ ENDP
 

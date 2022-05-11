@@ -1,9 +1,10 @@
 	.DATA
-	        TreeView_Project_Iter           GtkTreeIter <>
-	        TreeView_Dir_Iter            	GtkTreeIter <>
+	        TreeView_Project_Iter           	GtkTreeIter <>
+	        TreeView_Dir_Iter            		GtkTreeIter <>
+	        TreeView_Last_Dir            		gpointer 0
 	        
-	        TreeView_Selection				gpointer	0
- 		   	GDK_TYPE_PIXBUF         		gpointer    0
+	        TreeView_Selection			gpointer	0
+ 		GDK_TYPE_PIXBUF         		gpointer    0
 	        WProjectTreeStore       		gpointer    0
 	        
 	
@@ -44,7 +45,8 @@
         mov _menuitem,__menuitem
     	mov _userdata,__userdata
    		invoke printf,str$(<13,10,"TreeView_PopUp_Menu_File_Rename">)
-    	RET
+    	mov TreeView_Last_Dir,0
+   RET
     TreeView_PopUp_Menu_File_Rename	ENDP
     TreeView_PopUp_Menu_File_Remove_From_Project	PROC __menuitem:gpointer,  __userdata:gpointer
         local _menuitem:gpointer
@@ -52,7 +54,8 @@
         mov _menuitem,__menuitem
     	mov _userdata,__userdata
     	invoke printf,str$(<13,10,"TreeView_PopUp_Menu_File_Remove_From_Project">)
-    	RET
+    	mov TreeView_Last_Dir,0
+   RET
     TreeView_PopUp_Menu_File_Remove_From_Project	ENDP
     TreeView_Show_PopUp_Menu_For_Directory proc  _treeview:gpointer, _event:gpointer,  _userdata:gpointer
         local treeview:gpointer
@@ -60,6 +63,9 @@
         local userdata:gpointer
         local menu:gpointer
         local menuitem:gpointer
+	local _FilesTypeListe:gpointer
+        local __addStr	:gpointer
+        
         
         mov treeview,_treeview
         mov event,_event
@@ -122,6 +128,28 @@
         invoke g_signal_connect_data,menuitem    ,str$("activate") ,addr TreeView_PopUp_Menu_Directory_Add_New_ANY ,userdata,0,0 
         invoke gtk_menu_shell_append,menu,menuitem
 
+;**********************************************************
+        mov menuitem , rv(gtk_separator_menu_item_new)        
+        invoke gtk_menu_shell_append,menu,menuitem
+        	m2m _FilesTypeListe,Settings_FilesTypeListe
+		.if _FilesTypeListe
+		 @@: 
+		   	mov rax,_FilesTypeListe    
+		   	mov rax,[rax] 
+		 	.if  rax
+		 		mov userdata,rax
+		 		Settings_Get_Files_Type(rax)
+		 		mov __addStr,rv(g_strconcat,str$("Add new "),TFile_Type_ST__Name,str$("  (*."),TFile_Type_ST_Extention,str$(") "),0)
+				mov menuitem , rv(gtk_menu_item_new_with_label,__addStr)        
+				invoke g_signal_connect_data,menuitem    ,str$("activate") ,addr TreeView_PopUp_Menu_Directory_Add_New_Files_Type ,userdata,0,0 
+				invoke gtk_menu_shell_append,menu,menuitem
+				invoke g_free ,__addStr
+		 		add _FilesTypeListe,8
+		 		jmp @B
+		 	.endif
+		.endif
+
+;***********************************************************
         invoke gtk_widget_show_all,menu
         invoke gdk_event_get_time,event
         invoke gtk_menu_popup,menu, 0, 0, 0, 0, 0,rax
@@ -133,7 +161,8 @@
         mov _menuitem,__menuitem
     	mov _userdata,__userdata
     	invoke printf,str$(<13,10,"TreeView_PopUp_Menu_Project_Add_New_Directory">)
-    	RET
+    	mov TreeView_Last_Dir,0
+   RET
     TreeView_PopUp_Menu_Project_Add_New_Directory endp 
     TreeView_PopUp_Menu_Directory_Rename_Directory	PROC __menuitem:gpointer,  __userdata:gpointer
         local _menuitem:gpointer
@@ -141,7 +170,8 @@
         mov _menuitem,__menuitem
     	mov _userdata,__userdata
     	invoke printf,str$(<13,10,"TreeView_PopUp_Menu_Directory_Rename_Directory">)
-    	RET
+    	mov TreeView_Last_Dir,0
+   RET
     TreeView_PopUp_Menu_Directory_Rename_Directory	ENDP
     TreeView_PopUp_Menu_Directory_Delete_Directoty	PROC __menuitem:gpointer,  __userdata:gpointer
         local _menuitem:gpointer
@@ -149,7 +179,8 @@
         mov _menuitem,__menuitem
     	mov _userdata,__userdata
     	invoke printf,str$(<13,10,"TreeView_PopUp_Menu_Directory_Delete_Directoty">)
-    	RET
+    	mov TreeView_Last_Dir,0
+   RET
     TreeView_PopUp_Menu_Directory_Delete_Directoty	ENDP    
     TreeView_PopUp_Menu_Directory_Add_New_ASM	PROC __menuitem:gpointer,  __userdata:gpointer
         local _menuitem:gpointer
@@ -170,7 +201,8 @@
 				invoke TreeView_Show_File,of,addr TreeView_Project_Iter	
 			.endif
     	.endif
-    	RET
+    	mov TreeView_Last_Dir,0
+   RET
     TreeView_PopUp_Menu_Directory_Add_New_ASM	ENDP
     TreeView_PopUp_Menu_Directory_Add_New_INC	PROC __menuitem:gpointer,  __userdata:gpointer
         local _menuitem:gpointer
@@ -184,14 +216,15 @@
 			invoke Files_Save_Content,of
 			invoke Projects_Insert_File,of   
 			invoke Projects_Save_Current_Project
-				TreeView_Show_File proto OFile__:gpointer,__DirIter:gpointer 
+ 
 			.if _userdata
 				invoke TreeView_Show_File,of,addr TreeView_Dir_Iter	
 			.else
 				invoke TreeView_Show_File,of,addr TreeView_Project_Iter	
 			.endif
     	.endif
-    	RET
+    	mov TreeView_Last_Dir,0
+   RET
     TreeView_PopUp_Menu_Directory_Add_New_INC	ENDP
     TreeView_PopUp_Menu_Directory_Add_New_WEDG	PROC __menuitem:gpointer,  __userdata:gpointer
         local _menuitem:gpointer
@@ -205,14 +238,15 @@
 			invoke Files_Save_Content,of
 			invoke Projects_Insert_File,of   
 			invoke Projects_Save_Current_Project
-				TreeView_Show_File proto OFile__:gpointer,__DirIter:gpointer 
+ 
 			.if _userdata
 				invoke TreeView_Show_File,of,addr TreeView_Dir_Iter	
 			.else
 				invoke TreeView_Show_File,of,addr TreeView_Project_Iter	
 			.endif
     	.endif
-    	RET
+    	mov TreeView_Last_Dir,0
+   RET
     TreeView_PopUp_Menu_Directory_Add_New_WEDG	ENDP
     TreeView_PopUp_Menu_Directory_Add_New_C	PROC __menuitem:gpointer,  __userdata:gpointer
         local _menuitem:gpointer
@@ -226,14 +260,15 @@
 			invoke Files_Save_Content,of
 			invoke Projects_Insert_File,of   
 			invoke Projects_Save_Current_Project
-				TreeView_Show_File proto OFile__:gpointer,__DirIter:gpointer 
+ 
 			.if _userdata
 				invoke TreeView_Show_File,of,addr TreeView_Dir_Iter	
 			.else
 				invoke TreeView_Show_File,of,addr TreeView_Project_Iter	
 			.endif
     	.endif
-    	RET
+    	mov TreeView_Last_Dir,0
+   RET
     TreeView_PopUp_Menu_Directory_Add_New_C	ENDP
     TreeView_PopUp_Menu_Directory_Add_New_H	PROC __menuitem:gpointer,  __userdata:gpointer
         local _menuitem:gpointer
@@ -247,14 +282,15 @@
 			invoke Files_Save_Content,of
 			invoke Projects_Insert_File,of   
 			invoke Projects_Save_Current_Project
-				TreeView_Show_File proto OFile__:gpointer,__DirIter:gpointer 
+ 
 			.if _userdata
 				invoke TreeView_Show_File,of,addr TreeView_Dir_Iter	
 			.else
 				invoke TreeView_Show_File,of,addr TreeView_Project_Iter	
 			.endif
     	.endif
-    	RET
+    	mov TreeView_Last_Dir,0
+   RET
     TreeView_PopUp_Menu_Directory_Add_New_H	ENDP
     TreeView_PopUp_Menu_Directory_Add_New_TXT	PROC __menuitem:gpointer,  __userdata:gpointer
         local _menuitem:gpointer
@@ -268,14 +304,15 @@
 			invoke Files_Save_Content,of
 			invoke Projects_Insert_File,of   
 			invoke Projects_Save_Current_Project
-				TreeView_Show_File proto OFile__:gpointer,__DirIter:gpointer 
+ 
 			.if _userdata
 				invoke TreeView_Show_File,of,addr TreeView_Dir_Iter	
 			.else
 				invoke TreeView_Show_File,of,addr TreeView_Project_Iter	
 			.endif
     	.endif
-    	RET
+    	mov TreeView_Last_Dir,0
+   RET
     TreeView_PopUp_Menu_Directory_Add_New_TXT	ENDP
     TreeView_PopUp_Menu_Directory_Add_New_RC	PROC __menuitem:gpointer,  __userdata:gpointer
         local _menuitem:gpointer
@@ -289,14 +326,15 @@
 			invoke Files_Save_Content,of
 			invoke Projects_Insert_File,of   
 			invoke Projects_Save_Current_Project
-				TreeView_Show_File proto OFile__:gpointer,__DirIter:gpointer 
+ 
 			.if _userdata
 				invoke TreeView_Show_File,of,addr TreeView_Dir_Iter	
 			.else
 				invoke TreeView_Show_File,of,addr TreeView_Project_Iter	
 			.endif
     	.endif
-    	RET
+    	mov TreeView_Last_Dir,0
+   RET
     TreeView_PopUp_Menu_Directory_Add_New_RC	ENDP
     TreeView_PopUp_Menu_Directory_Add_New_XML	PROC __menuitem:gpointer,  __userdata:gpointer
         local _menuitem:gpointer
@@ -310,14 +348,15 @@
 			invoke Files_Save_Content,of
 			invoke Projects_Insert_File,of   
 			invoke Projects_Save_Current_Project
-				TreeView_Show_File proto OFile__:gpointer,__DirIter:gpointer 
+ 
 			.if _userdata
 				invoke TreeView_Show_File,of,addr TreeView_Dir_Iter	
 			.else
 				invoke TreeView_Show_File,of,addr TreeView_Project_Iter	
 			.endif
     	.endif
-    	RET
+    	mov TreeView_Last_Dir,0
+   RET
     TreeView_PopUp_Menu_Directory_Add_New_XML	ENDP
     TreeView_PopUp_Menu_Directory_Add_New_ANY	PROC __menuitem:gpointer,  __userdata:gpointer
         local _menuitem:gpointer
@@ -332,15 +371,40 @@
 			invoke Files_Save_Content,of
 			invoke Projects_Insert_File,of   
 			invoke Projects_Save_Current_Project
-				TreeView_Show_File proto OFile__:gpointer,__DirIter:gpointer 
+ 
 			.if _userdata
 				invoke TreeView_Show_File,of,addr TreeView_Dir_Iter	
 			.else
 				invoke TreeView_Show_File,of,addr TreeView_Project_Iter	
 			.endif
     	.endif
-    	RET
+    	mov TreeView_Last_Dir,0
+   RET
     TreeView_PopUp_Menu_Directory_Add_New_ANY	ENDP
+    TreeView_PopUp_Menu_Directory_Add_New_Files_Type	PROC __menuitem:gpointer,  __userdata:gpointer
+        local _menuitem:gpointer
+        local _userdata:gpointer
+        local of:gpointer
+        mov _menuitem,__menuitem
+    	mov _userdata,__userdata
+    	Settings_Get_Files_Type(_userdata)
+    	xor rax,rax
+    	.if rv(Helpers_Input_Box_New_File,rax)
+		mov of,rv(Files_Create_FT_File,rax,TFile_Type_ST__Name)
+		invoke Files_Save_Content,of
+		invoke Projects_Insert_File,of   
+		invoke Projects_Save_Current_Project
+ 
+		.if TreeView_Last_Dir
+			invoke TreeView_Show_File,of,addr TreeView_Dir_Iter	
+		.else
+			invoke TreeView_Show_File,of,addr TreeView_Project_Iter	
+		.endif
+    	.endif
+	mov TreeView_Last_Dir,0
+    	mov TreeView_Last_Dir,0
+   RET
+    TreeView_PopUp_Menu_Directory_Add_New_Files_Type	ENDP
         
 	TreeView_On_button_press_event PROC vwidget:gpointer,vevent:gpointer,vuser_data:gpointer
  		local lwidget:gpointer
@@ -385,11 +449,14 @@
                  mov rax,lValue
                 .if     BYTE PTR [RAX] == "P"
                 	xor rax,rax
+                	mov TreeView_Last_Dir,rax
                     invoke TreeView_Show_PopUp_Menu_For_Directory,lwidget,levent,rax
                 .elseif BYTE PTR [RAX] == "D"
+                	m2m TreeView_Last_Dir,ltext
                     invoke TreeView_Show_PopUp_Menu_For_Directory,lwidget,levent,ltext
                 .elseif BYTE PTR [RAX] == "F"
-                	
+                	xor rax,rax
+                	mov TreeView_Last_Dir,rax                	
                 	mov rax,[rax].OFile.FileName
                 	mov lDataU,rax
                 	;msgbox "TreeView_On_button_press______event %s",lDataU
@@ -442,6 +509,7 @@
 		local lValue	:gpointer
 		local ltext	:gpointer
 		local lDataU	:gpointer
+        local lf_iter       :GtkTextIter   
 
         mov ltree_view,_tree_view
         mov lpath,_path
@@ -470,11 +538,21 @@
             	.endif
             	.if [rax].OFile.NotebookPage==0
             		invoke Notebook_Open_File,lDataU
+			mov rax,lDataU
+			invoke gtk_text_buffer_get_end_iter,[rax].OFile.buffer,addr lf_iter
+			mov rax,lDataU
+			invoke gtk_text_buffer_insert,[rax].OFile.buffer ,addr lf_iter,[rax].OFile.Content,-1
+			mov rax,lDataU
+			invoke g_free,[rax].OFile.Content
+			mov rax,lDataU
+			mov [rax].OFile.Modified,0
+
             	.else
             		invoke Notebook_Get_N,[rax].OFile.NotebookPage
             		invoke gtk_notebook_set_current_page,WNotebook,RAX
-            	.endif                	
-				mov rax,lDataU
+            	.endif        
+            	        	
+			mov rax,lDataU
         		mov rax,[rax].OFile.FileName
         		mov lDataU,rax                       
             .endif

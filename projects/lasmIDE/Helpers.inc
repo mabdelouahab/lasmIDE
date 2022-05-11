@@ -54,7 +54,7 @@
 		ret
     	Helpers_GtkImage_From_File endp
 
-    	Helpers_Setting_var macro __var,__mtypr,__Dvalue,__keytype,__key
+    	Helpers_Setting_var macro __var,__mtypr,__Dvalue,__keytype,__key,NList:vararg
 	    	local m
 	   	local n
 	   	    IFNDEF Helpers_Setting_NVAR
@@ -62,8 +62,13 @@
 		    ENDIF
 		    Helpers_Setting_NVAR=Helpers_Setting_NVAR+1
 		    m=Helpers_Setting_NVAR
-		%	@CatStr(<shhg>,%m) TEXTEQU	<invoke g_key_file_get_&__keytype,settingKEY, &__key,!"&__var!",0>
-		%	@CatStr(<shhs>,%m) TEXTEQU	<invoke g_key_file_set_&__keytype,settingKEY, &__key,!"&__var!",&__var>
+		    IFB <NList>
+			%	@CatStr(<shhg>,%m) TEXTEQU	<invoke g_key_file_get_&__keytype,settingKEY, &__key,!"&__var!",0>
+			%	@CatStr(<shhs>,%m) TEXTEQU	<invoke g_key_file_set_&__keytype,settingKEY, &__key,!"&__var!",&__var>
+		    ELSE
+			%	@CatStr(<shhg>,%m) TEXTEQU	<invoke g_key_file_get_&__keytype,settingKEY, &__key,!"&__var!",addr NList,0>
+			%	@CatStr(<shhs>,%m) TEXTEQU	<invoke g_key_file_set_&__keytype,settingKEY, &__key,!"&__var!",&__var,NList>
+		    ENDIF 
 			n equ type(__mtypr)
 			IF 		n eq 1
 			%	@CatStr(<shhm>,%m) TEXTEQU	<MOV &__var,AL>

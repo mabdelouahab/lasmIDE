@@ -6,7 +6,7 @@
 		ProgrammingLanguage	gpointer	0
 		StyleScheme			gpointer	0
 		icon				gpointer	0
-        viewer				gpointer	0
+        	viewer				gpointer	0
 		buffer				gpointer	0
 		NotebookPage		gpointer	0
 		Dir 					gpointer	0
@@ -191,11 +191,43 @@
 	
 		ret
 	Files_Create_RC_File ENDP
+
+
+
+	Files_Create_FT_File PROC	 _FName:gpointer , _FTypeName:gpointer 
+        local FName		:gpointer
+        local FTypeName		:gpointer
+        local FFileName	:gpointer
+        local __str_	:gpointer
+         mov FName,_FName
+         mov FTypeName,_FTypeName
+        Settings_Get_Files_Type(_FTypeName)
+        
+
+        mov FFileName,rv(g_strconcat,FName,str$("."),TFile_Type_ST_Extention,0)
+        invoke g_malloc,sizeof OFile    
+        mov rcx,rax  
+		m2m 	[rcx].OFile._Name				,FName		
+        	m2m 	[rcx].OFile.FileName				,FFileName
+		m2m 	[rcx].OFile.Description			,FName	 
+		m2m 	[rcx].OFile.ProgrammingLanguage,TFile_Type_ST_ProgrammingLanguage
+		m2m 	[rcx].OFile.StyleScheme			,TFile_Type_ST_StyleScheme	 
+		m2m 	[rcx].OFile.icon					,TFile_Type_ST_Icon 
+		mov 	[rcx].OFile.viewer				,0	 
+		mov 	[rcx].OFile.buffer					,0	 
+		mov 	[rcx].OFile.NotebookPage			,0	 
+		mov 	[rcx].OFile.Dir					,0	 
+		mov 	[rcx].OFile.Content				,0							
+		mov 	[rcx].OFile.Path					,0							
+		mov rax,rcx
+		ret
+	Files_Create_FT_File ENDP
+
+
 	Files_Create_ANY_File PROC	 _FName:gpointer 
         local FName		:gpointer
         local FFileName	:gpointer
         mov FName,_FName
-        
         mov FFileName,rv(g_strconcat,FName,0)
         invoke g_malloc,sizeof OFile    
         mov rcx,rax  
@@ -212,8 +244,6 @@
 		mov 	[rcx].OFile.Content				,0							
 		mov 	[rcx].OFile.Path				,0							
 		mov rax,rcx
-
-	
 		ret
 	Files_Create_ANY_File ENDP
 	Files_Create_XML_File PROC	 _FName:gpointer 
@@ -311,8 +341,7 @@
 	    .if rv(g_strcmp0,Ifile_, "rcfileicon") == 0 
 				return Icons_RC_PixBuf		
 	    .endif
- 		;Any auther 
-		return Icons_ANY_PixBuf
+	    Helpers_Load_Pixbuf_From_File(Ifile_)
  	    ret
     Files_Get_File_Icon_PixBuf EndP
 	Files_Load PROC lKeyProject_:gpointer,file_Key__:gpointer
@@ -330,13 +359,14 @@
 		mov [rcx].OFile.StyleScheme			,Helpers_rv_rcx(g_key_file_get_string,	lKeyProject,file_Key_,"StyleScheme",0)
 		mov [rcx].OFile.icon				,Helpers_rv_rcx(g_key_file_get_string,	lKeyProject,file_Key_,"icon",0)
 		mov [rcx].OFile.Dir					,Helpers_rv_rcx(g_key_file_get_string,	lKeyProject,file_Key_,"Dir",0)
-		mov [rcx].OFile.Content				,Helpers_rv_rcx(g_key_file_get_string,	lKeyProject,file_Key_,"Content",0)
+		;mov [rcx].OFile.Content				,Helpers_rv_rcx(g_key_file_get_string,	lKeyProject,file_Key_,"Content",0)
 		m2m [rcx].OFile.FileName			,file_Key_
 		mov [rcx].OFile.viewer				,0	 
 		mov [rcx].OFile.buffer				,0
-		mov	[rcx].OFile.Modified			,0
+		mov [rcx].OFile.Modified			,0
 		mov [rcx].OFile.NotebookPage		,0			
 		mov [rcx].OFile.Path				,0	
+		mov [rcx].OFile.content				,0	
 		
 		mov rax,rcx
 		ret
@@ -359,11 +389,15 @@
 		
 		ret
 	Files_Save ENDP
+	folding_processing_Text proto :gpointer,:gint
 	Files_Text_Buffer_Changed PROC __textbuffer:gpointer,_pOFile:gpointer
+		local textbuffer:gpointer
 		local pOFile:gpointer
-		mov pOFile,_pOFile	
-		mov rax,pOFile
-		mov [rax].OFile.Modified,-1
+			mov pOFile,_pOFile	
+			mov rax,pOFile
+			mov [rax].OFile.Modified,-1
+			mov textbuffer,__textbuffer
+ 
  		ret
  	Files_Text_Buffer_Changed ENDP
 	Files_Load_contents PROC 	_pOFile:gpointer
@@ -380,6 +414,7 @@
 		local lbutton		:gpointer
 		local llabel		:gpointer
 		local FileName :gpointer	
+		local SScheme:gpointer
 
         local GGtkSourceStyleScheme :gpointer
         
@@ -404,16 +439,26 @@
 		mov rcx,pOFile
 		mov [rcx].OFile.buffer,rax
 		mov bufaddr,rax
+;---------------------------------------------------------------------------------------------------------------
+		;invoke g_signal_connect_data,bufaddr ,str$("changed")   ,addr buffer_insert_text,pOFile,0,0      
+		invoke g_signal_connect_data,bufaddr,CStr("insert_text"),addr buffer_insert_text,pOFile,0,G_CONNECT_AFTER
+		invoke g_signal_connect_data,bufaddr,CStr("delete-range"),addr On_Buffer_delete_range,pOFile,0,0;G_CONNECT_AFTER
+		invoke g_signal_connect_data,bufaddr,CStr("delete-range"),addr On_Buffer_delete_range_AFTER,pOFile,0,G_CONNECT_AFTER
+;---------------------------------------------------------------------------------------------------------------
+
 		gtk_source_search_context_new (bufaddr, 0 )
 		mov rcx,pOFile
 		mov [rcx].OFile.search_context,rax
 		mov rax,rcx
 		invoke gtk_source_buffer_begin_not_undoable_action,bufaddr         		   	
 		mov utf8 ,rv(g_locale_to_utf8 ,lfcontents, -1, 0, addr bytes_written, 0)
+		mov rcx,pOFile
+		m2m [rcx].OFile.Content,utf8
+		
 		invoke g_free,lfcontents
-		invoke gtk_text_buffer_get_end_iter,bufaddr,addr lf_iter
-		invoke gtk_text_buffer_insert,bufaddr ,addr lf_iter,utf8,-1
-		invoke g_free,utf8
+	;	invoke gtk_text_buffer_get_end_iter,bufaddr,addr lf_iter
+	;	invoke gtk_text_buffer_insert,bufaddr ,addr lf_iter,utf8,-1
+	;	invoke g_free,utf8
 		invoke gtk_source_buffer_end_not_undoable_action ,bufaddr
 		invoke gtk_text_buffer_set_modified,bufaddr,0
 		invoke gtk_text_buffer_get_start_iter,bufaddr,addr lf_iter
@@ -423,11 +468,13 @@
 
 		mov rcx,pOFile
 		m2m PLanguage,[rcx].OFile.ProgrammingLanguage
-
-		mov GGtkSourceStyleScheme,rv( gtk_source_style_scheme_manager_get_scheme,GGtkSourceStyleSchemeManager,PLanguage)       
+		m2m SScheme,[rcx].OFile.StyleScheme
+		mov GGtkSourceStyleScheme,rv( gtk_source_style_scheme_manager_get_scheme,GGtkSourceStyleSchemeManager,SScheme)
 		invoke gtk_source_buffer_set_style_scheme,bufaddr, GGtkSourceStyleScheme         
 		mov rax,pOFile
-		invoke gtk_source_language_manager_guess_language,GGtkSourceLanguageManager,[rax].OFile.FileName,0
+		;invoke gtk_source_language_manager_guess_language,GGtkSourceLanguageManager,[rax].OFile.FileName;;StyleScheme
+		invoke gtk_source_language_manager_get_language,GGtkSourceLanguageManager,PLanguage
+		
 		invoke gtk_source_buffer_set_language ,bufaddr, rax
 		invoke gtk_source_buffer_set_highlight_syntax,bufaddr,-1          
       
