@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<language id="c"  _name="C" version="1.0" _section="Sources" globs="*.c;*.h" mimetypes="text/x-c;text/x-csrc;image/x-xpixmap">
+<language id="c"  _name="c" version="1.0" _section="Sources" globs="*.c;*.h" mimetypes="text/x-c;text/x-csrc;image/x-xpixmap">
 
   <metadata>
     <property name="line-comment-start">//</property>
@@ -29,6 +29,7 @@
     <style id="standard-stream"   name="Standard stream"       map-to="def:constant"/>
     <style id="signal-name"       name="Signal name"           map-to="def:constant"/>
     <style id="error"             name="Error"                 map-to="def:error"/>
+    <style id="glsl-orange"       name="glsl-orange"           map-to="def:glsl-orange"/>
   </styles>
 
   <definitions>
@@ -251,6 +252,14 @@
       <keyword>__func__</keyword>
       <keyword>__TIME__</keyword>
       <keyword>__STDC__</keyword>
+    </context>      
+    <context id="glsl-oranges" style-ref="glsl-orange">
+      <keyword>attribute</keyword>
+      <keyword>uniform</keyword>
+      <keyword>varying</keyword>
+      <keyword>centroid</keyword>
+      <keyword>invariant</keyword>
+      <keyword>discard</keyword>
     </context>
 
     <context id="standard-streams" style-ref="standard-stream">
@@ -309,6 +318,7 @@
         <context ref="common-defines"/>
         <context ref="standard-streams"/>
         <context ref="signals"/>
+        <context ref="glsl-orange"/>
       </include>
     </context>
 

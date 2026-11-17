@@ -1,6 +1,6 @@
 <!--
 -->
-<style-scheme id="cl" _name="c" version="1.0">
+<style-scheme id="c" _name="c" version="1.0">
 <color name="espresso-brown" value="#2a211c"/>
 <color name="bright-blue" value="#3da8ed"/>
 <color name="greyish-blue" value="#308495"/>
@@ -23,6 +23,102 @@
 <color name="lime-green" value="#9ae000"/>
 <color name="rosee" value="#ffaded"/>
 <color name="yellow" value="#ffe73c"/>
+<color name="mVioletRed" value="#C71585"/>
+<color name="DeepPink" value="#FF1493"/>
+<color name="PaleVioletRed" value="#DB7093"/>
+<color name="HotPink" value="#FF69B4"/>
+<color name="LightPink" value="#FFB6C1"/>
+<color name="Pink" value="#FFC0CB"/>
+<color name="DarkRed" value="#8B0000"/>
+<color name="Red" value="#FF0000"/>
+<color name="Firebrick" value="#B22222"/>
+<color name="Crimson" value="#DC143C"/>
+<color name="IndianRed" value="#CD5C5C"/>
+<color name="LightCoral" value="#F08080"/>
+<color name="Salmon" value="#FA8072"/>
+<color name="DarkSalmon" value="#E9967A"/>
+<color name="LightSalmon" value="#FFA07A"/>
+<color name="OrangeRed" value="#FF4500"/>
+<color name="Tomato" value="#FF6347"/>
+<color name="DarkOrange" value="#FF8C00"/>
+<color name="Coral" value="#FF7F50"/>
+<color name="Orange" value="#FFA500"/>
+<color name="DarkKhaki" value="#BDB76B"/>
+<color name="Gold" value="#FFD700"/>
+<color name="Khaki" value="#F0E68C"/>
+<color name="PeachPuff" value="#FFDAB9"/>
+<color name="Yellow" value="#FFFF00"/>
+<color name="PaleGoldenrod" value="#EEE8AA"/>
+<color name="Moccasin" value="#FFE4B5"/>
+<color name="PapayaWhip" value="#FFEFD5"/>
+<color name="LightGoldenrodYellow" value="#FAFAD2"/>
+<color name="LemonChiffon" value="#FFFACD"/>
+<color name="LightYellow" value="#FFFFE0"/>
+<color name="Maroon" value="#800000"/>
+<color name="Brown" value="#A52A2A"/>
+<color name="SaddleBrown" value="#8B4513"/>
+<color name="Sienna" value="#A0522D"/>
+<color name="Chocolate" value="#D2691E"/>
+<color name="DarkGoldenrod" value="#B8860B"/>
+<color name="Peru" value="#CD853F"/>
+<color name="RosyBrown" value="#BC8F8F"/>
+<color name="Goldenrod" value="#DAA520"/>
+<color name="SandyBrown" value="#F4A460"/>
+<color name="Tan" value="#D2B48C"/>
+<color name="Burlywood" value="#DEB887"/>
+<color name="Wheat" value="#F5DEB3"/>
+<color name="NavajoWhite" value="#FFDEAD"/>
+<color name="Bisque" value="#FFE4C4"/>
+<color name="BlanchedAlmond" value="#FFEBCD"/>
+<color name="Cornsilk" value="#FFF8DC"/>
+<color name="Indigo" value="#4B0082"/>
+<color name="Purple" value="#800080"/>
+<color name="DarkMagenta" value="#8B008B"/>
+<color name="DarkViolet" value="#9400D3"/>
+<color name="DarkSlateBlue" value="#483D8B"/>
+<color name="BlueViolet" value="#8A2BE2"/>
+<color name="DarkOrchid" value="#9932CC"/>
+<color name="Fuchsia" value="#FF00FF"/>
+<color name="Magenta" value="#FF00FF"/>
+<color name="SlateBlue" value="#6A5ACD"/>
+<color name="MediumSlateBlue" value="#7B68EE"/>
+<color name="MediumOrchid" value="#BA55D3"/>
+<color name="MediumPurple" value="#9370DB"/>
+<color name="Orchid" value="#DA70D6"/>
+<color name="Violet" value="#EE82EE"/>
+<color name="Plum" value="#DDA0DD"/>
+<color name="Thistle" value="#D8BFD8"/>
+<color name="Lavender" value="#E6E6FA"/>
+<color name="MidnightBlue" value="#191970"/>
+<color name="Navy" value="#000080"/>
+<color name="DarkBlue" value="#00008B"/>
+<color name="MediumBlue" value="#0000CD"/>
+<color name="Blue" value="#0000FF"/>
+<color name="RoyalBlue" value="#4169E1"/>
+<color name="SteelBlue" value="#4682B4"/>
+<color name="DodgerBlue" value="#1E90FF"/>
+<color name="DeepSkyBlue" value="#00BFFF"/>
+<color name="CornflowerBlue" value="#6495ED"/>
+<color name="SkyBlue" value="#87CEEB"/>
+<color name="LightSkyBlue" value="#87CEFA"/>
+<color name="LightSteelBlue" value="#B0C4DE"/>
+<color name="LightBlue" value="#ADD8E6"/>
+<color name="PowderBlue" value="#B0E0E6"/>
+<color name="Teal" value="#008080"/>
+<color name="DarkCyan" value="#008B8B"/>
+<color name="LightSeaGreen" value="#20B2AA"/>
+<color name="CadetBlue" value="#5F9EA0"/>
+<color name="DarkTurquoise" value="#00CED1"/>
+<color name="MediumTurquoise" value="#48D1CC"/>
+<color name="Turquoise" value="#40E0D0"/>
+<color name="Aqua" value="#00FFFF"/>
+<color name="Cyan" value="#00FFFF"/>
+<color name="Aquamarine" value="#7FFFD4"/>
+<color name="PaleTurquoise" value="#AFEEEE"/>
+<color name="LightCyan" value="#E0FFFF"/>
+
+
+
 <!--5a4d45 b5421a a04323 c36136 934A00-->
 <style name="bracket-match" background="greyish-blue" foreground="espresso-brown" bold="false"/>
 <style name="bracket-mismatch" background="red" foreground="espresso-brown" bold="false"/>
@@ -58,6 +154,7 @@
 <style name="def:string" foreground="bright-green"/>
 <style name="def:type" foreground="bright-blue" bold="true"/>
 <style name="def:underlined" underline="true"/>
+<style name="def:glsl-orange"  foreground="orange" bold="true"/>
 <!-- The following styles have not been tested -->
 <style name="diff:added-line" foreground="green"/>
 <style name="diff:changed-line" foreground="bright-blue"/>
