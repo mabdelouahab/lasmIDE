@@ -1,0 +1,22 @@
+[Project]
+Name=ccc11
+Description=Hello World By C
+MainFile=main.c
+Assemble=gcc  -m64 $SRC  -o $EXE 
+Run_cmd=./$EXE
+Files=main.c;main.h;
+Dirs=
+
+[main.c]
+Name=main
+Description=main
+ProgrammingLanguage=c
+StyleScheme=c
+icon=cfileicon
+
+[main.h]
+Name=main
+Description=main
+ProgrammingLanguage=c
+StyleScheme=c
+icon=hfileicon

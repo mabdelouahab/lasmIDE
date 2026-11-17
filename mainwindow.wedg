@@ -1,0 +1,397 @@
+include MainWindow.inc
+
+.data
+;------------------------
+DialogFont gpointer 0
+DialogColor gpointer 0
+DialogApp gpointer 0
+menu_Settings_WordWrap gpointer 0
+menu_settings_highlight gpointer 0
+
+;------------------------
+
+	WMnEmptyProject     			gpointer    0
+
+	WTerminal           				gpointer    0   
+	WTerminal_child_pid		gpointer    0 
+	WMnTBStopRun				gpointer    0
+	WMnTBRun					gpointer    0 
+
+	W_ICON_Assemble			gpointer    0 
+
+	WTerminal_exit_status		gint	    0 
+	vte_background				GdkRGBA 	<>
+	vte_color_cursor 				GdkRGBA		<>
+
+	vte_terminal_set_color_background 	proto :vararg
+	vte_terminal_set_color_cursor 		proto :vararg
+	vte_terminal_set_cursor_blink_mode	proto :vararg
+	vte_terminal_set_cursor_shape		proto :vararg
+
+		paned_1_pos dword 0
+		paned_2_pos dword 0
+
+
+.code
+
+	.proc InitMainWindow  
+		local WMnQuit:gpointer ; 
+		local WMnNewFile:gpointer 
+		local position:gpointer
+		local _err:gpointer
+
+	    	mov _err,0
+
+		mov GGtkBuilder,rv(gtk_builder_new)
+		mov _err,0
+		invoke gtk_builder_add_from_string, GGtkBuilder,addr MainWindowInterface ,MainWindowInterface_sz,addr _err
+	IF @Platform EQ ELF64
+		invoke gtk_builder_connect_signals,GGtkBuilder,0
+	ENDIF
+    		invoke gtk_builder_connect_signals,GGtkBuilder,0       ;this will connect all signals to respective functions in glade xml file
+      		 ;invoke gtk_builder_add_from_file  , GGtkBuilder,str$("UASMIde1.glade"),addr _err 
+;		.if rax==0
+;		    lea r12,_err
+;		    mov r12,[r12]
+;		    mov r12,QWORD PTR [r12+8]
+;		    invoke printf,str$(<13,10,"Error loading interface {%s}">),r12
+;		    ret
+;		.endif
+        
+		mov WMainwindow         	,rv(gtk_builder_get_object					,GGtkBuilder,str$("WMainwindow"))
+		mov WProjectTreeView  		,rv(gtk_builder_get_object					,GGtkBuilder,str$("WProjectTreeView"))
+		mov NoteBookContainer   	,rv(gtk_builder_get_object					,GGtkBuilder,str$("NoteBookContainer"))
+		mov WPaned1             	,rv(gtk_builder_get_object					,GGtkBuilder,str$("WPaned1"))
+		mov WPaned2             	,rv(gtk_builder_get_object					,GGtkBuilder,str$("WPaned2"))
+		mov WMnTBStopRun           	,rv(gtk_builder_get_object					,GGtkBuilder,str$("WMnTBStopRun"))
+		mov WMnTBRun             	,rv(gtk_builder_get_object					,GGtkBuilder,str$("WMnTBRun"))   
+
+;-------------------------------------------------------------
+		mov DialogFont,rv(gtk_builder_get_object					,GGtkBuilder,str$("DialogFont"))
+		mov DialogColor,rv(gtk_builder_get_object					,GGtkBuilder,str$("DialogColor"))
+		mov DialogApp,rv(gtk_builder_get_object					,GGtkBuilder,str$("DialogApp"))
+;-------------------------------------------------------------
+		mov menu_Settings_WordWrap	,rv(gtk_builder_get_object					,GGtkBuilder,str$("menu_Settings_WordWrap"))
+		mov menu_settings_highlight	,rv(gtk_builder_get_object					,GGtkBuilder,str$("menu_settings_highlight"))
+
+		Helpers_signal_connect_data	"WMn_NewFile"	,"activate",On_WMn_NewFile_Clicked
+
+		invoke Helpers_GtkImage_From_File,GGtkBuilder	,"W_ICON_Assemble"		,"Assemble.png"
+		invoke Helpers_GtkImage_From_File,GGtkBuilder	,"W_ICON_Build"			,"Build2.png"
+		invoke Helpers_GtkImage_From_File,GGtkBuilder	,"W_ICON_Pre_Assemble"	,"PreAssemble.png"
+		invoke Helpers_GtkImage_From_File,GGtkBuilder	,"W_ICON_Save"			,"save.png"
+		invoke Helpers_GtkImage_From_File,GGtkBuilder	,"W_ICON_Save_All"		,"saveall.png"
+		
+		;********************************************************
+
+  		Helpers_signal_connect_data	"WMnTBUndo"			,"clicked"		,On_WMnTBUndo_activate
+ 		Helpers_signal_connect_data	"WMnTBRedo"			,"clicked"		,On_WMnTBRedo_activate
+ 		Helpers_signal_connect_data	"WMnTBRun"			,"clicked"		,run_toolbar;run_current_project
+ 		Helpers_signal_connect_data	"WMnTBStopRun"		,"clicked"		,stoprun_current_project
+ 		Helpers_signal_connect_data	"WMnTBBuild"		,"clicked"			,build_toolbar;build_current_project
+ 		Helpers_signal_connect_data	"WMnTBAssemble"		,"clicked"		,assemble_current_project
+ 		Helpers_signal_connect_data	"WMnTBPreAssemble"	,"clicked"		,preassemble_current_project
+ 		
+ 		Helpers_signal_connect_data	"WMnSave"			,"activate"			,Notebook_Save_Current_Tab
+ 		
+ 		Helpers_signal_connect_data	"WMnProjectOption"	,"activate"			,dialog_project_option
+ 		Helpers_signal_connect_data	"WMnPFromTemplate"	,"activate"		,MainWindow_callback_New_Project_From_Template
+ 		Helpers_signal_connect_data	"WMnSaveFile"		,"clicked"			,Notebook_Save_Current_Tab
+ 		Helpers_signal_connect_data	"WMnOpenProject"	,"activate"			,MainWindow_callback_Open_Project
+ 		Helpers_signal_connect_data	"WMnMakeTemplate"	,"activate"		,MainWindow_callback_Save_Project_As_Template
+
+ 		Helpers_signal_connect_data	"WMnQuit"			,"activate"			,MainWindow_callback_wQuit
+ 		Helpers_signal_connect_data	"WMnEmptyProject"	,"activate"			,MainWindow_CallBack_New_Empty_Project
+ 		Helpers_signal_connect_data	"WPaned1"			,"size-allocate"		,OnPaned1sizeallocate
+ 		Helpers_signal_connect_data	"WPaned2"			,"size-allocate"		,OnPaned2sizeallocate
+
+		Helpers_signal_connect_data	"WMnTBNewFile"	,"clicked"	,On_WMnTBNewFile_Clicked
+		Helpers_signal_connect_data	"WMnTBOpenFile"	,"clicked"	,On_WMnTBOpenFile_Clicked
+		Helpers_signal_connect_data	"WMnSaveFile"	,"clicked"	,Notebook_Save_Current_Tab
+
+		Helpers_signal_connect_data	"WMnTBSaveAll"	,"clicked"	,Notebook_Save_All_Tab
+		Helpers_signal_connect_data	"WMnTBCut"		,"clicked"	,On_WMnTBCut_Clicked
+		Helpers_signal_connect_data	"WMnTBCopy"		,"clicked"	,On_WMnTBCopy_Clicked
+		Helpers_signal_connect_data	"WMnTBPaste"	,"clicked"	,On_WMnTBPaste_Clicked
+		Helpers_signal_connect_data	"WMnTBDelete"	,"clicked"	,On_WMnTBDelete_Clicked
+		Helpers_signal_connect_data	"WMnTBUnindent"	,"clicked"	,On_WMnTBUnindent_Clicked
+		Helpers_signal_connect_data	"WMnTBIndent"	,"clicked"	,On_WMnTBIndent_Clicked
+		Helpers_signal_connect_data	"WMnTBFind"		,"clicked"	,On_WMnTBFind_Clicked
+		Helpers_signal_connect_data	"WMnTBReplace"	,"clicked"	,On_WMnTBReplace_Clicked
+
+ 		
+		Helpers_signal_connect_data	"WMnTBPreAssemble"	,"clicked",On_WMnOpenFile_Clicked
+		Helpers_signal_connect_data	"WMnOpenFile"	,"activate",On_WMnOpenFile_Clicked
+		Helpers_signal_connect_data	"WMnSaveAs"	,"activate",On_WMnSaveAs_Clicked
+		Helpers_signal_connect_data	"WMnSaveAll"	,"activate",Notebook_Save_All_Tab
+		Helpers_signal_connect_data	"WMnCut"	,"activate",On_WMnTBCut_Clicked
+		Helpers_signal_connect_data	"WMnCopy"	,"activate",On_WMnTBCopy_Clicked
+		Helpers_signal_connect_data	"WMnPaste"	,"activate",On_WMnTBPaste_Clicked
+		Helpers_signal_connect_data	"WMnDelete"	,"activate",On_WMnTBDelete_Clicked
+		Helpers_signal_connect_data	"WMnFind"	,"activate",On_WMnFind_Clicked
+		Helpers_signal_connect_data	"WMnFindAndReplace"	,"activate",On_WMnFindAndReplace_Clicked
+		Helpers_signal_connect_data	"WMnSellectAll"	,"activate",On_WMnSellectAll_Clicked
+ 
+
+ 
+		Helpers_signal_connect_data	"WMnAssemble"	,"activate",On_WMnAssemble_Clicked
+		Helpers_signal_connect_data	"WMnLink"	,"activate",On_WMnLink_Clicked
+		Helpers_signal_connect_data	"WMnBuild"	,"activate",On_WMnBuild_Clicked
+		Helpers_signal_connect_data	"WMnRun"	,"activate",On_WMnRun_Clicked
+		Helpers_signal_connect_data	"WMnDoAll"	,"activate",On_WMnDoAll_Clicked
+		Helpers_signal_connect_data	"WMnSetting"	,"activate",On_WMnSetting_Clicked
+		Helpers_signal_connect_data	"WMnAbout"	,"activate",On_WMnAbout_Clicked
+
+		Helpers_signal_connect_data	"WPaned1"	,"size-allocate",OnPaned1sizeallocate
+		Helpers_signal_connect_data	"WPaned2"	,"size-allocate",OnPaned2sizeallocate
+		Helpers_signal_connect_data	"menu_Help_"	,"activate",menu_Help_Function
+		Helpers_signal_connect_data	"menu_settings_highlight"	,"toggled",menu_settings_highlight_cb
+		
+		Helpers_signal_connect_data	"WMnProjectFilesType"	,"activate",Init_FilesTypes
+
+		
+
+	 
+
+		
+;----------------------------------------------------------------------
+;	read list of lasts project, then:
+;                        submenu = g_menu_new ();
+;                        g_menu_insert_submenu (G_MENU (app_menu), 0, _("Profiles"), G_MENU_MODEL (submenu));
+ ;		invoke g_signal_connect_data,   submenu,"activate",addr CallB__,0,0,0         
+ ;+++++++
+
+  		 gtk_menu_item_new_with_label proto :vararg
+
+		 .data
+		 	Menu_Last_Project	dq	0
+		 .code
+ 
+ 		 	.if Settings_Last_Project
+			       mov  Menu_Last_Project ,rv( gtk_menu_item_new_with_label ,Settings_Last_Project );
+				invoke gtk_container_add,rv(gtk_builder_get_object,GGtkBuilder,"WMnOpenProjectsubmenu"), Menu_Last_Project	 
+		 		invoke g_signal_connect_data,  Menu_Last_Project,"activate",addr MainWindow_callback_Open_Project_From_List,Settings_Last_Project,0,0         
+		 	.endif		 
+
+ 
+ 		LastProjectMenuList
+		m2m	vte_background.red		,Settings_VTE_BG_red
+		m2m	vte_background.green	,Settings_VTE_BG_green
+		m2m	vte_background.blue		,Settings_VTE_BG_blue
+		m2m	vte_background.alpha	,Settings_VTE_BG_alpha
+		
+		m2m	vte_color_cursor.red	,Settings_VTE_cursor_red
+		m2m	vte_color_cursor.green	,Settings_VTE_cursor_green
+		m2m	vte_color_cursor.blue	,Settings_VTE_cursor_blue
+		m2m	vte_color_cursor.alpha	,Settings_VTE_cursor_alpha
+	IF @Platform EQ WIN64
+		w_terminal_new()
+		invoke gtk_container_add,rv(gtk_builder_get_object, GGtkBuilder,str$("WWatchScrolledWindow")),w_terminal_view         
+	ELSEIF @Platform EQ ELF64
+		mov WTerminal    			,rv( vte_terminal_new);
+        
+		invoke vte_terminal_set_color_background,WTerminal,addr vte_background
+		invoke vte_terminal_set_color_cursor,WTerminal,addr vte_color_cursor
+		invoke vte_terminal_set_cursor_blink_mode,WTerminal,Settings_VTE_cursor_blnkMode	;enum VteTerminalCursorBlinkMode
+		invoke vte_terminal_set_cursor_shape,WTerminal,Settings_VTE_cursor_shape			;VteTerminalCursorShape
+
+		invoke vte_terminal_set_mouse_autohide,WTerminal,1
+		invoke gtk_container_add,rv(gtk_builder_get_object, GGtkBuilder,str$("WWatchScrolledWindow")),WTerminal         
+ 	ENDIF
+
+ 		    
+		invoke gtk_window_maximize,WMainwindow
+		invoke gtk_container_add,NoteBookContainer,WNotebook
+
+
+		invoke g_signal_connect_data,WMainwindow    ,str$("show")    ,addr On_Show    ,0,0,0     
+		invoke g_signal_connect_data,WMainwindow    ,str$("destroy")    ,addr MainWindow_callback_wQuit    ,0,0,0     ;close-request
+
+
+		.if rv(STNG_Get,stng_paned1_Position,addr position)
+			invoke gtk_paned_set_position,WPaned1,eax
+		.endif
+		.if rv(STNG_Get,stng_paned2_Position,addr position)
+			invoke gtk_paned_set_position,WPaned2,eax
+		.endif
+
+		invoke gtk_widget_queue_draw,WMainwindow
+		invoke gtk_widget_show_all ,WMainwindow
+	.endp	;   
+	.proc On_Show  
+		.if Arg_Project
+			invoke Projects_Load_Project,Arg_Project
+		.else
+			.if Settings_Load_Last_Project
+	    			call Projects_Load_Last_Project
+			.endif
+		.endif
+		.if Current_Prj_FileName
+			call TreeView_Show_Current_Project			
+		.endif
+	.endp	;	
+	.proc OnPaned1sizeallocate   , widget:gpointer, user_data:gpointer
+	.shadow
+		invoke gtk_paned_get_position,widget
+		mov paned_1_pos,eax
+	.endp	;
+	.proc OnPaned2sizeallocate   , widget:gpointer, user_data:gpointer
+	.shadow
+		invoke gtk_paned_get_position,widget
+		mov paned_2_pos,eax
+	.endp	;   
+	.proc menu_Tools_Font  
+		local font_dialog:gpointer
+		local font_name:gpointer
+		local font_desc:qword
+		local viewer:qword
+
+	    invoke gtk_dialog_run,DialogFont
+		.if eax == GTK_RESPONSE_OK
+		call Notebook_Get_Current_Viewer
+		mov viewer,rax
+
+			invoke gtk_font_chooser_get_font,DialogFont
+			mov font_name,rax
+			invoke pango_font_description_from_string,font_name
+			mov font_desc,rax
+
+			invoke gtk_widget_modify_font,viewer,font_desc
+			invoke g_free,font_name
+		.endif
+	    invoke gtk_widget_hide,DialogFont
+	.endp	;
+	.proc menu_Tools_Color uses r12
+		local viewer:gpointer
+		local color:GdkRGBA
+		local color_string:gpointer
+		local color_tokens:gpointer
+		local red:gpointer
+		local green:gpointer
+		local blue:gpointer
+		local rgbcss:gpointer
+		local buffer:gpointer
+
+	    invoke gtk_dialog_run,DialogColor
+	    .if eax == GTK_RESPONSE_OK
+
+		invoke gtk_color_chooser_get_rgba,DialogColor,addr color
+		invoke gdk_rgba_to_string,addr color
+
+		mov color_string,rax
+
+	;01234 01 01  0
+	;rgb(18,41,221)
+
+		invoke g_strsplit_set,color_string,CStr("rgb(,)"),-1
+		mov color_tokens,rax
+		mov r12,rax
+		add r12,4*8
+		invoke g_ascii_strtoull,qword ptr [r12],NULL,10
+		mov red,rax
+		add r12,1*8
+		invoke g_ascii_strtoull,qword ptr [r12],NULL,10
+		mov green,rax
+		add r12,1*8
+		invoke g_ascii_strtoull,qword ptr [r12],NULL,10
+		mov blue,rax
+		invoke g_strfreev,color_tokens
+		invoke g_strdup_printf,CStr("#%02x%02x%02x"),red,green,blue
+		mov rgbcss,rax
+
+			call Notebook_Get_Current_Buffer
+			mov buffer,rax
+		.if buffer
+		    invoke gtk_text_buffer_insert_at_cursor,buffer,rgbcss,7
+		.endif
+		invoke g_free,rgbcss
+
+	    .endif
+	    invoke gtk_widget_hide,DialogColor
+	.endp	;
+	.proc menu_Tools_App  
+
+	    invoke gtk_dialog_run,DialogApp
+	    .if eax == GTK_RESPONSE_OK
+
+	    .endif
+	    invoke gtk_widget_hide,DialogApp
+	.endp	;
+	.proc menu_Help_Function  
+	local buffer:gpointer
+	local mstart:_GtkTextIter
+	local mend:_GtkTextIter
+	local text:gpointer
+	local standard_out:ptr
+	local standard_err:ptr
+	local exit_state:gint
+	local error:GError
+	local exec_command_line:gpointer
+
+		
+	call Notebook_Get_Current_Buffer
+	mov buffer,rax
+	.if buffer	
+		invoke gtk_text_buffer_get_selection_bounds,buffer,addr mstart,addr mend
+		.if rax == TRUE					;some text was selected, so, get it
+			invoke gtk_text_buffer_get_text,buffer,addr mstart,addr mend,FALSE
+			mov text,rax
+			invoke g_strconcat,CStr("devhelp -a "), text,0
+			mov exec_command_line,rax
+			
+			mov standard_out,0
+			mov exit_state,0
+			mov error,0
+			invoke g_spawn_command_line_sync,exec_command_line,addr standard_out, addr standard_err,addr exit_state,addr error
+	;		.if rax == FALSE
+	;			mov rax,error
+	;			assume rax:GError
+	;			mov rsi,[rax].message
+	;			assume rax:nothing
+	;			msgbox "Incomplete Code"
+	;		.endif
+			invoke g_free,exec_command_line
+		.endif
+	.endif
+	.endp	;
+	.proc menu_Settings_WordWrap_toggled_cb  
+	local ON_OFF:gpointer
+	local view:gpointer
+
+	invoke gtk_check_menu_item_get_active,menu_Settings_WordWrap
+	;invoke gtk_check_menu_item_toggled,menu_Settings_WordWrap
+	mov ON_OFF,rax
+	invoke Notebook_Get_Current_Viewer
+	mov view,rax
+	.if view
+	    .if ON_OFF
+		invoke gtk_text_view_set_wrap_mode,view,GTK_WRAP_WORD_CHAR		    ;WRAP ON
+	    .else
+		invoke gtk_text_view_set_wrap_mode,view,GTK_WRAP_NONE   		    ;WRAP OFF
+	    .endif
+	.endif
+	.endp	;
+	.proc menu_settings_highlight_cb  
+	local ON_OFF:gpointer
+	local view:gpointer
+
+	invoke gtk_check_menu_item_get_active,menu_settings_highlight
+	mov ON_OFF,rax
+	invoke Notebook_Get_Current_Viewer
+	mov view,rax
+	.if view
+	    .if ON_OFF
+		invoke gtk_source_view_set_highlight_current_line,view,TRUE
+	    .else
+		invoke gtk_source_view_set_highlight_current_line,view,FALSE
+	    .endif
+	.endif
+	.endp	;
+
+
+
+	.DATA
+		MainWindowInterface label qword
+		incbin <mainwindow.glade>
+		MainWindowInterface_sz equ $-MainWindowInterface
+

@@ -1,0 +1,26 @@
+[Project]
+Name=GtkWindows
+Description=gtk ms windows
+MainFile=main.asm
+Assemble=uasm64  -c -win64 -Zp8 -Zi -nologo  $SRC
+Link=gcc -s -o $EXE.exe $OBJ -Wl,--subsystem,windows 
+Link_opt=pkg-config --libs gtk+-3.0
+Run_cmd=./$EXE.exe
+Files=main.asm;main.inc;
+Dirs=
+
+[main.asm]
+Name=main
+Description=main
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=asmfileicon
+Content=\tinclude main.inc \n.code\n\n	main  PROC  argc:QWORD, argv:QWORD\n	local window:qword\n		invoke gtk_init,0,0\n		gtk_window_new(0)\n		mov window,rax\n		gtk_window_set_title(window, "Hello Linux!")		\n		gtk_widget_show_all(window)\n		g_signal_connect_data(window, "destroy",addr exit_prog, 0, 0, 0)\n		gtk_main()\n	      xor rax,rax \n	      ret \n	main  ENDP\n	exit_prog proc\n		gtk_main_quit()\n		ret\n	exit_prog endp\n	      \nend  
+
+[main.inc]
+Name=main
+Description=main
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=incfileicon
+Content=;\n\n	option win64:1\n	option win64:5\n	OPTION LITERALS:ON\n	OPTION DOTNAME \n\n\ngtk_init	proto :vararg\ngtk_window_new	proto :vararg\ngtk_window_set_title	proto :vararg\ngtk_widget_show_all    	proto :vararg\ng_signal_connect_data 	proto :vararg\ngtk_main	proto :vararg\ngtk_main_quit	proto :vararg\n;	proto :vararg\n;	proto :vararg\n;	proto :vararg\n;	proto :vararg\n\n\n

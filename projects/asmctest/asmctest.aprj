@@ -1,0 +1,22 @@
+[Project]
+Name=asmctest
+Description=Hello World assembly Project (UASM)
+MainFile=main.asm
+Assemble=asmc -I/shareddocs/ASM/ASMC/include  -elf64 $SRC
+Link=gcc  -o $EXE $OBJ -fno-pie -no-pie 
+Link_opt=pkg-config --cflags --libs  gobject-2.0  gtk+-3.0 
+Run_cmd=./$EXE
+Files=main.asm;main.inc;
+Dirs=
+
+[main.asm]
+Description=Main source file in project
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=asmfileicon
+
+[main.inc]
+Description=Main include file in project
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=incfileicon

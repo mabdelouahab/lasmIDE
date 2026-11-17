@@ -1,0 +1,24 @@
+[Project]
+Name=empt01
+Description=Empty project
+MainFile=main.asm
+Assemble=uasm  -c -win64 -Zp8 -Zi -nologo  $SRC
+Link=gcc -s -o $EXE.exe $OBJ
+Link_opt=pkg-config --libs gtk+-3.0
+Run_cmd=./$EXE.exe
+Files=main.asm;main.inc;
+Dirs=
+
+[main.asm]
+Name=main
+Description=main
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=asmfileicon
+
+[main.inc]
+Name=main
+Description=main
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=incfileicon

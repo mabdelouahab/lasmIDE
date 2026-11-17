@@ -1,0 +1,35 @@
+# Build output
+lasm
+lasmWin64.exe
+lasmW64.exe
+*.o
+*.obj
+*.exe
+*.dll
+*.err
+*.pdb
+*.ilk
+
+# Third-party tools and libraries (see README.md for how to get them)
+win64/
+ASMC/*
+!ASMC/README.md
+UASM/uasm
+uasm64.exe
+
+# Per-user state, created from CONFIG.INI.default on first setup
+CONFIG.INI
+setting.stg
+gitupload.bat
+gitupload.sh
+
+# Editor / OS junk
+*~
+Thumbs.db
+.DS_Store
+
+# Sample-project binaries (ELF files have no extension)
+projects/ccc11/ccc11
+projects/ctester/ctester
+projects/asmctest/asmctest
+projects/empt01/empt01

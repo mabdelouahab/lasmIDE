@@ -1,0 +1,34 @@
+[Project]
+Name=ASMC_Class
+Description=ASMC Class
+MainFile=main.asm
+Assemble=asmc -I../../ASMC/include -elf64 $SRC class.asm
+Link=gcc  -o $EXE $OBJ class.o -fno-pie -no-pie 
+Path=/shareddocs/programmation/lasm/projects/asmc01
+Link_opt=pkg-config --cflags --libs  gobject-2.0  gtk+-3.0 
+Run_cmd=./$EXE
+Files=main.asm;class.asm;class.inc;
+Dirs=
+
+[main.asm]
+Description=Main source file in project
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=asmfileicon
+Content=include class.inc\n\n    .code\n\n	main proc\n\n	  local p:LPCLASS\n\n	    Class::Class(&p, "Hello Class!" )\n\n	    p.Print()\n	    p.Release()\n	    ret\n\n	main endp\n\n    end
+
+[class.asm]
+Name=class
+Description=class
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=asmfileicon
+Content=include stdio.inc\ninclude malloc.inc\ninclude class.inc\n\n    .code\n\n    assume rdi:LPCLASS\n\nClass::Release proc\n    free(this)\n    ret\nClass::Release endp\n\nClass::Print proc\n    mov rsi,[rdi].string\n    printf( "\\n	%s\\n", rsi )\n    ret\nClass::Print endp\n\nClass::Class proc uses r12 s:string_t\n\n  local p:LPSTR\n\n    mov p,s\n    mov r12,this\n\n    .if malloc( sizeof(Class) + sizeof(ClassVtbl) )\n\n        mov rdi,rax\n        add rax,sizeof(Class)\n        mov [rdi],rax\n        lea rcx,Class_Release\n        mov [rax],rcx\n        lea rcx,Class_Print\n        mov [rax+8],rcx\n        mov rax,p\n        mov [rdi].string,rax\n        mov rax,rdi\n        .if r12\n            mov [r12],rax\n        .endif\n    .endif\n    ret\n\nClass::Class endp\n\n    end
+
+[class.inc]
+Name=class
+Description=class
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=incfileicon
+Content=\ninclude libc.inc\n\n.class Class :string_t\n    string  string_t ?\n    Release proc\n    Print   proc\n    .ends\n

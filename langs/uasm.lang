@@ -1,0 +1,1480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language  id="uasm"  _name="Assembler (Intel)" version="1.0" _section="Sources" globs="*.asm;*.inc;*.wedg" mimetypes="text/x-asm;text/x-assembler">
+	
+	<escape-char>\</escape-char>
+
+	<line-comment _name = "Line Comment" style= "Comment">
+		<start-regex>;</start-regex>
+	</line-comment>
+
+	<block-comment _name = "Block Comment" style = "Comment">
+		<start-regex>/\*</start-regex>
+        	<end-regex>\*/</end-regex>
+	</block-comment>
+
+	<string _name = "Index" style = "asm:Index" end-at-line-end = "TRUE">
+		<start-regex>\[</start-regex>
+		<end-regex>\]</end-regex>
+	</string>
+
+	<pattern-item _name ="Operators" style = "asm:Operators"  >
+		<regex>[-:\+\*\/\(\)\{\}\&amp;&lt;&gt;=&#33;&#126;|]</regex>
+	</pattern-item>
+
+	<string _name = "String" style = "String" end-at-line-end = "TRUE">
+		<start-regex>&quot;</start-regex>
+		<end-regex>&quot;</end-regex>
+	</string>
+	<string _name = "Character Constant" style = "Character">
+	    <start-regex>\'</start-regex>
+	    <end-regex>\'</end-regex>
+	</string>
+
+	<pattern-item _name = "Decimal" style = "Decimal">
+		<regex>\b([0-9][0-9]*|0)\b</regex>
+	</pattern-item>
+
+	<pattern-item _name = "Floating Point Number" style = "Floating Point">
+		<regex>\b([0-9]+[Ee][-]?[0-9]+|([0-9]*\.[0-9]+|[0-9]+\.)([Ee][-]?[0-9]+)?)[fFlL]?</regex>
+	</pattern-item>
+
+	<pattern-item _name = "Hex Number" style = "Base-N Integer">
+		<regex>\b0([0-9a-fA-F][0-9a-fA-F]*)[Hh]\b</regex>
+	</pattern-item>
+	<pattern-item _name = "Binary Number" style = "Base-N Integer">
+		<regex>\b0([0-1][0-1]*)[bB]\b</regex>
+	</pattern-item>
+
+<keyword-list  	_name = "Procedures" style = "asm:Procedures" case-sensitive="FALSE" 
+		match-empty-string-at-beginning = "FALSE" match-empty-string-at-end = "TRUE"  beginning-regex = "^[ \t]*">
+    	<keyword>invoke</keyword>
+</keyword-list>
+<keyword-list  	_name = "Proto" style = "asm:Proto" case-sensitive="FALSE" 
+		match-empty-string-at-beginning = "TRUE" match-empty-string-at-end = "TRUE">
+   	<keyword>proto</keyword>
+   	<keyword>proc</keyword>
+    	<keyword>endp</keyword>
+	<keyword>,</keyword>
+</keyword-list>
+<keyword-list  	_name = "ConditionalControlFlow" style = "asm:ConditionalControlFlow" case-sensitive="FALSE" 
+		match-empty-string-at-beginning = "FALSE" match-empty-string-at-end = "TRUE" beginning-regex = "^[ \t]*.[ \t]*">
+	<keyword>BREAK</keyword>
+	<keyword>CONTINUE</keyword>
+	<keyword>ELSE</keyword>
+	<keyword>ELSEIF</keyword>
+	<keyword>ENDIF</keyword>
+	<keyword>ENDW</keyword>
+	<keyword>IF</keyword>
+	<keyword>REPEAT</keyword>
+	<keyword>UNTIL</keyword>
+	<keyword>UNTILCXZ</keyword>
+	<keyword>WHILE</keyword>
+</keyword-list>
+
+<keyword-list  _name = "Preprocessor" style = "asm:Preprocessor"  case-sensitive="FALSE" 
+		match-empty-string-at-beginning = "FALSE" match-empty-string-at-end = "TRUE" beginning-regex = "@"><!---->
+	<keyword>Time</keyword>
+	<keyword>Cpu</keyword>
+	<keyword>Environ</keyword>
+	<keyword>Interface</keyword>
+	<keyword>Version</keyword>
+	<keyword>FileCur</keyword>
+	<keyword>FileName</keyword>
+	<keyword>Line</keyword>
+	<keyword>CatStr</keyword>
+	<keyword>InStr</keyword>
+	<keyword>SizeStr</keyword>
+	<keyword>SubStr</keyword>
+	<keyword>code</keyword>
+	<keyword>CodeSize</keyword>
+	<keyword>CurSeg</keyword>
+	<keyword>data</keyword>
+	<keyword>DataSize</keyword>
+	<keyword>fardata</keyword>
+	<keyword>fardata?</keyword>
+	<keyword>Model</keyword>
+	<keyword>stack</keyword>
+	<keyword>WordSize</keyword>
+</keyword-list>
+
+<keyword-list  _name = "Preprocessor2" style = "asm:Preprocessor2"  case-sensitive="FALSE" 
+		match-empty-string-at-beginning = "TRUE" match-empty-string-at-end = "TRUE" >
+	<!--keyword>$</keyword>
+	<keyword>?</keyword>
+	<keyword>@@:</keyword>
+	<keyword>@B</keyword>
+	<keyword>@F</keyword-->
+	<!--keyword>!=</keyword>
+	<keyword>||</keyword>
+	<keyword>=</keyword>
+	<keyword>>=</keyword-->
+	<keyword>==</keyword>
+	<keyword>DB</keyword>
+	<keyword>DD</keyword>
+	<keyword>DF</keyword>
+	<keyword>DQ</keyword>
+	<keyword>DT</keyword>
+	<keyword>DUP</keyword>
+	<keyword>DW</keyword>
+	<keyword>MOD</keyword>
+	<keyword>CARRY?</keyword>
+	<keyword>OVERFLOW?</keyword>
+	<keyword>PARITY?</keyword>
+	<keyword>SIGN?</keyword>
+	<keyword>ZERO?</keyword>
+	<keyword>AND</keyword>
+	<keyword>NOT</keyword>
+	<keyword>OR</keyword>
+	<keyword>SHL</keyword>
+	<keyword>SHR</keyword>
+	<keyword>XOR</keyword>
+	<keyword>Macro</keyword>
+	<keyword>DUP</keyword>
+	<keyword>MASK</keyword>
+	<keyword>WIDTH</keyword>
+	<keyword>EQ</keyword>
+	<keyword>GE</keyword>
+	<keyword>GT</keyword>
+	<keyword>LE</keyword>
+	<keyword>LT</keyword>
+	<keyword>NE</keyword>
+	<!--keyword>:</keyword>
+	<keyword>::</keyword-->
+	<keyword>IMAGEREL</keyword>
+	<keyword>LROFFSET</keyword>
+	<keyword>OFFSET</keyword>
+	<keyword>SECTIONREL</keyword>
+	<keyword>SEG</keyword>
+	<keyword>HIGH</keyword>
+	<keyword>HIGH32</keyword>
+	<keyword>HIGHWORD</keyword>
+	<keyword>LENGTH</keyword>
+	<keyword>LENGTHOF</keyword> 
+	<keyword>LOW</keyword>
+	<keyword>LOW32</keyword>
+	<keyword>LOWWORD</keyword>
+	<keyword>OPATTR</keyword>
+	<keyword>PTR</keyword>
+	<keyword>SHORT</keyword>
+	<keyword>SIZE</keyword>
+	<keyword>SIZEOF</keyword>
+	<keyword>THIS</keyword>
+	<keyword>TYPE</keyword>
+	<keyword>.TYPE</keyword>
+</keyword-list>
+
+
+
+<keyword-list  _name="x64" style ="asm:x64" 	case-sensitive="FALSE" 	  
+		match-empty-string-at-beginning = "FALSE" match-empty-string-at-end = "TRUE" beginning-regex = "^[ \t]*.[ \t]*">
+	<keyword>ALLOCSTACK</keyword>
+	<keyword>ENDPROLOG</keyword>
+	<keyword>PUSHFRAME</keyword>
+	<keyword>PUSHREG</keyword>
+	<keyword>SAVEREG</keyword>
+	<keyword>SAVEXMM128</keyword>
+	<keyword>SETFRAME</keyword>
+</keyword-list>
+<keyword-list  _name="ConditionalError" style ="asm:ConditionalError"   case-sensitive="FALSE" 
+		match-empty-string-at-beginning = "FALSE" match-empty-string-at-end = "TRUE" beginning-regex = "^[ \t]*.[ \t]*">
+	<keyword>ERR</keyword>
+	<keyword>ERR2</keyword>
+	<keyword>ERRB</keyword>
+	<keyword>ERRDEF</keyword>
+	<keyword>ERRDIF</keyword>
+	<keyword>ERRDIF</keyword>
+	<keyword>ERRDIFI</keyword>
+	<keyword>ERRE</keyword>
+	<keyword>ERRIDN</keyword>
+	<keyword>ERRIDN</keyword>
+	<keyword>ERRIDNI</keyword>
+	<keyword>ERRNB</keyword>
+	<keyword>ERRNDEF</keyword>
+	<keyword>ERRNZ</keyword>
+</keyword-list>
+<keyword-list  _name="ListingControlDOT" style ="asm:ListingControlDOT"   case-sensitive="FALSE" 
+		match-empty-string-at-beginning = "FALSE" match-empty-string-at-end = "TRUE" beginning-regex = "^[ \t]*.[ \t]*">
+	<keyword>CREF</keyword>
+	<keyword>LIST</keyword>
+	<keyword>LISTALL</keyword>
+	<keyword>LISTIF</keyword>
+	<keyword>LISTMACRO</keyword>
+	<keyword>LISTMACROALL</keyword>
+	<keyword>NOCREF</keyword>
+	<keyword>NOLIST</keyword>
+	<keyword>NOLISTIF</keyword>
+	<keyword>NOLISTMACRO</keyword>
+	<keyword>TFCOND</keyword>
+</keyword-list>
+<keyword-list  _name="ListingControl" style ="asm:ListingControl"  case-sensitive="FALSE"  
+		match-empty-string-at-beginning = "FALSE" match-empty-string-at-end = "TRUE"  beginning-regex = "^[ \t]*">
+	<keyword>TITLE</keyword>
+	<keyword>PAGE</keyword>
+	<keyword>SUBTITLE</keyword>
+</keyword-list>
+<keyword-list  _name="Macros" style ="asm:Macros" 	  
+		case-sensitive="FALSE" 
+		match-empty-string-at-beginning = "TRUE" 
+		match-empty-string-at-end = "TRUE">
+	<keyword>ENDM</keyword>
+	<keyword>EXITM</keyword>
+	<keyword>GOTO</keyword>
+	<keyword>LOCAL</keyword>
+	<keyword>MACRO</keyword>
+	<keyword>PURGE</keyword>
+</keyword-list>
+<keyword-list  _name="Miscellaneous" style ="asm:Miscellaneous"   case-sensitive="FALSE" 
+		match-empty-string-at-beginning = "FALSE" match-empty-string-at-end = "TRUE"  beginning-regex = "^[ \t]*">
+	<keyword>ALIAS</keyword>
+	<keyword>ASSUME</keyword>
+	<keyword>COMMENT</keyword>
+	<keyword>ECHO</keyword>
+	<keyword>END</keyword>
+	<keyword>INCLUDE</keyword>
+	<keyword>INCLUDELIB</keyword>
+	<keyword>MMWORD</keyword>
+	<keyword>OPTION</keyword>
+	<keyword>POPCONTEXT</keyword>
+	<keyword>PUSHCONTEXT</keyword>
+	<keyword>XMMWORD</keyword>
+	<keyword>YMMWORD</keyword>
+</keyword-list>
+<keyword-list  _name="MiscellaneousDOT" style ="asm:MiscellaneousDOT"   case-sensitive="FALSE" 
+		match-empty-string-at-beginning = "FALSE" match-empty-string-at-end = "TRUE" beginning-regex = "^[ \t]*.[ \t]*">
+	<keyword>RADIX</keyword>
+	<keyword>SAFESEH</keyword>
+	<keyword>FPO</keyword>
+</keyword-list>
+<keyword-list  _name="Processor" style ="asm:Processor" 	case-sensitive="FALSE"   
+		match-empty-string-at-beginning = "FALSE" match-empty-string-at-end = "TRUE" beginning-regex = "^[ \t]*.[ \t]*">
+	<keyword>386</keyword>
+	<keyword>386P</keyword>
+	<keyword>387</keyword>
+	<keyword>486</keyword>
+	<keyword>486P</keyword>
+	<keyword>586</keyword>
+	<keyword>586P</keyword>
+	<keyword>686</keyword>
+	<keyword>686P</keyword>
+	<keyword>K3D</keyword>
+	<keyword>MMX</keyword>
+	<keyword>XMM</keyword>
+</keyword-list>
+<keyword-list  _name="RepeatBlocks" style ="asm:RepeatBlocks" 	  case-sensitive="FALSE" 
+		match-empty-string-at-beginning = "FALSE" match-empty-string-at-end = "TRUE"  beginning-regex = "^[ \t]*">
+	<keyword>ENDM</keyword>
+	<keyword>FOR</keyword>
+	<keyword>FORC</keyword>
+	<keyword>GOTO</keyword>
+	<keyword>REPEAT</keyword>
+	<keyword>WHILE</keyword>
+</keyword-list>
+<keyword-list  _name="Scope" style ="asm:Scope" 	case-sensitive="FALSE"   
+		match-empty-string-at-beginning = "FALSE" match-empty-string-at-end = "TRUE"  beginning-regex = "^[ \t]*">
+	<keyword>COMM</keyword>
+	<keyword>EXTERN</keyword>
+	<keyword>EXTERNDEF</keyword>
+	<keyword>PUBLIC</keyword>
+</keyword-list>
+<keyword-list  _name="Segment" style ="asm:Segment" 	case-sensitive="FALSE"   
+		match-empty-string-at-beginning = "FALSE" match-empty-string-at-end = "TRUE"  beginning-regex = "^[ \t]*">
+	<keyword>Segment</keyword>
+	<keyword>ASSUME</keyword>
+	<keyword>END</keyword>
+	<keyword>ENDS</keyword>
+	<keyword>GROUP</keyword>
+	<keyword>SEGMENT</keyword>
+</keyword-list>
+<keyword-list  _name="SegmentDOT" style ="asm:SegmentDOT" case-sensitive="FALSE" 	  
+		match-empty-string-at-beginning = "FALSE" match-empty-string-at-end = "TRUE" beginning-regex = "^[ \t]*.[ \t]*">
+	<keyword>ALPHA</keyword>
+	<keyword>DOSSEG</keyword>
+	<keyword>SEQ</keyword>
+</keyword-list>
+<keyword-list  _name="SimplifiedSegment" style ="asm:SimplifiedSegment"   case-sensitive="FALSE" 
+		match-empty-string-at-beginning = "FALSE" match-empty-string-at-end = "TRUE" beginning-regex = "^[ \t]*.[ \t]*">
+	<keyword>CODE</keyword>
+	<keyword>CONST</keyword>
+	<keyword>DATA</keyword>
+	<keyword>DATA?</keyword>
+	<keyword>EXIT</keyword>
+	<keyword>FARDATA</keyword>
+	<keyword>FARDATA?</keyword>
+	<keyword>MODEL</keyword>
+	<keyword>STACK</keyword>
+	<keyword>STARTUP</keyword>
+</keyword-list>
+<keyword-list  _name="iString" style ="asm:iString"  
+		case-sensitive="FALSE" 
+		match-empty-string-at-beginning = "TRUE" 
+		match-empty-string-at-end = "TRUE">
+	<keyword>CATSTR</keyword>
+	<keyword>INSTR</keyword>
+	<keyword>SIZESTR</keyword>
+	<keyword>SUBSTR</keyword>
+</keyword-list>
+<keyword-list  _name="StructureAndRecord" style ="asm:StructureAndRecord"   
+		case-sensitive="FALSE" 
+		match-empty-string-at-beginning = "TRUE" 
+		match-empty-string-at-end = "TRUE">
+	<keyword>ENDS</keyword>
+	<keyword>RECORD</keyword>
+	<keyword>STRUCT</keyword>
+	<keyword>TYPEDEF</keyword>
+	<keyword>UNION</keyword>
+</keyword-list>
+
+
+
+
+<!--		-->
+<keyword-list  	_name = "Registers" style = "asm:Registers" case-sensitive="FALSE" 
+		match-empty-string-at-beginning = "TRUE" match-empty-string-at-end = "TRUE">
+
+	<!-- intel x86-64 -->
+
+	<keyword>al</keyword>
+	<keyword>ah</keyword>
+	<keyword>bh</keyword>
+	<keyword>bl</keyword>
+	<keyword>ch</keyword>
+	<keyword>cl</keyword>
+	<keyword>dh</keyword>
+	<keyword>dl</keyword>
+
+	<keyword>ax</keyword>
+	<keyword>bx</keyword>
+	<keyword>cx</keyword>
+	<keyword>dx</keyword>
+	<keyword>di</keyword>
+	<keyword>si</keyword>
+	<keyword>bp</keyword>
+	<keyword>sp</keyword>
+
+	<keyword>eax</keyword>
+	<keyword>ebx</keyword>
+	<keyword>ecx</keyword>
+	<keyword>edx</keyword>		
+	<keyword>esi</keyword>
+	<keyword>edi</keyword>		
+	<keyword>esp</keyword>
+	<keyword>ebp</keyword>
+
+	<keyword>rax</keyword>
+	<keyword>rbx</keyword>
+	<keyword>rcx</keyword>
+	<keyword>rdx</keyword>		
+	<keyword>rsi</keyword>
+	<keyword>rdi</keyword>		
+	<keyword>rsp</keyword>
+	<keyword>rbp</keyword>
+
+	<keyword>r0</keyword>
+	<keyword>r1</keyword>
+	<keyword>r2</keyword>
+	<keyword>r3</keyword>
+	<keyword>r4</keyword>
+	<keyword>r5</keyword>
+	<keyword>r6</keyword>
+	<keyword>r7</keyword>
+	<keyword>r8</keyword>
+	<keyword>r9</keyword>
+	<keyword>r10</keyword>
+	<keyword>r11</keyword>
+	<keyword>r12</keyword>
+	<keyword>r13</keyword>
+	<keyword>r14</keyword>
+	<keyword>r15</keyword>
+
+	<keyword>r0b</keyword>
+	<keyword>r1b</keyword>
+	<keyword>r2b</keyword>
+	<keyword>r3b</keyword>
+	<keyword>r4b</keyword>
+	<keyword>r5b</keyword>
+	<keyword>r6b</keyword>
+	<keyword>r7b</keyword>
+	<keyword>r8b</keyword>
+	<keyword>r9b</keyword>
+	<keyword>r10b</keyword>
+	<keyword>r11b</keyword>
+	<keyword>r12b</keyword>
+	<keyword>r13b</keyword>
+	<keyword>r14b</keyword>
+	<keyword>r15b</keyword>
+	
+	<keyword>r0w</keyword>
+	<keyword>r1w</keyword>
+	<keyword>r2w</keyword>
+	<keyword>r3w</keyword>
+	<keyword>r4w</keyword>
+	<keyword>r5w</keyword>
+	<keyword>r6w</keyword>
+	<keyword>r7w</keyword>
+	<keyword>r8w</keyword>
+	<keyword>r9w</keyword>
+	<keyword>r10w</keyword>
+	<keyword>r11w</keyword>
+	<keyword>r12w</keyword>
+	<keyword>r13w</keyword>
+	<keyword>r14w</keyword>
+	<keyword>r15w</keyword>
+
+	<keyword>r0d</keyword>
+	<keyword>r1d</keyword>
+	<keyword>r2d</keyword>
+	<keyword>r3d</keyword>
+	<keyword>r4d</keyword>
+	<keyword>r5d</keyword>
+	<keyword>r6d</keyword>
+	<keyword>r7d</keyword>
+	<keyword>r8d</keyword>
+	<keyword>r9d</keyword>
+	<keyword>r10d</keyword>
+	<keyword>r11d</keyword>
+	<keyword>r12d</keyword>
+	<keyword>r13d</keyword>
+	<keyword>r14d</keyword>
+	<keyword>r15d</keyword>
+
+	<keyword>mm0</keyword>
+	<keyword>mm1</keyword>
+	<keyword>mm2</keyword>
+	<keyword>mm3</keyword>
+	<keyword>mm4</keyword>
+	<keyword>mm5</keyword>
+	<keyword>mm6</keyword>
+	<keyword>mm7</keyword>
+
+	<keyword>xmm0</keyword>
+	<keyword>xmm1</keyword>
+	<keyword>xmm2</keyword>
+	<keyword>xmm3</keyword>
+	<keyword>xmm4</keyword>
+	<keyword>xmm5</keyword>
+	<keyword>xmm6</keyword>
+	<keyword>xmm7</keyword>
+	<keyword>xmm8</keyword>
+	<keyword>xmm9</keyword>
+	<keyword>xmm10</keyword>
+	<keyword>xmm11</keyword>
+	<keyword>xmm12</keyword>
+	<keyword>xmm13</keyword>
+	<keyword>xmm14</keyword>
+	<keyword>xmm15</keyword>
+	<keyword>xmm16</keyword>
+	<keyword>xmm17</keyword>
+	<keyword>xmm18</keyword>
+	<keyword>xmm19</keyword>
+	<keyword>xmm20</keyword>
+	<keyword>xmm21</keyword>
+	<keyword>xmm22</keyword>
+	<keyword>xmm23</keyword>
+	<keyword>xmm24</keyword>
+	<keyword>xmm25</keyword>
+	<keyword>xmm26</keyword>
+	<keyword>xmm27</keyword>
+	<keyword>xmm28</keyword>
+	<keyword>xmm29</keyword>
+	<keyword>xmm30</keyword>
+	<keyword>xmm31</keyword>
+
+	<keyword>ymm0</keyword>
+	<keyword>ymm1</keyword>
+	<keyword>ymm2</keyword>
+	<keyword>ymm3</keyword>
+	<keyword>ymm4</keyword>
+	<keyword>ymm5</keyword>
+	<keyword>ymm6</keyword>
+	<keyword>ymm7</keyword>
+	<keyword>ymm8</keyword>
+	<keyword>ymm9</keyword>
+	<keyword>ymm10</keyword>
+	<keyword>ymm11</keyword>
+	<keyword>ymm12</keyword>
+	<keyword>ymm13</keyword>
+	<keyword>ymm14</keyword>
+	<keyword>ymm15</keyword>
+	<keyword>ymm16</keyword>
+	<keyword>ymm17</keyword>
+	<keyword>ymm18</keyword>
+	<keyword>ymm19</keyword>
+	<keyword>ymm20</keyword>
+	<keyword>ymm21</keyword>
+	<keyword>ymm22</keyword>
+	<keyword>ymm23</keyword>
+	<keyword>ymm24</keyword>
+	<keyword>ymm25</keyword>
+	<keyword>ymm26</keyword>
+	<keyword>ymm27</keyword>
+	<keyword>ymm28</keyword>
+	<keyword>ymm29</keyword>
+	<keyword>ymm30</keyword>
+	<keyword>ymm31</keyword>
+
+	<keyword>zmm0</keyword>
+	<keyword>zmm1</keyword>
+	<keyword>zmm2</keyword>
+	<keyword>zmm3</keyword>
+	<keyword>zmm4</keyword>
+	<keyword>zmm5</keyword>
+	<keyword>zmm6</keyword>
+	<keyword>zmm7</keyword>
+	<keyword>zmm8</keyword>
+	<keyword>zmm9</keyword>
+	<keyword>zmm10</keyword>
+	<keyword>zmm11</keyword>
+	<keyword>zmm12</keyword>
+	<keyword>zmm13</keyword>
+	<keyword>zmm14</keyword>
+	<keyword>zmm15</keyword>
+	<keyword>zmm16</keyword>
+	<keyword>zmm17</keyword>
+	<keyword>zmm18</keyword>
+	<keyword>zmm19</keyword>
+	<keyword>zmm20</keyword>
+	<keyword>zmm21</keyword>
+	<keyword>zmm22</keyword>
+	<keyword>zmm23</keyword>
+	<keyword>zmm24</keyword>
+	<keyword>zmm25</keyword>
+	<keyword>zmm26</keyword>
+	<keyword>zmm27</keyword>
+	<keyword>zmm28</keyword>
+	<keyword>zmm29</keyword>
+	<keyword>zmm30</keyword>
+	<keyword>zmm31</keyword>
+	
+
+	<keyword>cs</keyword>
+	<keyword>ds</keyword>
+	<keyword>ss</keyword>
+	<keyword>es</keyword>
+	<keyword>fs</keyword>
+	<keyword>gs</keyword>
+	
+	<keyword>cr0</keyword>
+	<keyword>cr2</keyword>
+	<keyword>cr3</keyword>
+	
+	<keyword>db0</keyword>
+	<keyword>db1</keyword>
+	<keyword>db2</keyword>
+	<keyword>db3</keyword>
+	<keyword>db6</keyword>
+	<keyword>db7</keyword>
+	
+	<keyword>tr6</keyword>
+	<keyword>tr7</keyword>
+	
+	<keyword>st</keyword>
+	<keyword>st0</keyword>
+	<keyword>st1</keyword>
+	<keyword>st2</keyword>
+	<keyword>st3</keyword>
+	<keyword>st4</keyword>
+	<keyword>st5</keyword>
+	<keyword>st6</keyword>
+	<keyword>st7</keyword>
+	
+	
+</keyword-list>
+
+<keyword-list  	_name = "DataAllocation" style = "asm:DataAllocation" case-sensitive="FALSE" 
+		match-empty-string-at-beginning = "TRUE" match-empty-string-at-end = "TRUE">
+	<keyword>BYTE</keyword>
+	<keyword>SBYTE</keyword>
+	<keyword>TBYTE</keyword>
+	<keyword>WORD</keyword>
+	<keyword>SWORD</keyword>
+	<keyword>DWORD</keyword>
+	<keyword>SDWORD</keyword>
+	<keyword>QWORD</keyword>
+	<keyword>FWORD</keyword>
+	<keyword>OWORD</keyword>
+	<keyword>REAL4</keyword>
+	<keyword>REAL8</keyword>
+	<keyword>REAL10</keyword>
+	<keyword>REAL16</keyword>
+	<keyword>ORG</keyword>
+	<keyword>ALIGN</keyword>
+	<keyword>EVEN</keyword>
+	<keyword>LABEL</keyword>
+</keyword-list>
+    
+    <!--    	<keyword>short</keyword>
+    	<keyword>near</keyword>
+    	<keyword>far</keyword>
+-->
+<keyword-list  	_name = "Instructions1" style = "asm:Instructions1" case-sensitive="FALSE" 
+		match-empty-string-at-beginning = "FALSE" match-empty-string-at-end = "TRUE"  beginning-regex = "^[ \t]*">
+    	
+    <!-- x86 integer instructions -->
+    	
+    	<!-- Original 8086/8088 instructions -->
+    	
+    	<keyword>aaa</keyword>
+    	<keyword>aad</keyword>
+    	<keyword>aam</keyword>
+    	<keyword>aas</keyword>
+    	<keyword>adc</keyword>
+    	<keyword>add</keyword>
+    	<keyword>and</keyword>
+    	<keyword>call</keyword>
+    	<keyword>cbw</keyword>
+    	<keyword>clc</keyword>
+    	<keyword>cld</keyword>
+    	<keyword>cli</keyword>
+    	<keyword>cmc</keyword>
+    	<keyword>cmp</keyword>
+    	<keyword>cmpsb</keyword>
+    	<keyword>cmpsw</keyword>
+    	<keyword>cwd</keyword>
+    	<keyword>daa</keyword>
+    	<keyword>das</keyword>
+    	<keyword>dec</keyword>
+    	<keyword>div</keyword>
+    	<keyword>esc</keyword>
+    	<keyword>hlt</keyword>
+    	<keyword>idiv</keyword>
+    	<keyword>imul</keyword>
+    	<keyword>in</keyword>
+    	<keyword>inc</keyword>
+    	<keyword>int</keyword>
+    	<keyword>into</keyword>
+    	<keyword>iret</keyword>
+    	<keyword>JA</keyword>
+    	<keyword>JAE</keyword>
+    	<keyword>JB</keyword>
+    	<keyword>JBE</keyword>
+    	<keyword>JC</keyword>
+    	<keyword>JCXZ</keyword>
+    	<keyword>JE</keyword>
+    	<keyword>JG</keyword>
+    	<keyword>JGE</keyword>
+    	<keyword>JL</keyword>
+    	<keyword>JLE</keyword>
+    	<keyword>JNA</keyword>
+    	<keyword>JNAE</keyword>
+    	<keyword>JNB</keyword>
+    	<keyword>JNBE</keyword>
+    	<keyword>JNC</keyword>
+    	<keyword>JNE</keyword>
+    	<keyword>JNG</keyword>
+    	<keyword>JNGE</keyword>
+    	<keyword>JNL</keyword>
+    	<keyword>JNLE</keyword>
+    	<keyword>JNO</keyword>
+    	<keyword>JNP</keyword>
+    	<keyword>JNS</keyword>
+    	<keyword>JNZ</keyword>
+    	<keyword>JO</keyword>
+    	<keyword>JP</keyword>
+    	<keyword>JPE</keyword>
+    	<keyword>JPO</keyword>
+    	<keyword>JS</keyword>
+    	<keyword>JZ</keyword>
+    	<keyword>jmp</keyword>
+    	<keyword>lahf</keyword>
+    	<keyword>lds</keyword>
+    	<keyword>lea</keyword>
+    	<keyword>les</keyword>
+    	<keyword>lock</keyword>
+    	<keyword>lodsb</keyword>
+    	<keyword>lodsw</keyword>
+    	<keyword>loop</keyword>
+    	<keyword>LOOPE</keyword>
+    	<keyword>LOOPNE</keyword>
+    	<keyword>LOOPNZ</keyword>
+    	<keyword>LOOPZ</keyword>
+    	<keyword>mov</keyword>
+    	<keyword>movsb</keyword>
+    	<keyword>movsw</keyword>
+    	<keyword>mul</keyword>
+    	<keyword>neg</keyword>
+    	<keyword>nop</keyword>
+    	<keyword>not</keyword>
+    	<keyword>or</keyword>
+    	<keyword>out</keyword>
+    	<keyword>pop</keyword>
+    	<keyword>popf</keyword>
+    	<keyword>push</keyword>
+    	<keyword>pushf</keyword>
+    	<keyword>rcl</keyword>
+    	<keyword>rcr</keyword>
+    	<keyword>REP</keyword>
+    	<keyword>REPE</keyword>
+    	<keyword>REPNE</keyword>
+    	<keyword>REPNZ</keyword>
+    	<keyword>REPZ</keyword>
+    	<keyword>ret</keyword>
+    	<keyword>retn</keyword>
+    	<keyword>retf</keyword>
+    	<keyword>rol</keyword>
+    	<keyword>ror</keyword>
+    	<keyword>sahf</keyword>
+    	<keyword>sal</keyword>
+    	<keyword>sar</keyword>
+    	<keyword>sbb</keyword>
+    	<keyword>scasb</keyword>
+    	<keyword>scasw</keyword>
+    	<keyword>shl</keyword>
+    	<keyword>shr</keyword>
+    	<keyword>stc</keyword>
+    	<keyword>std</keyword>
+    	<keyword>sti</keyword>
+    	<keyword>stosb</keyword>
+    	<keyword>stosw</keyword>
+    	<keyword>sub</keyword>
+    	<keyword>test</keyword>
+    	<keyword>wait</keyword>
+    	<keyword>xchg</keyword>
+    	<keyword>xlat</keyword>
+    	<keyword>xor</keyword>
+    	
+    	<!-- Added with 80186/80188 -->
+    	
+    	<keyword>bound</keyword>
+    	<keyword>enter</keyword>
+    	<keyword>ins</keyword>
+    	<keyword>leave</keyword>
+    	<keyword>outs</keyword>
+    	<keyword>popa</keyword>
+    	<keyword>pusha</keyword>
+    	
+    	<!-- Added with 80286 -->
+    	
+    	<keyword>arpl</keyword>
+    	<keyword>clts</keyword>
+    	<keyword>lar</keyword>
+    	<keyword>lgdt</keyword>
+    	<keyword>lidt</keyword>
+    	<keyword>lldt</keyword>
+    	<keyword>lmsw</keyword>
+    	<keyword>lsl</keyword>
+    	<keyword>ltr</keyword>
+    	<keyword>sgdt</keyword>
+    	<keyword>sidt</keyword>
+    	<keyword>sldt</keyword>
+    	<keyword>smsw</keyword>
+    	<keyword>str</keyword>
+    	<keyword>verr</keyword>
+    	<keyword>verw</keyword>
+    	
+    	<!-- Added with 80386 -->
+    	
+    	<keyword>bsf</keyword>
+    	<keyword>bsr</keyword>
+    	<keyword>bt</keyword>
+    	<keyword>btc</keyword>
+    	<keyword>btr</keyword>
+    	<keyword>bts</keyword>
+    	<keyword>cdq</keyword>
+    	<keyword>cmpsd</keyword>
+    	<keyword>cwde</keyword>
+    	<keyword>insb</keyword>
+    	<keyword>insw</keyword>
+    	<keyword>insd</keyword>
+    	<keyword>iretd</keyword>
+    	<keyword>iretf</keyword>
+    	<keyword>jcxz</keyword>
+    	<keyword>jecxz</keyword>
+    	<keyword>lfs</keyword>
+    	<keyword>lgs</keyword>
+    	<keyword>lss</keyword>
+    	<keyword>lodsd</keyword>
+    	<keyword>loopw</keyword>
+    	<keyword>loopd</keyword>
+    	<keyword>loopew</keyword>
+    	<keyword>looped</keyword>
+    	<keyword>loopzw</keyword>
+    	<keyword>loopsd</keyword>
+    	<keyword>loopnew</keyword>
+    	<keyword>loopned</keyword>
+    	<keyword>loopnzw</keyword>
+    	<keyword>loopnzd</keyword>
+    	<keyword>movsw</keyword>
+    	<keyword>movsd</keyword>
+    	<keyword>movsx</keyword>
+    	<keyword>popad</keyword>
+    	<keyword>popfd</keyword>
+    	<keyword>pushad</keyword>
+    	<keyword>pushfd</keyword>
+    	<keyword>scasd</keyword>
+    	<keyword>SETA</keyword>
+    	<keyword>SETAE</keyword>
+    	<keyword>SETB</keyword>
+    	<keyword>SETBE</keyword>
+    	<keyword>SETC</keyword>
+    	<keyword>SETE</keyword>
+    	<keyword>SETG</keyword>
+    	<keyword>SETGE</keyword>
+    	<keyword>SETL</keyword>
+    	<keyword>SETLE</keyword>
+    	<keyword>SETNA</keyword>
+    	<keyword>SETNAE</keyword>
+    	<keyword>SETNB</keyword>
+    	<keyword>SETNBE</keyword>
+    	<keyword>SETNC</keyword>
+    	<keyword>SETNE</keyword>
+    	<keyword>SETNG</keyword>
+    	<keyword>SETNGE</keyword>
+    	<keyword>SETNL</keyword>
+    	<keyword>SETNLE</keyword>
+    	<keyword>SETNO</keyword>
+    	<keyword>SETNP</keyword>
+    	<keyword>SETNS</keyword>
+    	<keyword>SETNZ</keyword>
+    	<keyword>SETO</keyword>
+    	<keyword>SETP</keyword>
+    	<keyword>SETPE</keyword>
+    	<keyword>SETPO</keyword>
+    	<keyword>SETS</keyword>
+    	<keyword>SETZ</keyword>
+    	<keyword>shld</keyword>
+    	<keyword>shrd</keyword>
+    	<keyword>stosd</keyword>
+    	
+    	<!-- Added with 80486 -->
+    	
+    	<keyword>bswap</keyword>
+    	<keyword>cmpxchg</keyword>
+    	<keyword>invd</keyword>
+    	<keyword>invlpg</keyword>
+    	<keyword>wbinvd</keyword>
+    	<keyword>xadd</keyword>
+    	
+    	<!-- Added with Pentium -->
+    	
+    	<keyword>cpuid</keyword>
+    	<keyword>cmpxchg8b</keyword>
+    	<keyword>rdmsr</keyword>
+    	<keyword>rdtsc</keyword>
+    	<keyword>wrmsr</keyword>
+    	<keyword>rsm</keyword>
+    	
+    	<!-- Added with Pentium MMX -->
+    	
+    	<keyword>rdpmc</keyword>
+    	
+    	<!-- Added with AMD K6 -->
+    	
+    	<keyword>syscall</keyword>
+    	<keyword>sysret</keyword>
+    	
+    	<!-- Added with Pentium Pro -->
+    	
+    	<keyword>CMOVA</keyword>
+    	<keyword>CMOVAE</keyword>
+    	<keyword>CMOVB</keyword>
+    	<keyword>CMOVBE</keyword>
+    	<keyword>CMOVC</keyword>
+    	<keyword>CMOVE</keyword>
+    	<keyword>CMOVG</keyword>
+    	<keyword>CMOVGE</keyword>
+    	<keyword>CMOVL</keyword>
+    	<keyword>CMOVLE</keyword>
+    	<keyword>CMOVNA</keyword>
+    	<keyword>CMOVNAE</keyword>
+    	<keyword>CMOVNB</keyword>
+    	<keyword>CMOVNBE</keyword>
+    	<keyword>CMOVNC</keyword>
+    	<keyword>CMOVNE</keyword>
+    	<keyword>CMOVNG</keyword>
+    	<keyword>CMOVNGE</keyword>
+    	<keyword>CMOVNL</keyword>
+    	<keyword>CMOVNLE</keyword>
+    	<keyword>CMOVNO</keyword>
+    	<keyword>CMOVNP</keyword>
+    	<keyword>CMOVNS</keyword>
+    	<keyword>CMOVNZ</keyword>
+    	<keyword>CMOVO</keyword>
+    	<keyword>CMOVP</keyword>
+    	<keyword>CMOVPE</keyword>
+    	<keyword>CMOVPO</keyword>
+    	<keyword>CMOVS</keyword>
+    	<keyword>CMOVZ</keyword>
+    	<keyword>SYSENTER</keyword>
+    	<keyword>SYSEXIT</keyword>
+    	<keyword>UD2</keyword>
+    	
+    	<!-- Added with SSE -->
+    	
+    	<keyword>MASKMOVQ</keyword>
+    	<keyword>MOVNTPS</keyword>
+    	<keyword>MOVNTQ</keyword>
+    	<keyword>PREFETCH0</keyword>
+    	<keyword>PREFETCH1</keyword>
+    	<keyword>PREFETCH2</keyword>
+    	<keyword>PREFETCHNTA</keyword>
+    	<keyword>SFENCE</keyword>
+    	
+    	<!-- Added with SSE2 -->
+    	
+    	<keyword>CLFLUSH</keyword>
+    	<keyword>LFENCE</keyword>
+    	<keyword>MASKMOVDQU</keyword>
+    	<keyword>MFENCE</keyword>
+    	<keyword>MOVNTDQ</keyword>
+    	<keyword>MOVNTI</keyword>
+    	<keyword>MOVNTPD</keyword>
+    	<keyword>PAUSE</keyword>
+    	
+    	<!-- Added with x86-64 -->
+    	
+    	<keyword>CDQE</keyword>
+    	<keyword>CQO</keyword>
+    	<keyword>CMPSQ</keyword>
+    	<keyword>CMPXCHG16B</keyword>
+    	<keyword>JRCXZ</keyword>
+    	<keyword>LODSQ</keyword>
+    	<keyword>MOVSXD</keyword>
+    	<keyword>POPFQ</keyword>
+    	<keyword>PUSHFQ</keyword>
+    	<keyword>SCASQ</keyword>
+    	<keyword>STOSQ</keyword>
+    	<keyword>IRETQ</keyword>
+    	<keyword>RDTSCP</keyword>
+    	<keyword>SWAPGS</keyword>
+    	
+    	<!-- Added with SSE3 -->
+    	
+    	<keyword>LDDQU</keyword>
+    	<keyword>MONITOR</keyword>
+    	<keyword>MWAIT</keyword>
+    	
+    	<!-- Added with AMD-V -->
+    	
+    	<keyword>CLGI</keyword>
+    	<keyword>SKINIT</keyword>
+    	<keyword>STGI</keyword>
+    	<keyword>VMLOAD</keyword>
+    	<keyword>VMMCALL</keyword>
+    	<keyword>VMRUN</keyword>
+    	<keyword>VMSAVE</keyword>
+    	
+    	<!-- Added with Intel VT-x -->
+    	
+    	<keyword>VMPTRLD</keyword>
+    	<keyword>VMPTRST</keyword>
+    	<keyword>VMCLEAR</keyword>
+    	<keyword>VMREAD</keyword>
+    	<keyword>VMWRITE</keyword>
+    	<keyword>VMCALL</keyword>
+    	<keyword>VMLAUNCH</keyword>
+    	<keyword>VMRESUME</keyword>
+    	<keyword>VMXOFF</keyword>
+    	<keyword>VMXON</keyword>
+    	
+    	<!-- Added with SSE4a -->
+    	
+    	<keyword>LZCNT</keyword>
+    	<keyword>POPCNT</keyword>
+    	
+    <!-- x87 floating-point instructions -->
+    	
+    	<!-- Original 8087 instructions -->
+    	
+    	<keyword>f2xm1</keyword>
+    	<keyword>fabs</keyword>
+    	<keyword>fadd</keyword>
+    	<keyword>faddp</keyword>
+    	<keyword>fbld</keyword>
+    	<keyword>fbstp</keyword>
+    	<keyword>fchs</keyword>
+    	<keyword>fclex</keyword>
+    	<keyword>fcom</keyword>
+    	<keyword>fcomp</keyword>
+    	<keyword>fcompp</keyword>
+    	<keyword>fdecstp</keyword>
+    	<keyword>fdisi</keyword>
+    	<keyword>fdiv</keyword>
+    	<keyword>fdivp</keyword>
+    	<keyword>fdivr</keyword>
+    	<keyword>fdivrp</keyword>
+    	<keyword>feni</keyword>
+    	<keyword>ffree</keyword>
+    	<keyword>fiadd</keyword>
+    	<keyword>ficom</keyword>
+    	<keyword>ficomp</keyword>
+    	<keyword>fidiv</keyword>
+    	<keyword>fidivr</keyword>
+    	<keyword>fild</keyword>
+    	<keyword>fimul</keyword>
+    	<keyword>fincstp</keyword>
+    	<keyword>finit</keyword>
+    	<keyword>fist</keyword>
+    	<keyword>fistp</keyword>
+    	<keyword>fisub</keyword>
+    	<keyword>fisubr</keyword>
+    	<keyword>fld</keyword>
+    	<keyword>fld1</keyword>
+    	<keyword>fldcw</keyword>
+    	<keyword>fldenv</keyword>
+    	<keyword>fldenvw</keyword>
+    	<keyword>fldl2e</keyword>
+    	<keyword>fldl2t</keyword>
+    	<keyword>fldlg2</keyword>
+    	<keyword>fldln2</keyword>
+    	<keyword>fldpi</keyword>
+    	<keyword>fldz</keyword>
+    	<keyword>fmul</keyword>
+    	<keyword>fmulp</keyword>
+    	<keyword>fnclex</keyword>
+    	<keyword>fndisi</keyword>
+    	<keyword>fneni</keyword>
+    	<keyword>fninit</keyword>
+    	<keyword>fnop</keyword>
+    	<keyword>fnsave</keyword>
+    	<keyword>fnsavew</keyword>
+    	<keyword>fnstcw</keyword>
+    	<keyword>fnstenv</keyword>
+    	<keyword>fnstenvw</keyword>
+    	<keyword>fnstsw</keyword>
+    	<keyword>fpatan</keyword>
+    	<keyword>fprem</keyword>
+    	<keyword>fptan</keyword>
+    	<keyword>frndint</keyword>
+    	<keyword>frstor</keyword>
+    	<keyword>frstorw</keyword>
+    	<keyword>fsave</keyword>
+    	<keyword>fsavew</keyword>
+    	<keyword>fscale</keyword>
+    	<keyword>fsqrt</keyword>
+    	<keyword>fst</keyword>
+    	<keyword>fstcw</keyword>
+    	<keyword>fstenv</keyword>
+    	<keyword>fstenvw</keyword>
+    	<keyword>fstp</keyword>
+    	<keyword>fstsw</keyword>
+    	<keyword>fsub</keyword>
+    	<keyword>fsubp</keyword>
+    	<keyword>fsubr</keyword>
+    	<keyword>fsubrp</keyword>
+    	<keyword>ftst</keyword>
+    	<keyword>fwait</keyword>
+    	<keyword>fxam</keyword>
+    	<keyword>fxch</keyword>
+    	<keyword>fxtract</keyword>
+    	<keyword>fyl2x</keyword>
+    	<keyword>fyl2xp1</keyword>
+    	
+    	<!-- Added with 80287 -->
+    	
+    	<keyword>FSETPM</keyword>
+    	
+    	<!-- Added with 80386 -->
+    	
+    	<keyword>FCOS</keyword>
+    	<keyword>FLDENVD</keyword>
+    	<keyword>FNSAVED</keyword>
+    	<keyword>FNSTENVD</keyword>
+    	<keyword>FPREM1</keyword>
+    	<keyword>FRSTORD</keyword>
+    	<keyword>FSAVED</keyword>
+    	<keyword>FSIN</keyword>
+    	<keyword>FSINCOS</keyword>
+    	<keyword>FSTENVD</keyword>
+    	<keyword>FUCOM</keyword>
+    	<keyword>FUCOMP</keyword>
+    	<keyword>FUCOMPP</keyword>
+    	
+    	<!-- Added with Pentium Pro -->
+    	
+    	<keyword>FCMOVB</keyword>
+    	<keyword>FCMOVBE</keyword>
+    	<keyword>FCMOVE</keyword>
+    	<keyword>FCMOVNB</keyword>
+    	<keyword>FCMOVNBE</keyword>
+    	<keyword>FCMOVNE</keyword>
+    	<keyword>FCMOVNU</keyword>
+    	<keyword>FCMOVU</keyword>
+    	<keyword>FCOMI</keyword>
+    	<keyword>FCOMIP</keyword>
+    	<keyword>FUCOMI</keyword>
+    	<keyword>FUCOMIP</keyword>
+    	
+    	<!-- Added with SSE -->
+    	
+    	<keyword>FISTTP</keyword>
+    	
+    	<!-- Undocumented -->
+    	
+    	<keyword>FFREEP</keyword>
+    
+    <!-- SIMD instructions -->
+    	
+    	<!-- MMX instructions -->
+    	
+    	<keyword>EMMS</keyword>
+    	<keyword>MOVD</keyword>
+    	<keyword>MOVQ</keyword>
+    	<keyword>PACKSSDW</keyword>
+    	<keyword>PACKSSWB</keyword>
+    	<keyword>PACKUSWB</keyword>
+    	<keyword>PADDB</keyword>
+    	<keyword>PADDD</keyword>
+    	<keyword>PADDSB</keyword>
+    	<keyword>PADDSW</keyword>
+    	<keyword>PADDUSB</keyword>
+    	<keyword>PADDUSW</keyword>
+    	<keyword>PADDW</keyword>
+    	<keyword>PAND</keyword>
+    	<keyword>PANDN</keyword>
+    	<keyword>PCMPEQB</keyword>
+    	<keyword>PCMPEQD</keyword>
+    	<keyword>PCMPEQW</keyword>
+    	<keyword>PCMPGTB</keyword>
+    	<keyword>PCMPGTD</keyword>
+    	<keyword>PCMPGTW</keyword>
+    	<keyword>PMADDWD</keyword>
+    	<keyword>PMULHW</keyword>
+    	<keyword>PMULLW</keyword>
+    	<keyword>POR</keyword>
+    	<keyword>PSLLD</keyword>
+    	<keyword>PSLLQ</keyword>
+    	<keyword>PSLLW</keyword>
+    	<keyword>PSRAD</keyword>
+    	<keyword>PSRAW</keyword>
+    	<keyword>PSRLD</keyword>
+    	<keyword>PSRLQ</keyword>
+    	<keyword>PSRLW</keyword>
+    	<keyword>PSUBB</keyword>
+    	<keyword>PSUBD</keyword>
+    	<keyword>PSUBSB</keyword>
+    	<keyword>PSUBSW</keyword>
+    	<keyword>PSUBUSB</keyword>
+    	<keyword>PSUBUSW</keyword>
+    	<keyword>PSUBW</keyword>
+    	<keyword>PUNPCKHBW</keyword>
+    	<keyword>PUNPCKHDQ</keyword>
+    	<keyword>PUNPCKHWD</keyword>
+    	<keyword>PUNPCKLBW</keyword>
+    	<keyword>PUNPCKLDQ</keyword>
+    	<keyword>PUNPCKLWD</keyword>
+    	<keyword>PXOR</keyword>
+    	
+    	<!-- EMMI instructions -->
+    	
+    	<keyword>PAVEB</keyword>
+    	<keyword>PADDSIW</keyword>
+    	<keyword>PMAGW</keyword>
+    	<keyword>PDISTIB</keyword>
+    	<keyword>PSUBSIW</keyword>
+    	<keyword>PMVZB</keyword>
+    	<keyword>PMULHRW</keyword>
+    	<keyword>PMVNZB</keyword>
+    	<keyword>PMVLZB</keyword>
+    	<keyword>PMVGEZB</keyword>
+    	<keyword>PMULHRIW</keyword>
+    	<keyword>PMACHRIW</keyword>
+    	
+    	<!-- 3DNow! instructions -->
+    	
+    	<keyword>FEMMS</keyword>
+    	<keyword>PAVGUSB</keyword>
+    	<keyword>PF2ID</keyword>
+    	<keyword>PFACC</keyword>
+    	<keyword>PFADD</keyword>
+    	<keyword>PFCMPEQ</keyword>
+    	<keyword>PFCMPGE</keyword>
+    	<keyword>PFCMPGT</keyword>
+    	<keyword>PFMAX</keyword>
+    	<keyword>PFMIN</keyword>
+    	<keyword>PFMUL</keyword>
+    	<keyword>PFRCP</keyword>
+    	<keyword>PFRCPIT1</keyword>
+    	<keyword>PFRCPIT2</keyword>
+    	<keyword>PFRSQIT1</keyword>
+    	<keyword>PFRSQRT</keyword>
+    	<keyword>PFSUB</keyword>
+    	<keyword>PFSUBR</keyword>
+    	<keyword>PI2FD</keyword>
+    	<keyword>PMULHRW</keyword>
+    	<keyword>PREFETCH</keyword>
+    	<keyword>PREFETCHW</keyword>
+    	
+    	
+    		<keyword>PF2IW</keyword>
+    		<keyword>PFNACC</keyword>
+    		<keyword>PFPNACC</keyword>
+    		<keyword>PI2FW</keyword>
+    		<keyword>PSWAPD</keyword>
+    	
+    		
+    		<keyword>PFRSQRTV</keyword>
+    		<keyword>PFRCPV</keyword>
+    	
+    	<!-- SSE instructions -->
+    	
+    		<!-- Floating-point instructions -->
+    		
+    		<keyword>ADDPS</keyword>
+    		<keyword>ADDSS</keyword>
+    		<keyword>CMPPS</keyword>
+    		<keyword>CMPSS</keyword>
+    		<keyword>COMISS</keyword>
+    		<keyword>CVTPI2PS</keyword>
+    		<keyword>CVTPS2PI</keyword>
+    		<keyword>CVTSI2SS</keyword>
+    		<keyword>CVTSS2SI</keyword>
+    		<keyword>CVTTPS2PI</keyword>
+    		<keyword>CVTTSS2SI</keyword>
+    		<keyword>DIVPS</keyword>
+    		<keyword>DIVSS</keyword>
+    		<keyword>LDMXCSR</keyword>
+    		<keyword>MAXPS</keyword>
+    		<keyword>MAXSS</keyword>
+    		<keyword>MINPS</keyword>
+    		<keyword>MINSS</keyword>
+    		<keyword>MOVAPS</keyword>
+    		<keyword>MOVHLPS</keyword>
+    		<keyword>MOVHPS</keyword>
+    		<keyword>MOVLHPS</keyword>
+    		<keyword>MOVLPS</keyword>
+    		<keyword>MOVMSKPS</keyword>
+    		<keyword>MOVNTPS</keyword>
+    		<keyword>MOVSS</keyword>
+    		<keyword>MOVUPS</keyword>
+    		<keyword>MULPS</keyword>
+    		<keyword>MULSS</keyword>
+    		<keyword>RCPPS</keyword>
+    		<keyword>RCPSS</keyword>
+    		<keyword>RSQRTPS</keyword>
+    		<keyword>RSQRTSS</keyword>
+    		<keyword>SHUFPS</keyword>
+    		<keyword>SQRTPS</keyword>
+    		<keyword>SQRTSS</keyword>
+    		<keyword>STMXCSR</keyword>
+    		<keyword>SUBPS</keyword>
+    		<keyword>SUBSS</keyword>
+    		<keyword>UCOMISS</keyword>
+    		<keyword>UNPCKHPS</keyword>
+    		<keyword>UNPCKLPS</keyword>
+    		
+    		<!-- Integer instructions -->
+    		
+    		<keyword>ANDNPS</keyword>
+    		<keyword>ANDPS</keyword>
+    		<keyword>ORPS</keyword>
+    		<keyword>PAVGB</keyword>
+    		<keyword>PAVGW</keyword>
+    		<keyword>PEXTRW</keyword>
+    		<keyword>PINSRW</keyword>
+    		<keyword>PMAXSW</keyword>
+    		<keyword>PMAXUB</keyword>
+    		<keyword>PMINSW</keyword>
+    		<keyword>PMINUB</keyword>
+    		<keyword>PMOVMSKB</keyword>
+    		<keyword>PMULHUW</keyword>
+    		<keyword>PSADBW</keyword>
+    		<keyword>PSHUFW</keyword>
+    		<keyword>XORPS</keyword>
+    	
+    	<!-- SSE2 instructions -->
+    	
+    		<!-- Floating-point instructions -->
+    		
+    		<keyword>ADDPD</keyword>
+    		<keyword>ADDSD</keyword>
+    		<keyword>ANDNPD</keyword>
+    		<keyword>ANDPD</keyword>
+    		<keyword>CMPPD</keyword>
+    		<keyword>CMPSD</keyword>
+    		<keyword>COMISD</keyword>
+    		<keyword>CVTDQ2PD</keyword>
+    		<keyword>CVTDQ2PS</keyword>
+    		<keyword>CVTPD2DQ</keyword>
+    		<keyword>CVTPD2PI</keyword>
+    		<keyword>CVTPD2PS</keyword>
+    		<keyword>CVTPI2PD</keyword>
+    		<keyword>CVTPS2DQ</keyword>
+    		<keyword>CVTPS2PD</keyword>
+    		<keyword>CVTSD2SI</keyword>
+    		<keyword>CVTSD2SS</keyword>
+    		<keyword>CVTSI2SD</keyword>
+    		<keyword>CVTSS2SD</keyword>
+    		<keyword>CVTTPD2DQ</keyword>
+    		<keyword>CVTTPD2PI</keyword>
+    		<keyword>CVTTPS2DQ</keyword>
+    		<keyword>CVTTSD2SI</keyword>
+    		<keyword>DIVPD</keyword>
+    		<keyword>DIVSD</keyword>
+    		<keyword>MAXPD</keyword>
+    		<keyword>MAXSD</keyword>
+    		<keyword>MINPD</keyword>
+    		<keyword>MINSD</keyword>
+    		<keyword>MOVAPD</keyword>
+    		<keyword>MOVHPD</keyword>
+    		<keyword>MOVLPD</keyword>
+    		<keyword>MOVMSKPD</keyword>
+    		<keyword>MOVSD</keyword>
+    		<keyword>MOVUPD</keyword>
+    		<keyword>MULPD</keyword>
+    		<keyword>MULSD</keyword>
+    		<keyword>ORPD</keyword>
+    		<keyword>SHUFPD</keyword>
+    		<keyword>SQRTPD</keyword>
+    		<keyword>SQRTSD</keyword>
+    		<keyword>SUBPD</keyword>
+    		<keyword>SUBSD</keyword>
+    		<keyword>UCOMISD</keyword>
+    		<keyword>UNPCKHPD</keyword>
+    		<keyword>UNPCKLPD</keyword>
+    		<keyword>XORPD</keyword>
+    		
+    		<!-- Integer instructions -->
+    		
+    		<keyword>MOVDQ2Q</keyword>
+    		<keyword>MOVDQA</keyword>
+    		<keyword>MOVDQU</keyword>
+    		<keyword>MOVQ2DQ</keyword>
+    		<keyword>PADDQ</keyword>
+    		<keyword>PSUBQ</keyword>
+    		<keyword>PMULUDQ</keyword>
+    		<keyword>PSHUFHW</keyword>
+    		<keyword>PSHUFLW</keyword>
+    		<keyword>PSHUFD</keyword>
+    		<keyword>PSLLDQ</keyword>
+    		<keyword>PSRLDQ</keyword>
+    		<keyword>PUNPCKHQDQ</keyword>
+    		<keyword>PUNPCKLQDQ</keyword>
+    	
+    	<!-- SSE3 instructions -->
+    	
+    	<keyword>ADDSUBPD</keyword>
+    	<keyword>ADDSUBPS</keyword>
+    	<keyword>HADDPD</keyword>
+    	<keyword>HADDPS</keyword>
+    	<keyword>HSUBPD</keyword>
+    	<keyword>HSUBPS</keyword>
+    	<keyword>MOVDDUP</keyword>
+    	<keyword>MOVSHDUP</keyword>
+    	<keyword>MOVSLDUP</keyword>
+    	
+    	<!-- SSSE3 instructions -->
+    	
+    	<keyword>PSIGNW</keyword>
+    	<keyword>PSIGND</keyword>
+    	<keyword>PSIGNB</keyword>
+    	<keyword>PSHUFB</keyword>
+    	<keyword>PMULHRSW</keyword>
+    	<keyword>PMADDUBSW</keyword>
+    	<keyword>PHSUBW</keyword>
+    	<keyword>PHSUBSW</keyword>
+    	<keyword>PHSUBD</keyword>
+    	<keyword>PHADDW</keyword>
+    	<keyword>PHADDSW</keyword>
+    	<keyword>PHADDD</keyword>
+    	<keyword>PALIGNR</keyword>
+    	<keyword>PABSW</keyword>
+    	<keyword>PABSD</keyword>
+    	<keyword>PABSB</keyword>
+    	
+    	<!-- SSE4 instructions -->
+    		
+    		<!-- SSE4.1 -->
+    		
+    		<keyword>MPSADBW</keyword>
+    		<keyword>PHMINPOSUW</keyword>
+    		<keyword>PMULLD</keyword>
+    		<keyword>PMULDQ</keyword>
+    		<keyword>DPPS</keyword>
+    		<keyword>DPPD</keyword>
+    		<keyword>BLENDPS</keyword>
+    		<keyword>BLENDPD</keyword>
+    		<keyword>BLENDVPS</keyword>
+    		<keyword>BLENDVPD</keyword>
+    		<keyword>PBLENDVB</keyword>
+    		<keyword>PBLENDW</keyword>
+    		<keyword>PMINSB</keyword>
+    		<keyword>PMAXSB</keyword>
+    		<keyword>PMINUW</keyword>
+    		<keyword>PMAXUW</keyword>
+    		<keyword>PMINUD</keyword>
+    		<keyword>PMAXUD</keyword>
+    		<keyword>PMINSD</keyword>
+    		<keyword>PMAXSD</keyword>
+    		<keyword>ROUNDPS</keyword>
+    		<keyword>ROUNDSS</keyword>
+    		<keyword>ROUNDPD</keyword>
+    		<keyword>ROUNDSD</keyword>
+    		<keyword>INSERTPS</keyword>
+    		<keyword>PINSRB</keyword>
+    		<keyword>PINSRD</keyword>
+    		<keyword>PINSRQ</keyword>
+    		<keyword>EXTRACTPS</keyword>
+    		<keyword>PEXTRB</keyword>
+    		<keyword>PEXTRW</keyword>
+    		<keyword>PEXTRD</keyword>
+    		<keyword>PEXTRQ</keyword>
+    		<keyword>PMOVSXBW</keyword>
+    		<keyword>PMOVZXBW</keyword>
+    		<keyword>PMOVSXBD</keyword>
+    		<keyword>PMOVZXBD</keyword>
+    		<keyword>PMOVSXBQ</keyword>
+    		<keyword>PMOVZXBQ</keyword>
+    		<keyword>PMOVSXWD</keyword>
+    		<keyword>PMOVZXWD</keyword>
+    		<keyword>PMOVSXWQ</keyword>
+    		<keyword>PMOVZXWQ</keyword>
+    		<keyword>PMOVSXDQ</keyword>
+    		<keyword>PMOVZXDQ</keyword>
+    		<keyword>PTEST</keyword>
+    		<keyword>PCMPEQQ</keyword>
+    		<keyword>PACKUSDW</keyword>
+    		<keyword>MOVNTDQA</keyword>
+    		
+    		<!-- SSE4a -->
+    		
+    		<keyword>EXTRQ</keyword>
+    		<keyword>INSERTQ</keyword>
+    		<keyword>MOVNTSD</keyword>
+    		<keyword>MOVNTSS</keyword>
+    		
+    		<!-- SSE4.2 -->
+    		
+    		<keyword>CRC32</keyword>
+    		<keyword>PCMPESTRI</keyword>
+    		<keyword>PCMPESTRM</keyword>
+    		<keyword>PCMPISTRI</keyword>
+    		<keyword>PCMPISTRM</keyword>
+    		<keyword>PCMPGTQ</keyword>
+    	
+    <!-- Intel AVX FMA instructions -->
+    		
+   	<keyword>vfmaddpd</keyword>
+    <keyword>vfmaddps</keyword>
+    <keyword>vfmaddsd</keyword>
+    <keyword>vfmaddss</keyword>
+    <keyword>vfmaddsubpd</keyword>
+    <keyword>vfmaddsubps</keyword>
+    <keyword>vfmsubaddpd</keyword>
+    <keyword>vfmsubaddps</keyword>
+    <keyword>vfmsubpd</keyword>
+    <keyword>vfmsubps</keyword>
+    <keyword>vfmsubsd</keyword>
+    <keyword>vfmsubss</keyword>
+    <keyword>vfnmaddpd</keyword>
+    <keyword>vfnmaddps</keyword>
+    <keyword>vfnmaddsd</keyword>
+    <keyword>vfnmaddss</keyword>
+    <keyword>vfnmsubpd</keyword>
+    <keyword>vfnmsubps</keyword>
+    <keyword>vfnmsubsd</keyword>
+    <keyword>vfnmsubss</keyword>
+    
+    <!-- Intel AES instructions -->
+    
+    <keyword>aesenc</keyword>
+    <keyword>aesenclast</keyword>
+    <keyword>aesdec</keyword>
+    <keyword>aesdeclast</keyword>
+    <keyword>aeskeygenassist</keyword>
+    <keyword>aesimc</keyword>
+
+    </keyword-list>
+    	    
+
+</language>
+

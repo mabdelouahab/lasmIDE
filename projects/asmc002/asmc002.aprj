@@ -1,0 +1,33 @@
+[Project]
+Name=asmc002
+Description=ASMC Class
+MainFile=main.asm
+Assemble=Z:\\shareddocs\\ASM\\ASMC\\bin\\asmc -I../../ASMC/include -elf64 $SRC class.asm
+Link=gcc  -o $EXE $OBJ class.o -fno-pie -no-pie 
+Link_opt=pkg-config --cflags --libs  gobject-2.0  gtk+-3.0 
+Run_cmd=./$EXE
+Files=main.asm;class.asm;class.inc;
+Dirs=
+
+[main.asm]
+Description=Main source file in project
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=asmfileicon
+Content=
+
+[class.asm]
+Name=class
+Description=class
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=asmfileicon
+Content=PÇã
+
+[class.inc]
+Name=class
+Description=class
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=incfileicon
+Content=Âs

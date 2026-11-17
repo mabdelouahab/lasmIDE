@@ -1,0 +1,25 @@
+[Project]
+Name=ASMCHelloWorldGtk
+Description=Asmc  Hello Linux! gtk
+MainFile=main.asm
+Assemble=asmc -I/shareddocs/ASM/ASMC/include  -elf64 $SRC
+Link=gcc  -o $EXE $OBJ -fno-pie -no-pie 
+Path=/shareddocs/programmation/lasm/lasmIDE/projects/asmctest
+Link_opt=pkg-config --cflags --libs  gobject-2.0  gtk+-3.0 
+Run_cmd=./$EXE
+Files=main.asm;main.inc;
+Dirs=
+
+[main.asm]
+Description=Main source file in project
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=asmfileicon
+Content=\tinclude main.inc\r\n	\r\n; build:\n; asmc -elf64 test.asm\n; gcc -o test test.o `pkg-config --cflags --libs gtk+-3.0`\n\n.code\n\nmain proc _argc:int_t, _argv:array_t\n\n  local argc    :int_t,\n        argv    :array_t,\n        window  :ptr GtkWidget,\n        table   :ptr GtkWidget,\n        tlabel  :ptr GtkWidget,\n        button  :ptr GtkWidget\n\n    mov argc,edi\n    mov argv,rsi\n    .ifd !gtk_init_check(&argc, &argv)\n        perror("gtk_init_check")\n        .return 1\n    .endif\n    .if !gtk_window_new(0)\n        perror("gtk_window_new")\n        .return 1\n    .endif\n    mov window,rax\n    gtk_window_set_title(window, "Hello Linux!")\n    mov table,gtk_table_new(15, 15, 1)\n    gtk_container_add(window, table)\n    mov tlabel,gtk_label_new("Asmc gtk example")\n    gtk_table_attach_defaults(table, tlabel, 1, 8, 3, 7)\n    mov button,gtk_button_new_from_stock("gtk-quit")\n    gtk_table_attach_defaults(table, button, 10, 14, 12, 14)\n    gtk_widget_show_all(window)\n    g_signal_connect_data(window, "delete-event", &exit_prog, 0, 0, 0)\n    g_signal_connect_data(button, "clicked", &exit_prog, 0, 0, 0)\n    gtk_main()\n    ret\n\nmain endp\n\nexit_prog proc\n    gtk_main_quit()\nexit_prog endp\n\n    end
+
+[main.inc]
+Description=Main include file in project
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=incfileicon
+Content=\r\n\ninclude stdio.inc\ninclude gtk/gtk.inc\n

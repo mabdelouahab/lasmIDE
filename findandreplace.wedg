@@ -1,0 +1,253 @@
+.DATA
+	WFARBox			       	 	gpointer    0
+	WCckBRegular          		gpointer    0
+	WCckBMatchBackW        	    gpointer    0
+	WCckBWarp          			gpointer    0
+	WCckBMatchWord            	gpointer    0
+	WCckBMatchCase 	            gpointer    0
+
+	WCBText          			gpointer    0
+	WCBReplaceW          		gpointer    0
+ 
+	WBtnFind          			gpointer    0
+	WBtnFindAndReplace      	gpointer    0
+	WBtnReplaceAll          	gpointer    0
+	WBtnClose         			gpointer    0
+
+	search_settings         	gpointer    0
+	search_context         		gpointer    0
+
+.CODE
+	.proc Init_WFARBox  
+		local lbuilder:gpointer
+		local buffer:gpointer
+		local text:gpointer
+		local _err:GError
+		local iter:GtkTextIter
+		local _search_IterST           :GtkTextIter
+		local _search_IterEN           :GtkTextIter
+
+		local provider1:gpointer
+		local display:gpointer
+		local screen:gpointer
+
+
+
+
+		mov _err,0
+		mov lbuilder,rv(gtk_builder_new)
+		invoke gtk_builder_add_from_string,lbuilder,addr FARBoxInterface,FARBoxInterface_sz,addr _err
+		invoke gtk_builder_connect_signals,lbuilder,0       ;this will connect all signals to respective functions in glade xml file
+		    
+	;    .if rax
+		    mov   WFARBox        	,0
+		    mov   WFARBox        	,rv(gtk_builder_get_object, lbuilder,str$("WFARBox"))
+		    mov 	WCBText          	,rv(gtk_builder_get_object, lbuilder,str$("CBSearchText"))
+		    mov	WCBReplaceW     ,rv(gtk_builder_get_object, lbuilder,str$("CBReplaceText"))
+
+		    Notebook_Get_Current_Buffer proto
+		    mov buffer,rv(Notebook_Get_Current_Buffer)
+		    .if buffer
+		        .if rv(gtk_text_buffer_get_has_selection,buffer)
+		            gtk_text_buffer_get_selection_bounds(buffer,addr _search_IterST,addr _search_IterEN)
+		            gtk_text_buffer_get_text(buffer,addr _search_IterST,addr _search_IterEN);
+		            gtk_combo_box_text_insert_text(WCBText,0,rax)
+		            gtk_combo_box_set_active(WCBText,0)
+		        .endif 
+		;----------------------------------------------------------------------
+		;button colors in search dialog using css data
+		;it's necessary name a widget with "gtk_widget_set_name" function, but I have inserted name in glade, so I'm not calling this function
+		;after a widget have a name, we can change their style by using CSS and refer to it with an hashtag name.
+			invoke gtk_css_provider_new
+			mov provider1,rax
+			invoke gdk_display_get_default
+			mov display,rax
+			invoke gdk_display_get_default_screen,display
+			mov screen,rax
+			invoke gtk_style_context_add_provider_for_screen,screen,provider1,GTK_STYLE_PROVIDER_PRIORITY_USER
+			invoke gtk_css_provider_load_from_data,provider1,CStr("#WFARBox {background:#555753; color:#d3d7cf} #WBtnFind {background:#204a87; color:#25bfdc} #WBtnFindAndReplace {background:#4e9a06; color:#6dea1a} #WBtnReplaceAll {background:#740303; color:#ff0000} #WBtnClose {background:#8f5902; color:#fbf716}"),-1,NULL
+		;----------------------------------------------------------------------
+			invoke gtk_widget_show_all,WFARBox
+			xor rax,rax
+		    .endif
+	;    .else
+	;        lea r12,_err
+	;        mov r12,[r12]
+	;        mov r12,QWORD PTR [r12+8]
+	;        invoke printf,str$(<13,10,"Error loading interface {%s}">),r12
+	;        xor rax,rax
+	;    .endif 
+	.endp
+    
+    .data
+		 _search_IterE           GtkTextIter <>
+		 _search_IterS           GtkTextIter <>
+    .code 
+    Notebook_Get_Current_OFile proto
+    .proc On_WFARBox_WBtnFind_clicked  
+		local _Ofile:gpointer
+		local _search_context        :gpointer	
+		local _search_settings        :gpointer	
+		local _search_IterO           :gpointer
+  		local _search_Iter           :GtkTextIter
+		local buff           :gpointer    
+		local last_search_pos           :gpointer    
+		local source_view:gpointer
+
+		mov _Ofile,rv(Notebook_Get_Current_OFile)
+		mov rcx,[rax].OFile.search_context
+		mov _search_context,rcx
+		mov rcx,[rax].OFile.source_view
+		mov source_view,rcx
+		mov rcx,[rax].OFile.buffer
+		mov buff,rcx
+		mov _search_settings,rv(gtk_source_search_context_get_settings,_search_context)
+		gtk_combo_box_text_get_active_text(WCBText)
+		gtk_source_search_settings_set_search_text (_search_settings,rax)              
+	;	gtk_source_search_context_get_occurrences_count(_search_context)    
+		mov last_search_pos,rv( gtk_text_buffer_get_mark,buff, "last_search_pos")
+		.if last_search_pos==0
+			gtk_text_buffer_get_start_iter (buff, addr _search_Iter) 
+		.else
+			gtk_text_buffer_get_iter_at_mark (buff, addr _search_Iter, last_search_pos);
+		.endif
+    		.if rv(gtk_source_search_context_forward ,_search_context, addr _search_Iter,addr _search_IterS, addr _search_IterE,0)
+     		      	gtk_text_buffer_select_range (buff,addr _search_IterS, addr _search_IterE);
+     		      	.if last_search_pos
+     		      		gtk_text_buffer_delete_mark (buff, last_search_pos)
+     		      	.endif
+   			mov last_search_pos,rv( gtk_text_buffer_create_mark ,buff, "last_search_pos",addr _search_IterE, 0);
+   			.data
+   			    __rcolB REAL8    0.0
+   			.code
+   			movsd      xmm0,__rcolB  
+   			movsd      xmm1,__rcolB
+   			movsd      xmm2,__rcolB
+      			gtk_text_view_scroll_to_mark(source_view, last_search_pos,__rcolB,-1,__rcolB, __rcolB)	      	
+       		.else
+			gtk_text_buffer_get_start_iter (buff, addr _search_Iter);
+	     		.if rv(gtk_source_search_context_forward ,_search_context, addr _search_Iter,addr _search_IterS, addr _search_IterE,0)
+	     		      	gtk_text_buffer_select_range (buff,addr _search_IterS, addr _search_IterE);
+	     		      	.if last_search_pos
+	     		      		gtk_text_buffer_delete_mark (buff, last_search_pos)
+	     		      	.endif
+	   			mov last_search_pos,rv( gtk_text_buffer_create_mark ,buff, "last_search_pos",addr _search_IterE, 0);
+	   			movsd      xmm0,__rcolB  
+	   			movsd      xmm1,__rcolB
+	   			movsd      xmm2,__rcolB
+	      			gtk_text_view_scroll_to_mark(source_view, last_search_pos,__rcolB,-1,__rcolB, __rcolB)	    
+	       		.else
+	       		 	invoke printf,str$(<13,10,"not found ",13,10>)
+	       		 	mov rax,-1
+	       		 	ret
+	       		.endif
+       		.endif
+        RET
+    .endp
+    .proc On_WFARBox_WBtnReplaceAll_clicked  
+		local _Ofile:gpointer
+		local _search_context        :gpointer	
+		local _search_settings        :gpointer	
+  		local _search_Iter           :GtkTextIter
+		local buff           :gpointer    
+		local textReplace:gpointer
+       		local mark:gpointer
+      		local mark2:gpointer
+		mov _Ofile,rv(Notebook_Get_Current_OFile)
+		mov rcx,[rax].OFile.search_context
+		mov _search_context,rcx
+		mov rcx,[rax].OFile.buffer
+		mov buff,rcx
+		mov _search_settings,rv(gtk_source_search_context_get_settings,_search_context)
+		mov textReplace,rv(gtk_combo_box_text_get_active_text,WCBReplaceW)
+		gtk_combo_box_text_get_active_text(WCBText)
+		gtk_source_search_settings_set_search_text (_search_settings,rax)    
+		
+		gtk_text_buffer_get_start_iter (buff, addr _search_Iter)
+			  mov mark,rv(gtk_text_buffer_create_mark,buff,0, addr _search_Iter, 0);
+		@@:	
+		 .if rv(gtk_source_search_context_forward,_search_context, addr _search_Iter, addr _search_IterS, addr _search_IterE)
+			  mov mark2 ,rv(gtk_text_buffer_create_mark,buff,0, addr _search_IterE, 0);
+			   gtk_source_search_context_replace (_search_context, addr _search_IterS, addr _search_IterE, textReplace, -1, 0)
+			  gtk_text_buffer_get_iter_at_mark (buff, addr _search_Iter, mark2)
+			  gtk_text_buffer_delete_mark (buff, mark2)
+			  jmp @B
+		 .endif
+			  gtk_text_buffer_delete_mark (buff, mark)
+        	RET
+    .endp
+    .proc On_WFARBox_WCBText_changed 
+		local _Ofile:gpointer
+		local _search_context        :gpointer
+		local _search_settings        :gpointer
+		local _search_Iter           :GtkTextIter        
+		mov _Ofile,rv(Notebook_Get_Current_OFile)
+		mov rcx,[rax].OFile.search_context
+		mov _search_context,rcx
+		mov _search_settings,rv(gtk_source_search_context_get_settings,_search_context)
+		gtk_combo_box_text_get_active_text(WCBText)
+		gtk_source_search_settings_set_search_text (_search_settings,rax)              
+		On_WFARBox_WBtnFind_clicked()
+		
+         RET
+    .endp
+    .proc On_WFARBox_WBtnFindAndReplace_clicked 
+		local _Ofile:gpointer
+		local _search_context        :gpointer	
+		local __start_iter           :GtkTextIter
+		local __end_iter           :GtkTextIter
+		local buff           :gpointer    
+		        
+		mov _Ofile,rv(Notebook_Get_Current_OFile)
+		mov rcx,[rax].OFile.search_context
+		mov _search_context,rcx
+		mov rcx,[rax].OFile.buffer
+		mov buff,rcx
+		.if rv(gtk_text_buffer_get_has_selection,buff)
+			gtk_text_buffer_get_selection_bounds(buff,addr __start_iter,addr __end_iter)
+			.if gtk_text_iter_compare(addr __start_iter,addr _search_IterS)==0
+				.if gtk_text_iter_compare(addr __end_iter,addr _search_IterE)==0
+					gtk_combo_box_text_get_active_text(WCBReplaceW)
+					gtk_source_search_context_replace (_search_context,addr _search_IterS, addr _search_IterE, rax, -1, 0)
+				.endif
+			.endif			         	
+ 		.endif
+ 		On_WFARBox_WBtnFind_clicked()
+    .endp
+ 
+    .proc On_WFARBox_WBtnClose_clicked 
+        invoke gtk_widget_destroy,WFARBox
+    .endp	;
+
+    .proc On_WFARBox_WCckBRegular_clicked  
+        invoke printf,str$(<13,10,"On_WFARBox_WCckBRegular_clicked OK ",13,10>)
+        RET
+    .endp	 
+    .proc On_WFARBox_WCckBMatchBackW_clicked  
+        invoke printf,str$(<13,10,"On_WFARBox_WCckBMatchBackW_clicked OK ",13,10>)
+    .endp	 
+    .proc On_WFARBox_WCckBWarp_clicked  
+        invoke printf,str$(<13,10,"On_WFARBox_WCckBWarp_clicked OK ",13,10>)
+    .endp	 
+    .proc  On_WFARBox_WCckBMatchWord_clicked  
+        invoke printf,str$(<13,10,"On_WFARBox_WCckBMatchWord_clicked OK ",13,10>)
+    .endp	 
+    .proc On_WFARBox_WCckBMatchCase_clicked  
+        invoke printf,str$(<13,10,"On_WFARBox_WCckBMatchCase_clicked OK ",13,10>)
+    .endp	 
+
+	align 16
+	GDK_Escape	EQU	0ff1bh
+	.proc keyboard_escape ,  widget__:gpointer,___event:gpointer,_user_data:gpointer
+	.shadow
+		.if [rsi].GdkEventKey.keyval == GDK_Escape
+			invoke gtk_widget_destroy,WFARBox
+		.endif
+		xor eax,eax
+	.endp 
+	.DATA
+	    FARBoxInterface label qword
+	    incbin <findreplace.glade>
+	    FARBoxInterface_sz equ $-FARBoxInterface
+
+

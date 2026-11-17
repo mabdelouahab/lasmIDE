@@ -1,0 +1,22 @@
+[Project]
+Name=wintest
+Description=Asmc  Hello Linux! gtk
+MainFile=main.asm
+Assemble=uasm64 -c -win64 -Zp8 -Zi -nologo  $SRC
+Link=gcc  -o $EXE.exe $OBJbj 
+Link_opt=pkg-config --libs gtk+-3.0 
+Run_cmd=$EXE.exe
+Files=main.asm;main.inc;
+Dirs=
+
+[main.asm]
+Description=Main source file in project
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=asmfileicon
+
+[main.inc]
+Description=Main include file in project
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=incfileicon
