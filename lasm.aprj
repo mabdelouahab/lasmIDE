@@ -15,7 +15,6 @@ Description=main
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=asmfileicon
-Content=Ÿë
 
 [main.inc]
 Name=main
@@ -23,7 +22,7 @@ Description=main
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=incfileicon
-Content=@1"
+Content=Žª&
 
 [inputbox.asm]
 Name=inputbox
@@ -38,7 +37,7 @@ Description=Helpers
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=incfileicon
-Content=ð[¶
+Content=Ð%&
 
 [Settings.inc]
 Name=Settings
@@ -53,7 +52,6 @@ Description=icons
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=incfileicon
-Content=[ É
 
 [STNG.inc]
 Name=STNG
@@ -124,7 +122,6 @@ Description=mainwindow
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=wedgfileicon
-Content=
 
 [MainWindow.inc]
 Name=MainWindow
@@ -160,7 +157,7 @@ Description=FilesTypes
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=wedgfileicon
-Content=Þ ý
+Content=`$'·
 
 [folding.inc]
 Name=folding
