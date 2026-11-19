@@ -63,7 +63,6 @@ Description=spawn
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=incfileicon
-Content=\s›#
 
 [build.inc]
 Name=build
@@ -71,7 +70,6 @@ Description=build
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=incfileicon
-Content=º%
 
 [Wedg_Dialog_Project_Option.wedg]
 Name=Wedg_Dialog_Project_Option
@@ -121,7 +119,6 @@ Description=mainwindow
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=wedgfileicon
-Content=
 
 [MainWindow.inc]
 Name=MainWindow
@@ -178,4 +175,3 @@ Description=wterminal
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=incfileicon
-Content=

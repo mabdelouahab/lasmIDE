@@ -22,7 +22,6 @@ Description=main
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=incfileicon
-Content=Žª&
 
 [inputbox.asm]
 Name=inputbox
@@ -37,7 +36,6 @@ Description=Helpers
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=incfileicon
-Content=Ð%&
 
 [Settings.inc]
 Name=Settings
@@ -157,7 +155,6 @@ Description=FilesTypes
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=wedgfileicon
-Content=`$'·
 
 [folding.inc]
 Name=folding
