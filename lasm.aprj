@@ -176,7 +176,6 @@ Description=wterminal
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=incfileicon
-Content=
 
 [/include/invoke.inc]
 Name=invoke

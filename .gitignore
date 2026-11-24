@@ -9,6 +9,7 @@ lasmW64.exe
 *.err
 *.pdb
 *.ilk
+*.patch
 
 # Third-party tools and libraries (see README.md for how to get them)
 win64/
