@@ -255,7 +255,9 @@
 		local __CatdStr:gpointer
 		local __EndStr:gpointer
 		local __DubStr:gpointer
+		local __CatdBase:gpointer
 	.shadow
+		mov __CatdBase,0
 		mov luter,rv(gtk_text_iter_copy,liter)
 		mov lDuterP,rv(gtk_text_iter_copy,liter)
 		mov lDuterM,rv(gtk_text_iter_copy,liter)
@@ -266,6 +268,7 @@
 		.if marksSList
 			 
 			mov __CatdStr,rv(g_strdup,rv( gtk_source_mark_get_category,[rax]))
+			mov __CatdBase,rax
 			.if byte ptr [rax] == "-"
 				inc __CatdStr
 		 		mov __EndStr,rv(g_strconcat,str$("."),__CatdStr,0)
@@ -308,7 +311,7 @@
 				inc __CatdStr
 		 		mov __EndStr,rv(g_strconcat,str$("."),__CatdStr,0,0,0,0,0)
 				invoke gtk_source_buffer_remove_source_marks,lbuffer,liter,liter,0
-				.if rax
+				.if marksSList
 					invoke gtk_source_buffer_forward_iter_to_source_mark,lbuffer,luter,__EndStr
 		 			mov __DubStr,rv(g_strconcat,str$("-"),__CatdStr,0)
 		 			@@:
@@ -349,8 +352,7 @@
 			.endif
 
 			.endif
-			dec __CatdStr
-		invoke g_free ,__CatdStr
+		invoke g_free ,__CatdBase
 		g_slist_free proto :gpointer
 		g_slist_free(marksSList)
 		gtk_text_iter_free(luter)

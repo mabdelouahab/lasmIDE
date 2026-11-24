@@ -16,6 +16,7 @@ Description=main
 ProgrammingLanguage=c
 StyleScheme=c
 icon=cfileicon
+Content=ê,
 
 [main.h]
 Name=main
@@ -23,3 +24,4 @@ Description=main
 ProgrammingLanguage=c
 StyleScheme=c
 icon=hfileicon
+Content=

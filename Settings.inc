@@ -145,6 +145,11 @@
 			invoke g_key_file_load_from_file,settingKEY,SETTING_FileName, 0,0   
 		ENDIF
 		Helpers_Setting_var_Get
+		; g_key_file_get_boolean returns FALSE for a missing key, which overwrote the default (-1)
+		invoke g_key_file_has_key,settingKEY,"PROJECT","Settings_Load_Last_Project",0
+		.if eax==0
+			mov Settings_Load_Last_Project,-1
+		.endif
 		mov Settings_FilesTypeListe						,rv(g_key_file_get_string_list,settingKEY,"FilesTypeListe","Settings_FilesTypeListe",addr Settings_NFilesTypeListe,0)
 		mov Settings_Folding_EndOf_First_Word_Liste		,rv(g_key_file_get_string_list,settingKEY,"Folding","Settings_Folding_EndOf_First_Word_Liste",addr Settings_NFolding_First_Word_Liste,0)
 		mov Settings_Folding_EndOf_Second_Word_Liste	,rv(g_key_file_get_string_list,settingKEY,"Folding","Settings_Folding_EndOf_Second_Word_Liste",addr Settings_NFolding_Second_Word_Liste,0)
