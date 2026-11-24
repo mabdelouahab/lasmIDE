@@ -29,7 +29,8 @@
             
         invoke gtk_widget_show_all,menu
         invoke gdk_event_get_time,event
-        invoke gtk_menu_popup,menu, 0, 0, 0, 0, 0,rax
+        mov r11,rax
+        invoke gtk_menu_popup,menu, 0, 0, 0, 0, 0,r11
     .endp    
     .proc TreeView_PopUp_Menu_File_Rename	  				, _menuitem:gpointer,  _userdata:gpointer
         local of:gpointer
@@ -132,7 +133,8 @@
 ;***********************************************************
         invoke gtk_widget_show_all,menu
         invoke gdk_event_get_time,event
-        invoke gtk_menu_popup,menu, 0, 0, 0, 0, 0,rax
+        mov r11,rax
+        invoke gtk_menu_popup,menu, 0, 0, 0, 0, 0,r11
     .endp   
     .proc TreeView_PopUp_Menu_Project_Add_New_Directory	, _menuitem:gpointer,  _userdata:gpointer
         local of:gpointer

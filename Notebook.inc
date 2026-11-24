@@ -309,9 +309,9 @@ include folding.inc
 
 		invoke gtk_button_set_label,lbutton,"x"
 		invoke gtk_button_set_focus_on_click,lbutton,-1
-		invoke g_signal_connect_data,lbutton,str$("clicked")	,addr	Notebook_On_Close_Button_Clicked 	,pOFile,0,0
-		invoke g_signal_connect_data,lbutton,str$("enter")	,addr	Notebook_On_Close_Button_Enter 		,pOFile,0,0
-		invoke g_signal_connect_data,lbutton,str$("leave")	,addr	Notebook_On_Close_Button_Leave	 	,pOFile,0,0  
+		invoke g_signal_connect_data,lbutton, "clicked"	,addr Notebook_On_Close_Button_Clicked 	,pOFile,0,0
+		invoke g_signal_connect_data,lbutton, "enter"	,addr Notebook_On_Close_Button_Enter 		,pOFile,0,0
+		invoke g_signal_connect_data,lbutton, "leave"	,addr Notebook_On_Close_Button_Leave	 	,pOFile,0,0  
 
 		invoke gtk_widget_show,lbutton
 		mov hbox,rv(gtk_box_new,0,0)

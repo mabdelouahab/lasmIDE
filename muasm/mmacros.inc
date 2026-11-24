@@ -30,7 +30,7 @@ rv macro fn_,arg_:vararg
     ELSE
         invoke fn_,arg_
     ENDIF
-    EXITM<rax>
+   % EXITM<rax>
 endm
 ra macro v
 local vforconst
@@ -455,8 +455,6 @@ ENDM
 .proc TEXTEQU <.sub>
 
 .endp TEXTEQU <.endsub>
-WIN64 	equ 1
-ELF64   equ 3
 
 __GetFirstSpacePos macro __@str:req
 	local space_pos ,tab_pos
@@ -483,13 +481,20 @@ endm
 			procName SubStr <Proc__Name0>,1
 			usesreg textequ <> 
 	ENDIF
+	IFDEF __Development_Phase
+		PUBLIC procName
+	ENDIF
 
  	lastprocedureName EQU <procName>
 	lastprocedureArgs__ =0
 	IFB <__Args>
 		.code
 			align 16
-		procName PROC usesreg
+		procName PROC PUBLIC usesreg
+	IF @Platform EQ ELF64
+		local __lasm_align_pad:QWORD
+	ENDIF
+
 	ELSE
 		IF @Platform EQ WIN64
 			.code
@@ -509,7 +514,8 @@ endm
 			ENDM
 			.code
 				align 16
-			procName PROC usesreg strArgs	
+			procName PROC PUBLIC usesreg strArgs	
+local __lasm_align_pad:QWORD
 			j___=1
 			FOR __varg,<__Args>
 				IF j___ LT 7 

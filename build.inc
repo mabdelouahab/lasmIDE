@@ -206,7 +206,7 @@
 			w_terminal_TerminateChildProcess()
 		ELSEIF 	@Platform EQ 3	;	ELF64
 			.if	run_pid 
-				_kill(run_pid,1)
+				invoke _kill,run_pid,1
 	   		.endif
 		ENDIF	
         RET 

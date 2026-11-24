@@ -1,16 +1,16 @@
 
 ; Declare GLIBC prototypes (with output format -elf64 SYSTEMV ABI is assumed as the default).
 ;********************************************************************************************
-	include 	unistd_64.inc
+;	include 	unistd_64.inc
 
 malloc PROTO :QWORD
 free   PROTO memPtr:QWORD
-printf PROTO pString:PTR, args:VARARG
+printf PROTO  pString:PTR, args:VARARG
 sprintf PROTO pString:PTR, args:VARARG
 exit   PROTO exitcode:DWORD
 remove    PROTO fn:QWORD
 system    PROTO fn:QWORD
-close  PROTO fd:DWORD
+close  PROTO :DWORD
 memset PROTO :vararg
 memcpy PROTO :vararg
 __errno_location PROTO 
@@ -28,19 +28,19 @@ timespec STRUCT 8
 	;dd ?
 	tv_nsec dq ?
 timespec ENDS
-.code 
-	sleepsp__	proc milisec:qword
-		local req:timespec
-
-		mov rax,milisec
-		mov rcx,1000
-		xor rdx,rdx
-		div rcx
-		mov req.tv_sec ,eax;
-		mov req.tv_nsec,0
-		;invoke _nanosleep,addr req,0
-		ret
-	sleepsp__	endp
+;.code 
+;	sleepsp__	proc milisec:qword
+;		local req:timespec
+;
+;		mov rax,milisec
+;		mov rcx,1000
+;		xor rdx,rdx
+;		div rcx
+;		mov req.tv_sec ,eax;
+;		mov req.tv_nsec,0
+;		;invoke _nanosleep,addr req,0
+;		ret
+;	sleepsp__	endp
 
 
 clock_gettime PROTO clockid_t:DWORD, pTimeSpec:PTR

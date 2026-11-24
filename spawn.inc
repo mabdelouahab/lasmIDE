@@ -289,6 +289,9 @@ ELSEIF 	@Platform EQ 3	;	ELF64
         invoke g_free,argvpt
         mov rax,retv
         ret 
+        
+ 
     .endp
 
+     
 ENDIF

@@ -1,0 +1,73 @@
+$ uasm -elf64 trydump_test.asm
+UASM v2.57, Aug 10 2024, Masm-compatible assembler.
+Portions Copyright (c) 1992-2002 Sybase, Inc. All Rights Reserved.
+Source code is available under the Sybase Open Watcom Public License.
+
+trydump_test.asm: 50 lines, 3 passes, 5881 ms, 0 warnings, 0 errors
+$ gcc -no-pie trydump_test.o -o trydump_test
+$ ./trydump_test
+=== fault ===
+signal 11 (SIGSEGV)  si_code=1  unmapped address
+fault address: 0x8
+fault rip:
+  0x401827  <level2+0x2>
+r8 =0000000000000000 r9 =0000000000000000 r10=0000000000000008 r11=0000000000000246 
+r12=00007fff1d1b74d8 r13=0000000000000001 r14=00007f6792141000 r15=0000000000402e00 
+rdi=0000000000000000 rsi=00007fff1d1b7240 rbp=00007fff1d1b7450 rbx=0000000000000000 
+rdx=0000000000000000 rax=0000000000000000 rcx=0000000000000005 rsp=00007fff1d1b7358 
+rip=0000000000401827 
+call trace (stack scan, candidates):
+  0x401835  <level1+0x5>
+  0x401877  <main+0x29>
+  0x401883  <main+0x35>
+  0x40184e  <main+0x0>
+  0x40184e  <main+0x0>
+  0x4010e0  <_start+0x0>
+  0x401105  <_start+0x25>
+=== fault ===
+signal 8 (SIGFPE)  si_code=1  integer divide by zero
+fault address: 0x4018db
+fault rip:
+  0x4018db  <main+0x8d>
+r8 =0000000000000000 r9 =0000000000000000 r10=0000000000000000 r11=0000000000000202 
+r12=00007fff1d1b74d8 r13=0000000000000001 r14=00007f6792141000 r15=0000000000402e00 
+rdi=00007f6791ede000 rsi=0000000000004210 rbp=00007fff1d1b7450 rbx=0000000000000000 
+rdx=0000000000000000 rax=0000000000000001 rcx=0000000000000000 rsp=00007fff1d1b7368 
+rip=00000000004018db 
+call trace (stack scan, candidates):
+  0x4018e9  <main+0x9b>
+  0x40184e  <main+0x0>
+  0x40184e  <main+0x0>
+  0x4010e0  <_start+0x0>
+  0x401105  <_start+0x25>
+=== fault ===
+signal 11 (SIGSEGV)  si_code=1  unmapped address
+fault address: 0x7fff1c9b9368
+fault rip:
+  0x40183d  <overflow+0x7>
+r8 =0000000000000000 r9 =0000000000000000 r10=0000000000000000 r11=0000000000000206 
+r12=00007fff1d1b74d8 r13=0000000000000001 r14=00007f6792141000 r15=0000000000402e00 
+rdi=00007f6791ede000 rsi=0000000000004210 rbp=00007fff1d1b7450 rbx=0000000000000000 
+rdx=0000000000000000 rax=0000000000401946 rcx=00007f67920558ab rsp=00007fff1c9b9368 
+rip=000000000040183d 
+(no stack snapshot: stack overflow suspected)
+=== fault ===
+software THROW, code=42
+ممتاز هذا أفضل، لكن ألا يمكن إضافة بعض التفصيل مثل هذا: 0x401827  <level2+0x2>
+      --- asm around 0x401827 ---
+          401817: ff                   	(bad)
+          401818: ff 05 62 18 00 00    	inc    DWORD PTR [rip+0x1862]        # 403080 <__try_idx>
+          40181e: eb d6                	jmp    4017f6 <TryInit+0x65>
+          401820: 48 8b e5             	mov    rsp,rbp
+          401823: 5d                   	pop    rbp
+          401824: c3                   	ret
+          401825: 33 c0                	xor    eax,eax
+      >>> 401827: 48 c7 40 08 05 00 00 	mov    QWORD PTR [rax+0x8],0x5
+          40182e: 00 
+          40182f: c3                   	ret
+          401830: e8 f0 ff ff ff       	call   401825 <level2>
+          401835: c3                   	ret
+          401836: 48 81 ec f8 0f 00 00 	sub    rsp,0xff8
+          40183d: c6                   	.byte 0xc6
+          40183e: 04                   	.byte 0x4
+

@@ -465,7 +465,7 @@ OProject ENDS
 					invoke g_mkdir,prjname,01c0h;prjpath
 					invoke g_chdir,prjpath
 					mov kf,rv( g_key_file_new)
-					invoke g_key_file_load_from_file,kf,WTemplateProjectDialog_RetValue, 0,0    
+					invoke g_key_file_load_from_file,kf,WTemplateProjectDialog_RetValue, 0,0   
 					g_key_file_set_string(	kf,"Project","Name",prjname)	
 											
 					mov FullPName,rv(g_build_filename,prjpath,prjname,0)

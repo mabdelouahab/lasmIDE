@@ -1,3 +1,6 @@
+	IFDEF __Development_Phase
+		OPTION PROC:PUBLIC
+	ENDIF
 	IF 		@Platform EQ 1	;	Win64
 		echo --Windows64: Lasm
 		option win64:1
@@ -12,13 +15,14 @@
 	OPTION LITERALS:ON
 	OPTION DOTNAME 
 
-	;include		include/invoke.inc
+	include		include/invoke.inc
 	include		./muasm/mmacros.inc
 	include 	./muasm/libc.inc
-	;include 	./muasm/unistd_64.inc
+	include 	./muasm/unistd_64.inc
 	include 	./muasm/glib.inc
 	include 	./muasm/gtk.inc
 	include 	./muasm/cairo.inc
+
 	include 	include.inc
 
 
@@ -94,6 +98,7 @@
 
 .CODE
 	.proc gInit 
+
 		local _err:gpointer
 		mov _err,0
  

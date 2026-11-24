@@ -180,7 +180,8 @@ _GdkRectangle	ends
 			mov rax,-1
 			ret
 		.endif
-		.if rv(gtk_tree_model_get_iter_first,model,addr iter_)==0
+		invoke gtk_tree_model_get_iter_first,model,addr iter_
+		.if rax==0
 			mov rax,-1
 			ret
 		.endif

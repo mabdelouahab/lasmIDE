@@ -178,7 +178,7 @@ menu_settings_highlight gpointer 0
 		m2m	vte_background.red		,Settings_VTE_BG_red
 		m2m	vte_background.green	,Settings_VTE_BG_green
 		m2m	vte_background.blue		,Settings_VTE_BG_blue
-		m2m	vte_background.alpha	,Settings_VTE_BG_alpha
+		m2m	vte_background.alpha	,FP8(1.0); Settings_VTE_BG_alpha
 		
 		m2m	vte_color_cursor.red	,Settings_VTE_cursor_red
 		m2m	vte_color_cursor.green	,Settings_VTE_cursor_green

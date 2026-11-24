@@ -264,6 +264,7 @@
 		mov ln1,eax
 		mov marksSList,rv( gtk_source_buffer_get_source_marks_at_iter,lbuffer,liter,0)
 		.if marksSList
+			 
 			mov __CatdStr,rv(g_strdup,rv( gtk_source_mark_get_category,[rax]))
 			.if byte ptr [rax] == "-"
 				inc __CatdStr

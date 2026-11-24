@@ -1,0 +1,6 @@
+[Project]
+Name=hhh
+Description=hhh
+Run_cmd=./$EXE
+Files=
+Dirs=

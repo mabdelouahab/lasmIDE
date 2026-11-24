@@ -45,7 +45,7 @@
 		@@: 
 			.if gpointer ptr [rax]
 				pushrax
-					gtk_combo_box_text_append(CB_StyleCh,0,[rax])	
+					invoke gtk_combo_box_text_append,CB_StyleCh,0,[rax] 	
 				poprax
 				add rax,sizeof gpointer
 				jmp @B
@@ -54,7 +54,7 @@
 		@@: 
 			.if  gpointer ptr [rax]
 				pushrax
-					gtk_combo_box_text_append(CB_ProgLang,0,[rax])
+					invoke gtk_combo_box_text_append,CB_ProgLang,0,[rax] 
 				poprax
 				add rax,sizeof gpointer
 				jmp @B
