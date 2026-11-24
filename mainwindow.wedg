@@ -45,10 +45,7 @@ menu_settings_highlight gpointer 0
 		mov GGtkBuilder,rv(gtk_builder_new)
 		mov _err,0
 		invoke gtk_builder_add_from_string, GGtkBuilder,addr MainWindowInterface ,MainWindowInterface_sz,addr _err
-	IF @Platform EQ ELF64
-		invoke gtk_builder_connect_signals,GGtkBuilder,0
-	ENDIF
-    		invoke gtk_builder_connect_signals,GGtkBuilder,0       ;this will connect all signals to respective functions in glade xml file
+    ;		invoke gtk_builder_connect_signals,GGtkBuilder,0       ;this will connect all signals to respective functions in glade xml file
       		 ;invoke gtk_builder_add_from_file  , GGtkBuilder,str$("UASMIde1.glade"),addr _err 
 ;		.if rax==0
 ;		    lea r12,_err
@@ -69,7 +66,7 @@ menu_settings_highlight gpointer 0
 ;-------------------------------------------------------------
 		mov DialogFont,rv(gtk_builder_get_object					,GGtkBuilder,str$("DialogFont"))
 		mov DialogColor,rv(gtk_builder_get_object					,GGtkBuilder,str$("DialogColor"))
-		mov DialogApp,rv(gtk_builder_get_object					,GGtkBuilder,str$("DialogApp"))
+		;mov DialogApp,rv(gtk_builder_get_object					,GGtkBuilder,str$("DialogApp"))
 ;-------------------------------------------------------------
 		mov menu_Settings_WordWrap	,rv(gtk_builder_get_object					,GGtkBuilder,str$("menu_Settings_WordWrap"))
 		mov menu_settings_highlight	,rv(gtk_builder_get_object					,GGtkBuilder,str$("menu_settings_highlight"))
@@ -107,7 +104,7 @@ menu_settings_highlight gpointer 0
 
 		Helpers_signal_connect_data	"WMnTBNewFile"	,"clicked"	,On_WMnTBNewFile_Clicked
 		Helpers_signal_connect_data	"WMnTBOpenFile"	,"clicked"	,On_WMnTBOpenFile_Clicked
-		Helpers_signal_connect_data	"WMnSaveFile"	,"clicked"	,Notebook_Save_Current_Tab
+
 
 		Helpers_signal_connect_data	"WMnTBSaveAll"	,"clicked"	,Notebook_Save_All_Tab
 		Helpers_signal_connect_data	"WMnTBCut"		,"clicked"	,On_WMnTBCut_Clicked
@@ -223,11 +220,11 @@ menu_settings_highlight gpointer 0
 			invoke Projects_Load_Project,Arg_Project
 		.else
 			.if Settings_Load_Last_Project
-	    			call Projects_Load_Last_Project
+	    			invoke Projects_Load_Last_Project
 			.endif
 		.endif
 		.if Current_Prj_FileName
-			call TreeView_Show_Current_Project			
+			invoke TreeView_Show_Current_Project			
 		.endif
 	.endp	;	
 	.proc OnPaned1sizeallocate   , widget:gpointer, user_data:gpointer
@@ -310,7 +307,7 @@ menu_settings_highlight gpointer 0
 	    invoke gtk_widget_hide,DialogColor
 	.endp	;
 	.proc menu_Tools_App  
-
+	
 	    invoke gtk_dialog_run,DialogApp
 	    .if eax == GTK_RESPONSE_OK
 

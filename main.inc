@@ -130,8 +130,8 @@
 			invoke gtk_css_provider_load_from_path,GcssProvider_Asm, str$("./langs/font_ASM.css"),addr _err
 		.endif
 		.if GcssProvider_C==0
-			mov GcssProvider_Asm,rv(gtk_css_provider_new)
-			invoke gtk_css_provider_load_from_path,GcssProvider_Asm, str$("./langs/font_C.css"),addr _err
+			mov GcssProvider_C,rv(gtk_css_provider_new)
+			invoke gtk_css_provider_load_from_path,GcssProvider_C, str$("./langs/font_C.css"),addr _err
 		.endif
 		.if GGtkSourceLanguageManager==0
 			mov GGtkSourceLanguageManager,rv(gtk_source_language_manager_new);            
@@ -146,6 +146,7 @@
 		.endif
 		ret
 	.endp
+	
 .DATA
 	clear_project_tree_view_iter    GtkTreeIter <>
 	clear_items_iter                GtkTreeIter <>
