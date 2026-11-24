@@ -15,6 +15,7 @@ Description=main
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=asmfileicon
+Content=Ð’¨,
 
 [main.inc]
 Name=main
@@ -22,6 +23,7 @@ Description=main
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=incfileicon
+Content=
 
 [inputbox.asm]
 Name=inputbox
@@ -92,6 +94,7 @@ Description=Notebook
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=incfileicon
+Content=€P¦,
 
 [TreeView.inc]
 Name=TreeView
@@ -155,6 +158,7 @@ Description=FilesTypes
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=wedgfileicon
+Content=ÐƒÇ,
 
 [folding.inc]
 Name=folding
@@ -197,3 +201,4 @@ Description=mmacros
 ProgrammingLanguage=assembly
 StyleScheme=assembly
 icon=incfileicon
+Content=ÂÿÿÿÿÿY

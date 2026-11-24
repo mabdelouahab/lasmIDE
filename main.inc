@@ -15,7 +15,8 @@
 	OPTION LITERALS:ON
 	OPTION DOTNAME 
 
-	include		include/invoke.inc
+	include		./include/invoke.inc
+	include		./include/try.inc
 	include		./muasm/mmacros.inc
 	include 	./muasm/libc.inc
 	include 	./muasm/unistd_64.inc

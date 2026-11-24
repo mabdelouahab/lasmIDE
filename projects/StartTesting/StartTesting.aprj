@@ -1,0 +1,26 @@
+[Project]
+Name=StartTesting
+Description=gtk ms windows
+MainFile=main.asm
+Assemble=uasm64  -c -win64 -Zp8 -Zi -nologo  $SRC
+Link=gcc -s -o $EXE.exe $OBJ -Wl,--subsystem,windows 
+Link_opt=pkg-config --libs gtk+-3.0
+Run_cmd=./$EXE.exe
+Files=main.asm;main.inc;
+Dirs=
+
+[main.asm]
+Name=main
+Description=main
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=asmfileicon
+Content=
+
+[main.inc]
+Name=main
+Description=main
+ProgrammingLanguage=assembly
+StyleScheme=assembly
+icon=incfileicon
+Content=°µz

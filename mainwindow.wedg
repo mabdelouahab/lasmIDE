@@ -47,13 +47,13 @@ menu_settings_highlight gpointer 0
 		invoke gtk_builder_add_from_string, GGtkBuilder,addr MainWindowInterface ,MainWindowInterface_sz,addr _err
     ;		invoke gtk_builder_connect_signals,GGtkBuilder,0       ;this will connect all signals to respective functions in glade xml file
       		 ;invoke gtk_builder_add_from_file  , GGtkBuilder,str$("UASMIde1.glade"),addr _err 
-;		.if rax==0
-;		    lea r12,_err
-;		    mov r12,[r12]
-;		    mov r12,QWORD PTR [r12+8]
-;		    invoke printf,str$(<13,10,"Error loading interface {%s}">),r12
-;		    ret
-;		.endif
+		.if rax==0
+		    lea r12,_err
+		    mov r12,[r12]
+		    mov r12,QWORD PTR [r12+8]
+		    invoke printf,str$(<13,10,"Error loading interface {%s}">),r12
+		    ret
+		.endif
         
 		mov WMainwindow         	,rv(gtk_builder_get_object					,GGtkBuilder,str$("WMainwindow"))
 		mov WProjectTreeView  		,rv(gtk_builder_get_object					,GGtkBuilder,str$("WProjectTreeView"))
@@ -117,7 +117,7 @@ menu_settings_highlight gpointer 0
 		Helpers_signal_connect_data	"WMnTBReplace"	,"clicked"	,On_WMnTBReplace_Clicked
 
  		
-		Helpers_signal_connect_data	"WMnTBPreAssemble"	,"clicked",On_WMnOpenFile_Clicked
+
 		Helpers_signal_connect_data	"WMnOpenFile"	,"activate",On_WMnOpenFile_Clicked
 		Helpers_signal_connect_data	"WMnSaveAs"	,"activate",On_WMnSaveAs_Clicked
 		Helpers_signal_connect_data	"WMnSaveAll"	,"activate",Notebook_Save_All_Tab
@@ -130,17 +130,17 @@ menu_settings_highlight gpointer 0
 		Helpers_signal_connect_data	"WMnSellectAll"	,"activate",On_WMnSellectAll_Clicked
  
 
- 
-		Helpers_signal_connect_data	"WMnAssemble"	,"activate",On_WMnAssemble_Clicked
+		Helpers_signal_connect_data	"WMnAssemble"	,"activate",assemble_current_project
+		Helpers_signal_connect_data	"WMnBuild"	,"activate",build_toolbar;On_WMnBuild_Clicked
+		Helpers_signal_connect_data	"WMnRun"	,"activate",run_toolbar;On_WMnRun_Clicked
+		Helpers_signal_connect_data	"WMnDoAll"	,"activate",run_toolbar;On_WMnDoAll_Clicked
+		
 		Helpers_signal_connect_data	"WMnLink"	,"activate",On_WMnLink_Clicked
-		Helpers_signal_connect_data	"WMnBuild"	,"activate",On_WMnBuild_Clicked
-		Helpers_signal_connect_data	"WMnRun"	,"activate",On_WMnRun_Clicked
-		Helpers_signal_connect_data	"WMnDoAll"	,"activate",On_WMnDoAll_Clicked
 		Helpers_signal_connect_data	"WMnSetting"	,"activate",On_WMnSetting_Clicked
 		Helpers_signal_connect_data	"WMnAbout"	,"activate",On_WMnAbout_Clicked
 
-		Helpers_signal_connect_data	"WPaned1"	,"size-allocate",OnPaned1sizeallocate
-		Helpers_signal_connect_data	"WPaned2"	,"size-allocate",OnPaned2sizeallocate
+
+
 		Helpers_signal_connect_data	"menu_Help_"	,"activate",menu_Help_Function
 		Helpers_signal_connect_data	"menu_settings_highlight"	,"toggled",menu_settings_highlight_cb
 		

@@ -1,11 +1,12 @@
 __Development_Phase	EQU 1
-include try.inc
+
 include main.inc
 TryRuntime
 .code
 
  	.proc main  ,largc:DWORD, largv:QWORD
  	.Shadow
+ 		invoke TryInit
 		TRY
 		invoke gInit
 		

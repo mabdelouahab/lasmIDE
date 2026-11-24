@@ -1,0 +1,26 @@
+[Project]
+Name=ctesting
+Description=Hello World By C
+MainFile=main.c
+Assemble=gcc  -c  $SRC  
+Link=gcc -o $EXE $OBJ  
+Assemble_opt=
+Link_opt=
+Run_cmd=./$EXE
+Files=main.c;main.h;
+Dirs=
+
+[main.c]
+Name=main
+Description=main
+ProgrammingLanguage=c
+StyleScheme=c
+icon=cfileicon
+Content=€Ž+
+
+[main.h]
+Name=main
+Description=main
+ProgrammingLanguage=c
+StyleScheme=c
+icon=hfileicon
