@@ -18,7 +18,6 @@ UASM/uasm
 uasm64.exe
 
 # Per-user state, created from CONFIG.INI.default on first setup
-CONFIG.INI
 setting.stg
 gitupload.bat
 gitupload.sh
